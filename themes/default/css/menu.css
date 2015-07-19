@@ -1,0 +1,95 @@
+.hop-menu
+{
+	min-height: 0;
+	background: #fff;
+	line-height: 1;
+}
+
+.hop-menu:before,
+.hop-menu:after
+{
+	border-collapse: collapse;
+	content: "";
+	display: table;
+}
+
+.hop-menu:after
+{
+	clear: both;
+}
+
+.hop-menu .hop-menu-item
+{
+	display: block;
+	float: left;
+}
+
+.hop-menu .hop-menu-button
+{
+	display: block;
+	padding: 5px 8px 5px 8px;
+	background-repeat: no-repeat;
+	background-position: 5px center;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.hop-menu .hop-menu-button.hop-menu-icon
+{
+	padding-left: 26px;
+}
+
+.hop-menu .hop-menu-button,
+.hop-menu .hop-menu-button:visited,
+.hop-menu .hop-menu-button:hover
+{
+	color: #000;
+	text-decoration: none;
+}
+
+.hop-menu .hop-menu-button.hop-menu-highlighted,
+.hop-menu .hop-menu-button.hop-menu-highlighted:hover
+{
+	background-color: #d7e4f3;
+}
+
+.hop-menu .hop-menu-button.hop-menu-opened,
+.hop-menu .hop-menu-button.hop-menu-opened:hover
+{
+	background-color: #eee;
+}
+
+.hop-menu .hop-menu-button.hop-menu-parent
+{
+	padding-right: 0;
+}
+
+.hop-menu .hop-menu-button.hop-menu-parent .hop-menu-button-inner
+{
+	padding-right: 20px;
+	background: url(../images/dropdownmenusub.png) right center no-repeat;
+}
+
+.hop-menu .hop-menu-button.hop-menu-inactive
+{
+	color: #a0a0a0;
+}
+
+.hop-menu .hop-menu-button.hop-menu-inactive:hover
+{
+	background-color: transparent;
+	cursor: default;
+}
+
+.hop-menu .hop-menu-button.hop-menu-loading
+{
+	cursor: progress;
+}
+
+.hop-menu .hop-menu-separator div
+{
+	margin: 0 4px;
+	padding: 5px 0;
+	width: 1px;
+	background-color: #ccc;
+}

@@ -1,0 +1,99 @@
+.hop-tabs
+{
+}
+
+.hop-tabs .hop-tabs-head
+{
+	border-bottom: solid 1px #ccc;
+	padding: 0 6px;
+	min-height: 0;
+}
+
+.hop-tabs .hop-tabs-head:before,
+.hop-tabs .hop-tabs-head:after
+{
+	border-collapse: collapse;
+	content: "";
+	display: table;
+}
+
+.hop-tabs .hop-tabs-head:after
+{
+	clear: both;
+}
+
+.hop-tabs .hop-tabs-tab-button
+{
+	float: left;
+	margin: 1px 2px 0 2px;
+}
+
+.hop-tabs .hop-tabs-tab-button span
+{
+	float: left;
+	padding: 6px 8px;
+	white-space: nowrap;
+	position: relative;
+}
+
+.hop-tabs .hop-tabs-tab-button,
+.hop-tabs .hop-tabs-tab-button:visited,
+.hop-tabs .hop-tabs-tab-button:hover
+{
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.hop-tabs .hop-tabs-tab-button:hover
+{
+	background-color: #d7e4f3;
+}
+
+.hop-tabs .hop-tabs-tab-button.hop-tabs-active
+{
+	margin-bottom: -1px;
+	border: solid 1px #ccc;
+	border-bottom-width: 0;
+	background-color: #fff;
+}
+
+.hop-tabs .hop-tabs-tab-button.hop-tabs-active span
+{
+	padding: 5px 7px 7px 7px;
+}
+
+.hop-tabs .hop-tabs-tab-button.hop-tabs-active:hover span
+{
+	background-color: #fff;
+}
+
+.hop-tabs .hop-tabs-body
+{
+	background: #fff;
+	overflow: auto;
+}
+
+.hop-tabs .hop-tabs-body:before,
+.hop-tabs .hop-tabs-body:after
+{
+	border-collapse: collapse;
+	content: "";
+	display: table;
+}
+
+.hop-tabs .hop-tabs-body:after
+{
+	clear: both;
+}
+
+.hop-window .hop-tabs .hop-tabs-body
+{
+	background-color: #f8f8f8;
+}
+
+.hop-window .hop-tabs .hop-tabs-tab-button.hop-tabs-active,
+.hop-window .hop-tabs .hop-tabs-tab-button.hop-tabs-active:hover span
+{
+	background-color: #f8f8f8;
+}

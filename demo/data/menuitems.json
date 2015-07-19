@@ -1,0 +1,26 @@
+[
+	{"text": "One"},
+	{"text": "Two"},
+	{
+		"text": "Three",
+		"menu": {
+			"items": [
+				{"text": "One"},
+				{"text": "Two"},
+				{"text": "Three"},
+				{"text": "Four"},
+				{"text": "Five"},
+				{
+					"text": "Ajax",
+					"menu": {
+						"ajax": {
+							"url": "data/menuitems.json"
+						}
+					}
+				}
+			]
+		}
+	},
+	{"text": "Four"},
+	{"text": "Five"}
+]

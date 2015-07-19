@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Window</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/layer.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/window.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../external/jquery-ui.js"></script>
+<script type="text/javascript" src="../js/hopbase.js"></script>
+<script type="text/javascript" src="../js/widgets/layer.js"></script>
+<script type="text/javascript" src="../js/widgets/window.js"></script>
+<script type="text/javascript" src="../js/i18n/ru/window.js"></script>
+</head>
+<body>
+<h1>Window</h1>
+<p>Default:</p>
+<p><input type="button" id="button1" value="Open" /></p>
+<p>Icon, full screen, size, size limits, update position on resize, animation, resizable, draggable:</p>
+<p><input type="button" id="button2" value="Open" /></p>
+<p>Modal, fixed position, full screen on head doubleclick, custom closing:</p>
+<p><input type="button" id="button3" value="Open" /></p>
+<p>Initial full screen, hiding confirmation:</p>
+<p><input type="button" id="button4" value="Open" /></p>
+<p>Areas, locale:</p>
+<p><input type="button" id="button5" value="Open" /> <select id="select5"><option value="">default</option><option value="ru" selected="selected">Русский</option></select></p></p>
+<div id="content" style="display: none;">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.
+Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus. Suspendisse potenti. Donec tristique, dui non molestie ornare, risus nisi pellentesque augue, nec lobortis elit sem fermentum augue. Ut gravida tincidunt pulvinar. Nam id arcu sed lectus facilisis rutrum. Suspendisse pellentesque pellentesque molestie. Integer iaculis suscipit leo, eu facilisis justo cursus eu. Sed varius commodo vestibulum. Suspendisse placerat, justo et elementum vehicula, mi dolor cursus eros, quis dictum purus erat at urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus justo mi, sagittis vitae odio pellentesque, commodo consectetur quam. Aenean mollis orci at nulla vehicula, nec sollicitudin purus molestie. Pellentesque nec iaculis orci.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.
+Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus. Suspendisse potenti. Donec tristique, dui non molestie ornare, risus nisi pellentesque augue, nec lobortis elit sem fermentum augue. Ut gravida tincidunt pulvinar. Nam id arcu sed lectus facilisis rutrum. Suspendisse pellentesque pellentesque molestie. Integer iaculis suscipit leo, eu facilisis justo cursus eu. Sed varius commodo vestibulum. Suspendisse placerat, justo et elementum vehicula, mi dolor cursus eros, quis dictum purus erat at urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus justo mi, sagittis vitae odio pellentesque, commodo consectetur quam. Aenean mollis orci at nulla vehicula, nec sollicitudin purus molestie. Pellentesque nec iaculis orci.
+</div>
+<div style="height: 10000px; width: 10000px;">
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+
+	w1 = new hop.window({
+		title: "Title",
+		content: $("#content").html()
+	});
+	$("#button1").on("click", function()
+	{
+		w1.toggle();
+	});
+
+	w2 = new hop.window({
+		title: "Title",
+		icon: "../themes/default/images/datepickercurrenttime.png",
+		content: $("#content").html(),
+		fullScreenButton: true,
+		height: 240,
+		width: 320,
+		minHeight: 120,
+		minWidth: 160,
+		maxHeight: 480,
+		maxWidth: 640,
+		updatePositionOnResize: true,
+		animationShow: "def",
+		animationShowParams: {
+			transfer: "element",
+			element: "#button2"
+		},
+		animationHide: "def",
+		animationHideParams: {
+			transfer: "element",
+			element: "#button2"
+		},
+		fsAnimationShow: "def",
+		fsAnimationHide: "def",
+		draggable: true,
+		resizable: true
+	});
+	$(".close-button", w2.$bottom).on("click", function(event)
+	{
+		w2.hide();
+	});
+	$("#button2").on("click", function()
+	{
+		w2.toggle();
+	});
+
+	w3 = new hop.window({
+		title: "Title",
+		icon: "../themes/default/images/datepickercurrenttime.png",
+		content: 'Content <input type="button" value="Close" onclick="hopjs.window.hide(this);" />',
+		hideButton: false,
+		fullScreenButton: true,
+		fullScreenOnHeadDblclick: true,
+		modal: true,
+		updatePositionOnShow: false,
+		animationShow: "def",
+		animationShowParams: {
+			transfer: "distance",
+			angle: 90,
+			distance: 50
+		},
+		animationHide: "def",
+		animationHideParams: {
+			transfer: "distance",
+			angle: 180,
+			distance: 50
+		},
+		fsAnimationShow: "def",
+		fsAnimationHide: "def",
+		layerParams: {
+			position: "fixed",
+			overlayAnimationShow: "def",
+			overlayAnimationHide: "def"
+		},
+		draggable: true,
+		draggableParams: {
+			containment: null
+		},
+		resizable: true,
+		resizableParams: {
+			containment: null
+		}
+	});
+	$("#button3").on("click", function()
+	{
+		w3.toggle();
+	});
+
+	w4 = new hop.window({
+		title: "Title",
+		icon: "../themes/default/images/datepickercurrenttime.png",
+		content: $("#content").html(),
+		fullScreenButton: true,
+		fullScreen: true,
+		height: 240,
+		width: 320,
+		hideOnDocumentMousedown: true,
+		animationShow: "def",
+		animationShowParams: {
+			scale: 0.9
+		},
+		animationHide: "def",
+		animationHideParams: {
+			scale: 0.9
+		},
+		draggable: true,
+		resizable: true,
+		onHideBefore: function(window, eventData)
+		{
+			if (!confirm("Close?"))
+				eventData.cancel = true;
+		}
+	});
+	$("#button4").on("click", function()
+	{
+		w4.toggle();
+	});
+	$("#button4").on("mousedown", function()
+	{
+		w4.mousedown = true;
+	});
+
+	w5 = new hop.window({
+		locale: "ru",
+		title: "Title",
+		icon: "../themes/default/images/datepickercurrenttime.png",
+		content: $("#content").html(),
+		fullScreenButton: true,
+		height: 480,
+		width: 640,
+		minHeight: 120,
+		minWidth: 160,
+		maxHeight: 600,
+		maxWidth: 800,
+		showTop: true,
+		showBottom: true,
+		showLeft: true,
+		showRight: true,
+		showInnerTop: true,
+		showInnerBottom: true,
+		updatePositionOnResize: true,
+		animationShow: "def",
+		animationShowParams: {
+			transfer: "element",
+			element: "#button5"
+		},
+		animationHide: "def",
+		animationHideParams: {
+			transfer: "element",
+			element: "#button5"
+		},
+		fsAnimationShow: "def",
+		fsAnimationHide: "def",
+		draggable: true,
+		resizable: true
+	});
+	w5.$top.html('<div style="padding: 10px; border-bottom: solid 1px #ccc; background: #fff;">Top</div>');
+	w5.$bottom.html('<div style="padding: 10px; text-align: right; border-top: solid 1px #ccc; background: #eee;"><input type="button" value="Cancel" class="close-button" /></div>');
+	w5.$left.html('<div style="height: 100%; padding: 10px; border-right: solid 1px #ccc; ">Left</div>');
+	w5.$right.html('<div style="height: 100%; padding: 10px; border-left: solid 1px #ccc;">Right</div>');
+	w5.$innerTop.html('<div style="padding: 10px; border-bottom: solid 1px #ccc; ">Inner top</div>');
+	w5.$innerBottom.html('<div style="padding: 10px; border-top: solid 1px #ccc;">Inner bottom</div>');
+	$(".close-button", w5.$bottom).on("click", function(event)
+	{
+		w5.hide();
+	});
+	$("#button5").on("click", function()
+	{
+		w5.toggle();
+	});
+	$("#select5").on("change", function(event)
+	{
+		w5.setLocale(this.value);
+	});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Menu</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/dropdownmenu.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/menu.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../js/hopbase.js"></script>
+<script type="text/javascript" src="../js/widgets/layer.js"></script>
+<script type="text/javascript" src="../js/widgets/dropdownmenu.js"></script>
+<script type="text/javascript" src="../js/widgets/menu.js"></script>
+</head>
+<body>
+<h1>Menu</h1>
+<p>Click:</p>
+<div id="menu1"></div>
+<p>Hover:</p>
+<div id="menu2"></div>
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+
+	var items = [
+		{
+			text: "Text"
+		},
+		{
+			text: "Icon",
+			icon: "../themes/default/images/datepickercurrenttime.png"
+		},
+		{
+			text: "Title",
+			title: "Title"
+		},
+		{
+			text: "URL",
+			url: "http://example.com"
+		},
+		"-",
+		{
+			text: "On click",
+			onClick: function(item, event_data, data)
+			{
+				alert(data);
+			},
+			onClickData: "Action"
+		},
+		{
+			text: "Menu",
+			icon: "../themes/default/images/datepickerapply.png",
+			menu: {
+				items: [
+					{
+						text: "Checkable",
+						checkable: true
+					},
+					{
+						text: "Checkable checked",
+						checkable: true,
+						checked: true,
+						onCheck: function(item)
+						{
+							alert(item.checked ? "Checked" : "Unchecked");
+						}
+					},
+					{
+						text: "Checked",
+						checked: true
+					},
+					{
+						text: "<b style=\"color: #a00\">Colored</b>",
+						checked: true
+					},
+					{
+						id: "deeper",
+						text: "Deeper",
+						menu: {
+							items: [
+								{
+									text: "Hide",
+									hideOnClick: false,
+									onClick: function(item, data)
+									{
+										item.parentMenu.hide();
+									}
+								},
+								{
+									text: "Hide top",
+									hideOnClick: false,
+									onClick: function(item, data)
+									{
+										item.parentMenu.getTopMenu().hide();
+									}
+								},
+								{
+									id: "deeper",
+									text: "Deeper",
+									menu: {
+										items: [
+											{text: "One"},
+											{text: "Two"},
+											{text: "Three"},
+											{text: "Four"},
+											{text: "Five"}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						text: "Menu layer params",
+						menu: {
+							items: [
+								{text: "One"},
+								{text: "Two"},
+								{text: "Three"},
+								{text: "Four"},
+								{text: "Five"}
+							],
+							layerParams: {
+								elementAlignY: "center",
+								alignY: "center"
+							}
+						}
+					},
+					{
+						text: "On<br />Two<br />Three",
+						icon: "../themes/default/images/datepickerapply.png",
+						menu: {
+							items: [
+								{text: "One"},
+								{text: "Two"},
+								{text: "Three"},
+								{text: "Four"},
+								{text: "Five"}
+							]
+						}
+					}
+				]
+			}
+		},
+		{
+			text: "Radio",
+			menu: {
+				items: [
+					{text: "Not radio"},
+					"-",
+					{
+						text: "One",
+						checkable: true,
+						checked: true,
+						radioGroup: "radio1"
+					},
+					{
+						text: "Two",
+						checkable: true,
+						radioGroup: "radio1"
+					},
+					{
+						text: "Three",
+						checkable: true,
+						radioGroup: "radio1"
+					},
+					"-",
+					{
+						text: "Four",
+						checkable: true,
+						radioGroup: "radio2",
+						uncheckable: true
+					},
+					{
+						text: "Five",
+						checkable: true,
+						radioGroup: "radio2",
+						uncheckable: true
+					},
+					"-",
+					{
+						text: "Six",
+						radioGroup: "radio3"
+					},
+					{
+						text: "Seven",
+						checked: true,
+						radioGroup: "radio3"
+					}
+				]
+			}
+		},
+		{
+			text: "Loader",
+			menu: {
+				loader: function(params)
+				{
+					var self = this;
+					self.loadStart();
+					setTimeout(function()
+					{
+						self.addItems([
+							{text: "One"},
+							{text: "Two"},
+							{text: "Three"},
+							{text: "Four"},
+							{text: "Five"}
+						]);
+						self.loadFinish(params);
+					}, 1000);
+				}
+			}
+		},
+		{
+			text: "Ajax",
+			menu: {
+				ajax: {
+					url: "data/menuitems.json"
+				}
+			}
+		},
+		{
+			text: "Ajax JSONP",
+			menu: {
+				ajax: {
+					url: "data/menuitems.js",
+					dataType: "jsonp",
+					jsonpCallback: "menuCallback"
+				}
+			}
+		}
+	];
+
+	menu1 = new hop.menu({
+		parentNode: $("#menu1")[0],
+		dropdownMenuParams: {
+			layerParams: {
+				animationShow: "def"
+			},
+			submenuLayerParams: {
+				animationShow: "def"
+			}
+		},
+		items: items
+	});
+
+	menu2 = new hop.menu({
+		parentNode: $("#menu2")[0],
+		type: "hover",
+		dropdownMenuParams: {
+			layerParams: {
+				animationShow: "def"
+			},
+			submenuLayerParams: {
+				animationShow: "def"
+			}
+		},
+		items: items
+	});
+});
+</script>
+</body>
+</html>

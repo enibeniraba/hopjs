@@ -1,0 +1,271 @@
+/* Do not apply vertical margin to .hop-window-head-wrapper and .hop-window-head */
+
+.hop-window
+{
+	overflow: hidden;
+	border: solid 1px #ccc;
+	background: #f8f8f8;
+	font: normal normal normal 13px/13px Tahoma, Verdana;
+	box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 12px 0;
+}
+
+.hop-window.hop-window-full-screen
+{
+	border: 0;
+}
+
+.hop-window .hop-window-head
+{
+	background: #eee;
+	border-bottom: solid 1px #ccc;
+	position: relative;
+}
+
+.hop-window .hop-window-title
+{
+	overflow: hidden;
+	padding: 6px 8px;
+	font-weight: bold;
+	color: #000;
+	line-height: 15px;
+}
+
+.hop-window .hop-window-title-nowrap
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.hop-window .hop-window-title-icon
+{
+	padding-left: 24px;
+	background-position: 4px center;
+	background-repeat: no-repeat;
+}
+
+.hop-window .hop-window-head-buttons
+{
+	position: absolute;
+	top: 49.9%;
+	right: 0;
+	height: 21px;
+	margin: -12px 2px 0 0;
+	padding: 2px;
+	overflow: hidden;
+	background: #eee;
+}
+
+.hop-window .hop-window-head-button
+{
+	margin-left: 0px;
+	height: 21px;
+	width: 21px;
+	display: block;
+	float: left;
+	cursor: pointer;
+}
+
+.hop-window .hop-window-head-button:hover
+{
+	background-color: #fff;
+}
+
+.hop-window .hop-window-head-button-hide
+{
+	background: url(../images/windowhide.png) 3px 3px no-repeat;
+}
+
+.hop-window .hop-window-head-button-full-screen
+{
+	background: url(../images/windowfullscreen.png) 3px 3px no-repeat;
+}
+
+.hop-window.hop-window-full-screen .hop-window-head-button-full-screen
+{
+	background-image: url(../images/windowfullscreenoff.png);
+}
+
+.hop-window .hop-window-body-wrapper
+{
+	position: relative;
+	overflow: hidden;
+	border-width: 0;
+	height: 100%;
+}
+
+.hop-window .hop-window-top,
+.hop-window .hop-window-bottom,
+.hop-window .hop-window-middle,
+.hop-window .hop-window-left,
+.hop-window .hop-window-right,
+.hop-window .hop-window-inner-middle,
+.hop-window .hop-window-inner-top,
+.hop-window .hop-window-inner-bottom
+{
+	position: absolute;
+	overflow: hidden;
+	border-width: 0;
+	background: #f8f8f8;
+}
+
+.hop-window .hop-window-top
+{
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hop-window .hop-window-bottom
+{
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hop-window .hop-window-middle
+{
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hop-window .hop-window-left
+{
+	top: 0;
+	left: 0;
+	height: 100%;
+}
+
+.hop-window .hop-window-right
+{
+	top: 0;
+	right: 0;
+	height: 100%;
+}
+
+.hop-window .hop-window-inner-middle
+{
+	top: 0;
+	left: 0;
+	height: 100%;
+}
+
+.hop-window .hop-window-inner-top
+{
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hop-window .hop-window-inner-bottom
+{
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hop-window .hop-window-body
+{
+	position: absolute;
+	overflow: auto;
+	border-width: 0;
+	margin: 2px;
+}
+
+.hop-window .hop-window-head-draggable
+{
+	cursor: move;
+}
+
+.hop-window.hop-window-full-screen .hop-window-head-draggable
+{
+	cursor: default;
+}
+
+.hop-window .ui-resizable-handle
+{
+	position: absolute;
+	background: url(#);
+}
+
+.hop-window.hop-window-full-screen .ui-resizable-handle
+{
+	display: none;
+}
+
+.hop-window .ui-resizable-n
+{
+	height: 3px;
+	width: 100%;
+	top: 0;
+	left: 0;
+	cursor: n-resize;
+}
+
+.hop-window .ui-resizable-s
+{
+	height: 3px;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	cursor: s-resize;
+}
+
+.hop-window .ui-resizable-w
+{
+	height: 100%;
+	width: 3px;
+	top: 0;
+	left: 0;
+	cursor: w-resize;
+}
+
+.hop-window .ui-resizable-e
+{
+	height: 100%;
+	width: 3px;
+	top: 0;
+	right: 0;
+	cursor: e-resize;
+}
+
+.hop-window .ui-resizable-nw
+{
+	height: 3px;
+	width: 3px;
+	top: 0;
+	left: 0;
+	cursor: nw-resize;
+}
+
+.hop-window .ui-resizable-ne
+{
+	height: 3px;
+	width: 3px;
+	top: 0;
+	right: 0;
+	cursor: ne-resize;
+}
+
+.hop-window .ui-resizable-se
+{
+	height: 6px;
+	width: 6px;
+	bottom: 0;
+	right: 0;
+	cursor: se-resize;
+}
+
+.hop-window .ui-resizable-sw
+{
+	height: 3px;
+	width: 3px;
+	bottom: 0;
+	left: 0;
+	cursor: ne-resize;
+}
+
+.hop-window.ui-resizable-disabled .ui-resizable-handle
+{
+	display: none;
+}

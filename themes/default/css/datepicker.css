@@ -1,0 +1,487 @@
+.hop-datepicker
+{
+	width: 224px;
+	padding: 4px;
+	background-color: #fff;
+	border: solid 1px #ccc;
+	box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 2px -2px;
+	font: normal normal normal 13px/14px Tahoma, Verdana;
+}
+
+.hop-datepicker input
+{
+	font: normal normal normal 13px/14px Tahoma, Verdana;
+}
+
+.hop-datepicker-button:hover,
+.hop-datepicker-title-wrapper:hover,
+.hop-datepicker-time-title:hover,
+.hop-datepicker-time-picker-button:hover
+{
+	background-color: #d7e4f3;
+}
+
+.hop-datepicker-button:active,
+.hop-datepicker-title-wrapper:active,
+.hop-datepicker-time-title:active,
+.hop-datepicker-time-picker-button:active
+{
+	background-color: #c3d7ed;
+}
+
+.hop-datepicker-button,
+.hop-datepicker-time-picker-button
+{
+	width: 24px;
+	height: 24px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+.hop-datepicker-head-wrapper
+{
+	margin-bottom: 4px;
+	padding-bottom: 4px;
+	border-bottom: solid 1px #ccc;
+}
+
+.hop-datepicker-head
+{
+	position: relative;
+	text-align: center;
+	min-width: 0;
+}
+
+.hop-datepicker-title-wrapper
+{
+	margin: 0 28px;
+	padding: 5px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.hop-datepicker-title
+{
+	overflow: hidden;
+	position: relative;
+}
+
+.hop-datepicker-title-instance
+{
+	padding: 0 4px;
+	white-space: nowrap;
+	background-color: #fff;
+}
+
+.hop-datepicker-title-wrapper:hover .hop-datepicker-title-instance
+{
+	background-color: #d7e4f3;
+}
+
+.hop-datepicker-title-wrapper:active .hop-datepicker-title-instance
+{
+	background-color: #c3d7ed;
+}
+
+.hop-datepicker-button-prev
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(../images/datepickerprev.png);
+}
+
+.hop-datepicker-button-next
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-image: url(../images/datepickernext.png);
+}
+
+.hop-datepicker-body-wrapper
+{
+}
+
+.hop-datepicker-body
+{
+	position: relative;
+	width: 224px;
+	height: 184px;
+	overflow: hidden;
+}
+
+.hop-datepicker-days
+{
+	padding: 1px 0;
+	background-color: #fff;
+}
+
+.hop-datepicker-days-head
+{
+	white-space: nowrap;
+}
+
+.hop-datepicker-days-head > div
+{
+	float: left;
+	padding: 6px 6px;
+	width: 20px;
+	text-align: right;
+	font-size: 11px;
+	font-weight: bold;
+	color: #666;
+}
+
+.hop-datepicker-days-body > div > div
+{
+	float: left;
+	padding: 6px;
+	width: 20px;
+	text-align: right;
+}
+
+.hop-datepicker-days-body > div > div.hop-datepicker-days-day
+{
+	cursor: pointer;
+}
+
+.hop-datepicker-days-day.hop-datepicker-days-today,
+.hop-datepicker-months > div > div.hop-datepicker-months-current,
+.hop-datepicker-years > div > div.hop-datepicker-years-current
+{
+	font-weight: bold;
+}
+
+.hop-datepicker-days-day.hop-datepicker-days-picked,
+.hop-datepicker-months > div > div.hop-datepicker-months-picked,
+.hop-datepicker-years > div > div.hop-datepicker-years-picked
+{
+	background-color: #eee;
+	border: solid 1px #ccc;
+}
+
+.hop-datepicker-days-day.hop-datepicker-days-picked
+{
+	padding: 5px;
+}
+
+.hop-datepicker-days-other-month
+{
+	color: #aaa;
+}
+
+.hop-datepicker-days-day.hop-datepicker-days-disabled,
+.hop-datepicker-months > div > div.hop-datepicker-months-disabled,
+.hop-datepicker-years > div > div.hop-datepicker-years-disabled
+{
+	background: #f0f0f0 !important;
+	cursor: default !important;
+}
+
+.hop-datepicker-days-day:hover,
+.hop-datepicker-months > div > div:hover,
+.hop-datepicker-years > div > div:hover
+{
+	background-color: #d7e4f3;
+}
+
+.hop-datepicker-days-day:active,
+.hop-datepicker-months > div > div:active,
+.hop-datepicker-years > div > div:active
+{
+	background-color: #c3d7ed;
+}
+
+.hop-datepicker-months,
+.hop-datepicker-years
+{
+	padding: 2px 0;
+	background-color: #fff;
+}
+
+.hop-datepicker-months > div > div,
+.hop-datepicker-years > div > div
+{
+	float: left;
+	padding: 23px 0;
+	width: 56px;
+	text-align: center;
+}
+
+.hop-datepicker-months > div > div,
+.hop-datepicker-years > div > div
+{
+	cursor: pointer;
+}
+
+.hop-datepicker-months > div > div.hop-datepicker-months-picked,
+.hop-datepicker-years > div > div.hop-datepicker-years-picked
+{
+	padding: 22px 0;
+	width: 54px;
+}
+
+.hop-datepicker-time-picker-inner
+{
+	margin: 51px 0 0 66px;
+}
+
+.hop-datepicker-time-picker-1 .hop-datepicker-time-picker-inner
+{
+	margin-left: 83px;
+}
+
+.hop-datepicker-time-picker-0 .hop-datepicker-time-picker-inner
+{
+	margin-left: 100px;
+}
+
+.hop-datepicker-time-picker-hours,
+.hop-datepicker-time-picker-minutes,
+.hop-datepicker-time-picker-seconds,
+.hop-datepicker-time-picker-ampm
+{
+	float: left;
+	margin-left: 10px;
+}
+
+.hop-datepicker-time-picker-hours
+{
+	margin-left: 0;
+}
+
+.hop-datepicker-time-picker-plus
+{
+	margin-bottom: 5px;
+	background-image: url(../images/datepickerup.png);
+}
+
+.hop-datepicker-time-picker-minus
+{
+	margin-top: 5px;
+	background-image: url(../images/datepickerdown.png);
+}
+
+.hop-datepicker-time-picker-value
+{
+	position: relative;
+}
+
+.hop-datepicker-time-picker-value input
+{
+	display: block;
+	width: 22px;
+	height: 16px;
+	margin: 0;
+	padding: 3px 0 3px 0;
+	border: solid 1px #ccc;
+	line-height: 1;
+	text-align: center;
+}
+
+.hop-datepicker-time-picker-colon
+{
+	position: absolute;
+	top: 4px;
+	left: -7px;
+}
+
+.hop-datepicker-time-picker-ampm
+{
+	margin-left: 5px;
+	padding-top: 29px;
+}
+
+.hop-datepicker-time-picker-ampm div
+{
+	width: 18px;
+	height: 16px;
+	padding: 4px;
+}
+
+.hop-datepicker-time-wrapper
+{
+	position: relative;
+	margin-top: 4px;
+	padding-top: 4px;
+	border-top: solid 1px #ccc;
+}
+
+.hop-datepicker-time
+{
+	position: relative;
+	text-align: center;
+	min-width: 0;
+}
+
+.hop-datepicker-time-title
+{
+	margin: 0 28px;
+	padding: 5px;
+	cursor: pointer;
+}
+
+.hop-datepicker-time-sep
+{
+	margin: 0 2px;
+}
+
+.hop-datepicker-time-ampm
+{
+	margin-left: 4px;
+}
+
+.hop-datepicker-button-current-time
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(../images/datepickercurrenttime.png);
+}
+
+.hop-datepicker-button-zero-time
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-image: url(../images/datepickerzerotime.png);
+}
+
+.hop-datepicker-buttons-wrapper
+{
+	margin-top: 4px;
+	padding-top: 4px;
+	border-top: solid 1px #ccc;
+}
+
+.hop-datepicker-buttons .hop-datepicker-button
+{
+	float: left;
+}
+
+.hop-datepicker-buttons-left
+{
+	float: left;
+}
+
+.hop-datepicker-buttons-left .hop-datepicker-button
+{
+	margin-right: 4px;
+}
+
+.hop-datepicker-buttons-right
+{
+	float: right;
+}
+
+.hop-datepicker-buttons-right .hop-datepicker-button
+{
+	margin-left: 4px;
+}
+
+
+.hop-datepicker .hop-datepicker-button-today
+{
+	background-image: url(../images/datepickertoday.png);
+}
+
+.hop-datepicker .hop-datepicker-button-apply
+{
+	background-image: url(../images/datepickerapply.png);
+}
+
+.hop-datepicker .hop-datepicker-button-hide
+{
+	background-image: url(../images/datepickerhide.png);
+}
+
+.hop-datepicker .hop-datepicker-button-clean
+{
+	background-image: url(../images/datepickerclean.png);
+}
+
+.hop-datepicker-buttons:before,
+.hop-datepicker-days-head:before,
+.hop-datepicker-days-body > div:before,
+.hop-datepicker-months > div:before,
+.hop-datepicker-years > div:before,
+.hop-datepicker-buttons:after,
+.hop-datepicker-days-head:after,
+.hop-datepicker-days-body > div:after,
+.hop-datepicker-months > div:after,
+.hop-datepicker-years > div:after
+{
+	border-collapse: collapse;
+	content: "";
+	display: table;
+}
+
+.hop-datepicker-buttons:after,
+.hop-datepicker-days-head:after,
+.hop-datepicker-days-body > div:after,
+.hop-datepicker-months > div:after,
+.hop-datepicker-years > div:after
+{
+	clear: both;
+}
+
+.hop-datepicker-buttons,
+.hop-datepicker-days-head,
+.hop-datepicker-days-body > div,
+.hop-datepicker-months > div,
+.hop-datepicker-years > div
+{
+	min-height: 0;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number
+{
+	width: 264px;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-body
+{
+	width: 264px;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-days-week-header,
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-days-week-number
+{
+	width: 20px;
+	padding-right: 9px;
+	margin-right: 4px;
+	border-right: solid 1px #ccc;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-months > div > div,
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-years > div > div
+{
+	float: left;
+	padding: 23px 0;
+	width: 66px;
+	text-align: center;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-months > div > div.hop-datepicker-months-picked,
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-years > div > div.hop-datepicker-years-picked
+{
+	padding: 22px 0;
+	width: 64px;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-time-picker-inner
+{
+	margin: 51px 0 0 86px;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-time-picker-1 .hop-datepicker-time-picker-inner
+{
+	margin-left: 103px;
+}
+
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-time-picker-0 .hop-datepicker-time-picker-inner
+{
+	margin-left: 120px;
+}

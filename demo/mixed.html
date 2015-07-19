@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Mixed</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/hop.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../external/jquery-ui.js"></script>
+<script type="text/javascript" src="../external/jquery.easing.js"></script>
+<script type="text/javascript" src="../js/hop.js"></script>
+<style type="text/css">
+.hop-dropdown-menu, .hop-tooltip
+{
+	font: normal normal normal 13px/14px Tahoma, Verdana;
+}
+
+.hop-window .hop-window-top
+{
+	border-bottom: solid 1px #ccc;
+}
+</style>
+</head>
+<body>
+<h1>Mixed</h1>
+<p><input type="button" id="button1" value="Open window" /></p>
+<div id="content" style="display: none;">
+<div style="padding: 10px;">
+<p>Date: <input id="dp1" /> <button id="dp1-button">...</button></p>
+<p><button id="button2">Options</button></p>
+<div id="tabs1">
+	<div>
+		<a href="#one"><span>One</span></a>
+		<a href="#two"><span>Two</span></a>
+		<a href="#three"><span>Three</span></a>
+	</div>
+	<div>
+		<div><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
+		<div><p>Fusce non pulvinar dui, eu ornare sapien.</p></div>
+		<div><p>Duis tellus nunc, rhoncus ac nisl eget, adipiscing iaculis dolor.</p></div>
+	</div>
+</div>
+<p><b id="tt1">Lorem</b> ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.
+Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus. Suspendisse potenti. Donec tristique, dui non molestie ornare, risus nisi pellentesque augue, nec lobortis elit sem fermentum augue. Ut gravida tincidunt pulvinar. Nam id arcu sed lectus facilisis rutrum. Suspendisse pellentesque pellentesque molestie. Integer iaculis suscipit leo, eu facilisis justo cursus eu. Sed varius commodo vestibulum. Suspendisse placerat, justo et elementum vehicula, mi dolor cursus eros, quis dictum purus erat at urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus justo mi, sagittis vitae odio pellentesque, commodo consectetur quam. Aenean mollis orci at nulla vehicula, nec sollicitudin purus molestie. Pellentesque nec iaculis orci.
+</p>
+</div>
+</div>
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+
+	var fadeAnimations = hop.datepickerAnimationPresets.fade({
+			animationParams: {
+				duration: 200
+			}
+		}),
+		slideAnimations = hop.datepickerAnimationPresets.slide({
+			animationParams: {
+				duration: 400
+			}
+		}),
+		slideFadeAnimations = hop.datepickerAnimationPresets.slideFade({
+			animationParams: {
+				duration: 400
+			}
+		});
+
+	var menu1 = {
+		items: [
+			{
+				text: "Show week number",
+				checkable: true,
+				onCheck: function(item)
+				{
+					dp1.setShowWeekNumber(item.checked);
+				}
+			},
+			{
+				text: "Time",
+				menu: {
+					items: [
+						{
+							text: "Show time",
+							checkable: true,
+							checked: true,
+							onCheck: function(item)
+							{
+								dp1.setShowTime(item.checked);
+							}
+						},
+						{
+							text: "Time detail",
+							menu: {
+								items: [
+									{
+										text: "Hours (0)",
+										checkable: true,
+										radioGroup: "timeDetail",
+										onCheck: function(item)
+										{
+											dp1.setTimeDetail(0);
+										}
+									},
+									{
+										text: "Minutes (1)",
+										checkable: true,
+										checked: true,
+										radioGroup: "timeDetail",
+										onCheck: function(item)
+										{
+											dp1.setTimeDetail(1);
+										}
+									},
+									{
+										text: "Seconds (2)",
+										checkable: true,
+										radioGroup: "timeDetail",
+										onCheck: function(item)
+										{
+											dp1.setTimeDetail(2);
+										}
+									}
+								]
+							}
+						},
+						{
+							text: "Time format",
+							menu: {
+								items: [
+									{
+										text: "12",
+										checkable: true,
+										checked: true,
+										radioGroup: "timeFormat",
+										onCheck: function(item)
+										{
+											dp1.setTimeFormat(12);
+										}
+									},
+									{
+										text: "24",
+										checkable: true,
+										radioGroup: "timeFormat",
+										onCheck: function(item)
+										{
+											dp1.setTimeFormat(24);
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				text: "Open window",
+				checkable: true,
+				onCheck: function(item)
+				{
+					if (!hop.def(item.w))
+					{
+						item.w = new hop.window({
+							title: "Title",
+							content: "Content",
+							height: 240,
+							width: 320,
+							layerParams: {
+								element: w1.layer.node,
+								elementAlignX: "right"
+							},
+							animationShow: "def",
+							animationShowParams: {
+								transfer: "distance",
+								distance: 50
+							},
+							animationHide: "def",
+							animationHideParams: {
+								transfer: "distance",
+								distance: 50,
+								angle: 270
+							},
+							onShow: function(window)
+							{
+								item.setChecked(true);
+							},
+							onHide: function(window)
+							{
+								item.setChecked(false);
+							}
+						});
+					}
+					if (item.checked)
+						item.w.show();
+					else
+						item.w.hide();
+				}
+			}
+		]
+	};
+
+	w1 = new hop.window({
+		title: "Title",
+		icon: "../themes/default/images/datepickercurrenttime.png",
+		content: $("#content").html(),
+		fullScreenButton: true,
+		height: 360,
+		width: 480,
+		minHeight: 120,
+		minWidth: 160,
+		maxHeight: 480,
+		maxWidth: 640,
+		showTop: true,
+		updatePositionOnResize: true,
+		animationShow: "def",
+		animationShowParams: {
+			transfer: "element",
+			element: "#button1"
+		},
+		animationHide: "def",
+		animationHideParams: {
+			transfer: "element",
+			element: "#button1"
+		},
+		fsAnimationShow: "def",
+		fsAnimationHide: "def",
+		draggable: true,
+		resizable: true
+	});
+
+	$("#content").remove();
+
+	$("#button1").on("click", function()
+	{
+		w1.toggle();
+	});
+
+	menu2 = new hop.menu({
+		parentNode: w1.topNode,
+		showDropdownMenuOnMousedown: false,
+		dropdownMenuParams: {
+			layerParams: {
+				animationShow: "def"
+			},
+			submenuLayerParams: {
+				animationShow: "def"
+			}
+		},
+		items: [
+			{
+				text: "On click",
+				onClick: function(item, event_data, data)
+				{
+					alert(data);
+				},
+				onClickData: "Action"
+			},
+			{
+				text: "Menu",
+				icon: "../themes/default/images/datepickerapply.png",
+				menu: {
+					items: [
+						{
+							text: "Checkable",
+							checkable: true
+						},
+						{
+							text: "Checkable checked",
+							checkable: true,
+							checked: true,
+							onCheck: function(item)
+							{
+								alert(item.checked ? "Checked" : "Unchecked");
+							}
+						},
+						{
+							text: "Checked",
+							checked: true
+						},
+						{
+							text: "<b style=\"color: #a00\">Colored</b>",
+							checked: true
+						},
+						{
+							id: "deeper",
+							text: "Deeper",
+							menu: {
+								items: [
+									{
+										text: "Hide",
+										hideOnClick: false,
+										onClick: function(item, data)
+										{
+											item.parentMenu.hide();
+										}
+									},
+									{
+										text: "Hide top",
+										hideOnClick: false,
+										onClick: function(item, data)
+										{
+											item.parentMenu.getTopMenu().hide();
+										}
+									},
+									{
+										text: "Deeper",
+										menu: {
+											items: [
+												{text: "One"},
+												{text: "Two"},
+												{text: "Three"},
+												{text: "Four"},
+												{text: "Five"}
+											]
+										}
+									}
+								]
+							}
+						},
+						{
+							text: "Menu layer params",
+							menu: {
+								items: [
+									{text: "One"},
+									{text: "Two"},
+									{text: "Three"},
+									{text: "Four"},
+									{text: "Five"}
+								],
+								layerParams: {
+									elementAlignY: "center",
+									alignY: "center"
+								}
+							}
+						},
+						{
+							text: "On<br />Two<br />Three",
+							icon: "../themes/default/images/datepickerapply.png",
+							menu: {
+								items: [
+									{text: "One"},
+									{text: "Two"},
+									{text: "Three"},
+									{text: "Four"},
+									{text: "Five"}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				text: "Radio",
+				menu: {
+					items: [
+						{text: "Not radio"},
+						"-",
+						{
+							text: "One",
+							checkable: true,
+							checked: true,
+							radioGroup: "radio1"
+						},
+						{
+							text: "Two",
+							checkable: true,
+							radioGroup: "radio1"
+						},
+						{
+							text: "Three",
+							checkable: true,
+							radioGroup: "radio1"
+						},
+						"-",
+						{
+							text: "Four",
+							checkable: true,
+							radioGroup: "radio2",
+							uncheckable: true
+						},
+						{
+							text: "Five",
+							checkable: true,
+							radioGroup: "radio2",
+							uncheckable: true
+						},
+						"-",
+						{
+							text: "Six",
+							radioGroup: "radio3"
+						},
+						{
+							text: "Seven",
+							checked: true,
+							radioGroup: "radio3"
+						}
+					]
+				}
+			},
+			{
+				text: "Loader",
+				menu: {
+					loader: function(params)
+					{
+						var self = this;
+						self.loadStart();
+						setTimeout(function()
+						{
+							self.addItems([
+								{text: "One"},
+								{text: "Two"},
+								{text: "Three"},
+								{text: "Four"},
+								{text: "Five"}
+							]);
+							self.loadFinish(params);
+						}, 1000);
+					}
+				}
+			},
+			{
+				text: "Ajax",
+				menu: {
+					ajax: {
+						url: "data/menuitems.json"
+					}
+				}
+			},
+			{
+				text: "Ajax JSONP",
+				menu: {
+					ajax: {
+						url: "data/menuitems.js",
+						dataType: "jsonp",
+						jsonpCallback: "menuCallback"
+					}
+				}
+			}
+		]
+	});
+
+	dp1 = new hop.datepicker({
+		locale: "ru",
+		input: $("#dp1")[0],
+		button: $("#dp1-button")[0],
+		showTime: true,
+		timeDetail: 1,
+		timeFormat: 12,
+		todayButton: true,
+		applyButton: true,
+		cleanButton: true,
+		hideButton: true,
+		maxDatescale: 4,
+		titleAnimations: slideFadeAnimations,
+		pickerAnimations: slideAnimations
+	});
+
+	mb1 = new hop.menuButton({
+		node: $("#button2")[0],
+		menu: menu1,
+		menuParams: {
+			layerParams: {
+				animationShow: "def"
+			},
+			submenuLayerParams: {
+				animationShow: "def"
+			}
+		}
+	});
+
+	tt1 = new hop.tooltip({
+		content: "Datepicker",
+		target: $("#tt1")[0],
+		followCursor: true,
+		layerParams: {
+			animationShow: "def"
+		}
+	});
+
+	tabs1 = new hop.tabs({
+		node: $("#tabs1")[0]
+	});
+});
+</script>
+</body>
+</html>

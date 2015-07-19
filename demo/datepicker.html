@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Datepicker</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/datepicker.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../external/jquery.easing.js"></script>
+<script type="text/javascript" src="../js/hopbase.js"></script>
+<script type="text/javascript" src="../js/widgets/layer.js"></script>
+<script type="text/javascript" src="../js/widgets/datepicker.js"></script>
+<script type="text/javascript" src="../js/widgets/datepickeranimations.js"></script>
+<script type="text/javascript" src="../js/i18n/ru/datepicker.js"></script>
+</head>
+<body>
+<h1>Datepicker</h1>
+<p>Default:</p>
+<p><input id="dp1" /></p>
+<p>Button, no other months, today:</p>
+<p><input id="dp2" /> <button id="button2">...</button></p>
+<p>Input source, custom format, animation:</p>
+<p><input id="dp3" value="Jun 15, 2000" /></p>
+<p>Time, buttons, default date, not picked:</p>
+<p><input id="dp4" /> <button id="button4">...</button></p>
+<p>Locale, week numbers, time, animation:</p>
+<p><input id="dp5" /> <button id="button5">...</button> <select id="select5"><option value="">default</option><option value="ru" selected="selected">Русский</option></select></p>
+<p>Interval:</p>
+<p><input id="dp61" /> - <input id="dp62" /></p>
+<p>Inline:</p>
+<p>Date: <span id="label7">not picked</span></p>
+<div id="dp7"></div>
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+
+	var fadeAnimations = hop.datepickerAnimationPresets.fade({
+			animationParams: {
+				duration: 200
+			}
+		}),
+		slideAnimations = hop.datepickerAnimationPresets.slide({
+			animationParams: {
+				duration: 400
+			}
+		}),
+		slideFadeAnimations = hop.datepickerAnimationPresets.slideFade({
+			animationParams: {
+				duration: 400
+			}
+		});
+
+	dp1 = new hop.datepicker({
+		input: $("#dp1")[0]
+	});
+
+	dp2 = new hop.datepicker({
+		input: $("#dp2")[0],
+		button: $("#button2")[0],
+		otherMonths: false,
+		picked: true
+	});
+
+	dp3 = new hop.datepicker({
+		input: $("#dp3")[0],
+		dateFormat: "M j, Y",
+		layerParams: {
+			animationShow: "def"
+		}
+	});
+
+	dp4 = new hop.datepicker({
+		input: $("#dp4")[0],
+		button: $("#button4")[0],
+		attachToButton: false,
+		date: "2000-01-01 12:00:00",
+		picked: false,
+		showTime: true,
+		todayButton: true,
+		applyButton: true,
+		cleanButton: true,
+		hideButton: true,
+		applyOnDayPick: false,
+		hideOnCleanClick: false
+	});
+
+	dp5 = new hop.datepicker({
+		locale: "ru",
+		input: $("#dp5")[0],
+		button: $("#button5")[0],
+		attachToButton: false,
+		showWeekNumber: true,
+		showTime: true,
+		timeDetail: 1,
+		todayButton: true,
+		applyButton: true,
+		cleanButton: true,
+		hideButton: true,
+		maxDateScale: 4,
+		titleAnimations: slideFadeAnimations,
+		pickerAnimations: slideAnimations
+	});
+
+	$("#select5").on("change", function(event)
+	{
+		dp5.setLocale(this.value);
+	});
+
+	dp61 = new hop.datepicker({
+		input: $("#dp61")[0],
+		onDateChange: function(self, eventDate, data)
+		{
+			dp62.setMinDate(self.date);
+		}
+	});
+
+	dp62 = new hop.datepicker({
+		input: $("#dp62")[0],
+		onDateChange: function(self, eventDate, data)
+		{
+			dp61.setMaxDate(self.date);
+		}
+	});
+
+	dp7 = new hop.datepicker({
+		container: $("#dp7")[0],
+		todayButton: true,
+		onDateChange: function(self)
+		{
+			if (self.picked)
+				$("#label7").html(self.formatDate());
+		},
+		maxDateScale: 4,
+		titleAnimations: fadeAnimations,
+		pickerAnimations: fadeAnimations,
+		date: "2000-01-01 12:00:00",
+		minDate: "1990-01-01",
+		maxDate: "2020-06-15",
+		picked: false,
+		onDayPickerCreateDay: function(self, eventData, data)
+		{
+			if (eventData.year == 2000 && eventData.month == 0 && eventData.day > 9 && eventData.day < 21)
+				eventData.disabled = true;
+		}
+	});
+});
+</script>
+</body>
+</html>
