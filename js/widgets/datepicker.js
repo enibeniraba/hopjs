@@ -52,6 +52,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 			minDatePicker: false,
 			maxDatePicker: false,
 			picked: true,
+			timePickerHolding: true,
+			timePickerTimeout: 400,
+			timePickerInterval: 50,
 			container: null,
 			layerParams: null,
 			applyOnDayPick: true,
@@ -802,6 +805,11 @@ hop.inherit(hop.datepicker, hop.widget, {
 				self.onWindowResize(event);
 			});
 		}
+
+		$(document).on("mouseup", function(event)
+		{
+			self.onDocumentMouseup(event);
+		});
 	},
 
 	onPrevClick: function(event)
@@ -966,6 +974,11 @@ hop.inherit(hop.datepicker, hop.widget, {
 			else
 				this.hide();
 		}
+	},
+
+	onDocumentMouseup: function(event)
+	{
+		this.stopTimePickerTimer();
 	},
 
 	onWindowResize: function(event)
@@ -2056,13 +2069,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerHoursPlusMousedown: function(event)
 	{
+		if (event.which != 1)
+			return;
+
+		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
+		if (self.timePickerHolding)
+		{
+			self.runTimePickerTimer(function()
+			{
+				self.timePickerHoursPlus();
+			});
+		}
 	},
 
 	onTimePickerHoursPlusClick: function(event)
 	{
-		this.timePickerHoursPlus();
+		if (!this.timePickerHolding)
+			this.timePickerHoursPlus();
 	},
 
 	timePickerHoursPlus: function()
@@ -2095,13 +2120,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerHoursMinusMousedown: function(event)
 	{
+		if (event.which != 1)
+			return;
+
+		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
+		if (self.timePickerHolding)
+		{
+			self.runTimePickerTimer(function()
+			{
+				self.timePickerHoursMinus();
+			});
+		}
 	},
 
 	onTimePickerHoursMinusClick: function(event)
 	{
-		this.timePickerHoursMinus();
+		if (!this.timePickerHolding)
+			this.timePickerHoursMinus();
 	},
 
 	timePickerHoursMinus: function()
@@ -2159,13 +2196,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerMinutesPlusMousedown: function(event)
 	{
+		if (event.which != 1)
+			return;
+
+		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
+		if (self.timePickerHolding)
+		{
+			self.runTimePickerTimer(function()
+			{
+				self.timePickerMinutesPlus();
+			});
+		}
 	},
 
 	onTimePickerMinutesPlusClick: function(event)
 	{
-		this.timePickerMinutesPlus();
+		if (!this.timePickerHolding)
+			this.timePickerMinutesPlus();
 	},
 
 	timePickerMinutesPlus: function()
@@ -2188,13 +2237,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerMinutesMinusMousedown: function(event)
 	{
+		if (event.which != 1)
+			return;
+
+		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
+		if (self.timePickerHolding)
+		{
+			self.runTimePickerTimer(function()
+			{
+				self.timePickerMinutesMinus();
+			});
+		}
 	},
 
 	onTimePickerMinutesMinusClick: function(event)
 	{
-		this.timePickerMinutesMinus();
+		if (!this.timePickerHolding)
+			this.timePickerMinutesMinus();
 	},
 
 	timePickerMinutesMinus: function()
@@ -2247,13 +2308,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerSecondsPlusMousedown: function(event)
 	{
+		if (event.which != 1)
+			return;
+
+		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
+		if (self.timePickerHolding)
+		{
+			self.runTimePickerTimer(function()
+			{
+				self.timePickerSecondsPlus();
+			});
+		}
 	},
 
 	onTimePickerSecondsPlusClick: function(event)
 	{
-		this.timePickerSecondsPlus();
+		if (!this.timePickerHolding)
+			this.timePickerSecondsPlus();
 	},
 
 	timePickerSecondsPlus: function()
@@ -2276,13 +2349,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerSecondsMinusMousedown: function(event)
 	{
+		if (event.which != 1)
+			return;
+
+		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
+		if (self.timePickerHolding)
+		{
+			self.runTimePickerTimer(function()
+			{
+				self.timePickerSecondsMinus();
+			});
+		}
 	},
 
 	onTimePickerSecondsMinusClick: function(event)
 	{
-		this.timePickerSecondsMinus();
+		if (!this.timePickerHolding)
+			this.timePickerSecondsMinus();
 	},
 
 	timePickerSecondsMinus: function()
@@ -2414,6 +2499,36 @@ hop.inherit(hop.datepicker, hop.widget, {
 		{
 			self.pickerAnimation.finish();
 			self.pickerAnimation = null;
+		}
+	},
+
+	runTimePickerTimer: function(func)
+	{
+		var self = this;
+		self.stopTimePickerTimer();
+		func();
+		self.timePickerTimeoutInstance = setTimeout(function()
+		{
+			func();
+			self.timePickerIntervalInstance = setInterval(function()
+			{
+				func();
+			}, self.timePickerInterval);
+		}, self.timePickerTimeout);
+	},
+
+	stopTimePickerTimer: function()
+	{
+		var self = this;
+		if (self.timePickerTimeoutInstance)
+		{
+			clearTimeout(self.timePickerTimeoutInstance);
+			self.timePickerTimeoutInstance = null;
+		}
+		if (self.timePickerIntervalInstance)
+		{
+			clearInterval(self.timePickerIntervalInstance);
+			self.timePickerIntervalInstance = null;
 		}
 	},
 
