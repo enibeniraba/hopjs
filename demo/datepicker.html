@@ -48,6 +48,11 @@ $(function()
 			animationParams: {
 				duration: 400
 			}
+		}),
+		slideScaleAnimations = hop.datepickerAnimationPresets.slideScale({
+			animationParams: {
+				duration: 400
+			}
 		});
 
 	dp1 = new hop.datepicker({
@@ -75,13 +80,16 @@ $(function()
 		attachToButton: false,
 		date: "2000-01-01 12:00:00",
 		picked: false,
+		maxDateScale: 4,
 		showTime: true,
 		todayButton: true,
 		applyButton: true,
 		cleanButton: true,
 		hideButton: true,
 		applyOnDayPick: false,
-		hideOnCleanClick: false
+		hideOnCleanClick: false,
+		titleAnimations: slideFadeAnimations,
+		pickerAnimations: slideScaleAnimations
 	});
 
 	dp5 = new hop.datepicker({
@@ -90,13 +98,13 @@ $(function()
 		button: $("#button5")[0],
 		attachToButton: false,
 		showWeekNumber: true,
+		maxDateScale: 4,
 		showTime: true,
 		timeDetail: 1,
 		todayButton: true,
 		applyButton: true,
 		cleanButton: true,
 		hideButton: true,
-		maxDateScale: 4,
 		titleAnimations: slideFadeAnimations,
 		pickerAnimations: slideAnimations
 	});

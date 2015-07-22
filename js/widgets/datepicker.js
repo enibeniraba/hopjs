@@ -1683,8 +1683,6 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this, titleNode, pickerNode, animationId, prevPicker = self.picker,
 			prevTitleNode = self.titleNode, prevPickerNode = self.pickerNode,
 			prevScale = self.yearPickerScale;
-		if (!def(scale))
-			scale = 0;
 		if (self.picker === "year" && scale == prevScale)
 			return;
 
@@ -1706,6 +1704,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.titleNode = titleNode;
 		self.pickerNode = pickerNode;
 		self.yearPickerScale = scale;
+		self.yearPickerYearPrev = self.yearPickerYear;
 		self.yearPickerYear = year;
 		self.picker = "year";
 		if (prevPicker === "month")
@@ -2793,7 +2792,7 @@ hop.datepickerPickerAnimations = {
 hop.datepickerAnimationPresets = {
 	fade: function(params)
 	{
-		var types = [
+		var animations = [
 				"dayPrev",
 				"dayNext",
 				"dayMonth",
@@ -2810,19 +2809,15 @@ hop.datepickerAnimationPresets = {
 				"timeShow",
 				"timeHide"
 			],
-			animationParams, result = {}, i, animation;
-		if (!params)
-			params = {};
-		if (params.animationParams)
-			animationParams = params.animationParams;
-		for (i in types)
+			result = {}, i, animation,
+			animationParams = (params && params.animationParams ? params.animationParams : {});
+		for (i in animations)
 		{
-			animation = {
+			result[animations[i]] = {
 				type: "fade"
 			};
 			if (animationParams)
-				animation.params = animationParams;
-			result[types[i]] = animation;
+				result[animations[i]].params = animationParams;
 		}
 		return result;
 	}

@@ -49,17 +49,12 @@ $(function()
 {
 	var hop = hopjs;
 
-	var fadeAnimations = hop.datepickerAnimationPresets.fade({
-			animationParams: {
-				duration: 200
-			}
-		}),
-		slideAnimations = hop.datepickerAnimationPresets.slide({
+	var slideFadeAnimations = hop.datepickerAnimationPresets.slideFade({
 			animationParams: {
 				duration: 400
 			}
 		}),
-		slideFadeAnimations = hop.datepickerAnimationPresets.slideFade({
+		slideScaleAnimations = hop.datepickerAnimationPresets.slideScale({
 			animationParams: {
 				duration: 400
 			}
@@ -451,7 +446,7 @@ $(function()
 		hideButton: true,
 		maxDatescale: 4,
 		titleAnimations: slideFadeAnimations,
-		pickerAnimations: slideAnimations
+		pickerAnimations: slideScaleAnimations
 	});
 
 	mb1 = new hop.menuButton({
