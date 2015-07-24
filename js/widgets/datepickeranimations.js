@@ -284,7 +284,9 @@ hop.datepickerPickerAnimations.scale = {
 	start: function()
 	{
 		var self = this, params = self.params, defaultParams = self.defaultParams,
-			$body = self.datepicker.$body,
+			datepicker = self.datepicker,
+			dotClassPrefix = "."+datepicker.classPrefix+"datepicker-",
+			$body = datepicker.$body,
 			$prevNode = $(self.data.prevNode),
 			$nextNode = $(self.data.nextNode),
 			height, width, hideProperties, showProperties,
@@ -298,13 +300,13 @@ hop.datepickerPickerAnimations.scale = {
 			options = {}, hideOptions = {}, showOptions = {}, hideDuration, showDuration, hideEasing, showEasing,
 			animationInfo = hop.browser.animationInfo(),
 			transformProperty = animationInfo.transformProperty,
-			$element, position, offset, elementOffset, t, l, h, w, i, year,
+			i, $element, t, l, h, w, position, offset, elementOffset,
 			hidePosition, showPosition, showScaleY, showScaleX, hideScaleY, hideScaleX, out = false;
 
 		if ($.inArray(self.id, ["dayMonth", "monthDay", "monthYear", "yearMonth", "yearOut", "yearIn", "yearDay"]) == -1)
 		{
 			$prevNode.remove();
-			self.datepicker.pickerAnimation = null;
+			datepicker.pickerAnimation = null;
 			return;
 		}
 
@@ -314,7 +316,7 @@ hop.datepickerPickerAnimations.scale = {
 			if (completeCount > (hideAnimation ? 1 : 0))
 			{
 				$prevNode.remove();
-				self.datepicker.pickerAnimation = null;
+				datepicker.pickerAnimation = null;
 				$nextNode.removeAttr("style");
 				$body.removeAttr("style");
 			}
@@ -406,42 +408,45 @@ hop.datepickerPickerAnimations.scale = {
 
 		if (self.id === "dayMonth")
 		{
-			i = self.datepicker.dayPickerMonth;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-months-month-"+self.datepicker.dayPickerMonth, $nextNode);
+			i = datepicker.dayPickerMonth;
+			$element = $(dotClassPrefix+"months-month-"+i, $nextNode);
 			out = true;
 		}
 		else if (self.id === "monthYear")
 		{
-			i = self.datepicker.monthPickerYear-self.datepicker.calcFirstYear(0, self.datepicker.monthPickerYear)+1;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-years-year-"+self.datepicker.monthPickerYear, $nextNode);
+			i = datepicker.monthPickerYear-datepicker.calcFirstYear(0, datepicker.monthPickerYear)+1;
+			$element = $(dotClassPrefix+"years-year-count-"+i, $nextNode);
 			out = true;
 		}
 		else if (self.id === "yearOut")
 		{
-			i = (self.datepicker.calcFirstYear(self.datepicker.yearPickerScale-1, self.datepicker.yearPickerYearPrev)-self.datepicker.yearPickerYear)/Math.pow(10, self.datepicker.yearPickerScale)+1;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-years-year-"+self.datepicker.yearPickerYearPrev, $nextNode);
+			i = (datepicker.calcFirstYear(datepicker.yearPickerScale-1, datepicker.yearPickerYearPrev)-datepicker.yearPickerYear)/Math.pow(10, datepicker.yearPickerScale)+1;
+			$element = $(dotClassPrefix+"years-year-count-"+i, $nextNode);
 			out = true;
 		}
 		else if (self.id === "monthDay")
 		{
-			i = self.datepicker.dayPickerMonth;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-months-month-"+self.datepicker.dayPickerMonth, $prevNode);
+			i = datepicker.dayPickerMonth;
+			$element = $(dotClassPrefix+"months-month-"+datepicker.dayPickerMonth, $prevNode);
 		}
 		else if (self.id === "yearMonth")
 		{
-			i = self.datepicker.monthPickerYear-self.datepicker.calcFirstYear(0, self.datepicker.monthPickerYear)+1;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-years-year-"+self.datepicker.monthPickerYear, $prevNode);
+			i = datepicker.monthPickerYear-datepicker.calcFirstYear(0, datepicker.monthPickerYear)+1;
+			$element = $(dotClassPrefix+"years-count-"+i, $prevNode);
 		}
 		else if (self.id === "yearIn")
 		{
-			i = (self.datepicker.calcFirstYear(self.datepicker.yearPickerScale, self.datepicker.yearPickerYear)-self.datepicker.yearPickerYearPrev)/Math.pow(10, self.datepicker.yearPickerScale+1)+1;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-years-year-"+self.datepicker.yearPickerYear, $prevNode);
+			i = (datepicker.calcFirstYear(datepicker.yearPickerScale, datepicker.yearPickerYear)-datepicker.yearPickerYearPrev)/Math.pow(10, datepicker.yearPickerScale+1)+1;
+			$element = $(dotClassPrefix+"years-count-"+i, $prevNode);
 		}
 		else if (self.id === "yearDay")
 		{
-			year = self.datepicker.calcFirstYear(self.datepicker.yearPickerScale-1, self.datepicker.dayPickerYear);
-			i = (year-self.datepicker.yearPickerYear)/Math.pow(10, self.datepicker.yearPickerScale)+1;
-			$element = $("."+self.datepicker.classPrefix+"datepicker-years-year-"+year, $prevNode);
+			i = (datepicker.calcFirstYear(datepicker.yearPickerScale-1, datepicker.dayPickerYear)-datepicker.yearPickerYear)/Math.pow(10, datepicker.yearPickerScale)+1;
+			if (i < 0)
+				i = 0;
+			else if (i > 11)
+				i = 11;
+			$element = $(dotClassPrefix+"years-year-count-"+i, $prevNode);
 		}
 		t = -(Math.floor(i/4)*height);
 		l = -(Math.round(i%4)*width);

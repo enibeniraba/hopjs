@@ -1771,7 +1771,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 					picked = (year === pickedYear);
 					disabled = (minDate !== null && year+multiplier-1 < minYear || maxDate !== null && year > maxYear);
 					yearNode.innerHTML = year;
-					yearNode.className = classPrefix+"year "+classPrefix+"year-"+year+" "+classPrefix+"year-count-"+count;
+					yearNode.className = classPrefix+"year "+classPrefix+"year-"+year+" "+classPrefix+"year-count-"+(count+1);
 					if (current)
 						yearNode.className += " "+classPrefix+"current";
 					if (picked)
