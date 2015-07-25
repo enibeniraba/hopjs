@@ -2,8 +2,8 @@
 {
 
 hop.window.i18n["ru"] = {
-	fullScreen: "Развернуть во весь экран",
-	fullScreenOff: "Свернуть в окно",
+	fullScreen: "Во весь экран",
+	restore: "Востановить",
 	hide: "Закрыть"
 };
 

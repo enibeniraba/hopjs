@@ -120,7 +120,7 @@ hop.inherit(hop.window, hop.widget, {
 	{
 		return {
 			fullScreen: "Full screen",
-			fullScreenOff: "Collapse to window",
+			restore: "Restore",
 			hide: "Close"
 		};
 	},
@@ -209,7 +209,7 @@ hop.inherit(hop.window, hop.widget, {
 	updateLocaleHtml: function()
 	{
 		var self = this, dot_class_prefix = "."+self.classPrefix+"window-head-button-";
-		$(dot_class_prefix+"full-screen", self.$head).attr("title", self.fullScreen ? self.i18n.fullScreenOff : self.i18n.fullScreen);
+		$(dot_class_prefix+"full-screen", self.$head).attr("title", self.fullScreen ? self.i18n.restore : self.i18n.fullScreen);
 		$(dot_class_prefix+"hide", self.$head).attr("title", self.i18n.hide);
 	},
 
@@ -304,7 +304,7 @@ hop.inherit(hop.window, hop.widget, {
 
 		$layer = self.layer.$node;
 		$layer.toggleClass(classPrefix+"full-screen", fullScreen);
-		$("."+classPrefix+"head-button-full-screen", self.layer.node).attr("title", fullScreen ? self.i18n.fullScreenOff : self.i18n.fullScreen);
+		$("."+classPrefix+"head-button-full-screen", self.layer.node).attr("title", fullScreen ? self.i18n.restore : self.i18n.fullScreen);
 		if (self.draggable)
 			$layer.draggable("option", "disabled", fullScreen);
 		if (self.resizable)
