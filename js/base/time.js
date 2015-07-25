@@ -43,7 +43,7 @@ var monthNames = [
 		"Thu",
 		"Fri",
 		"Sat"
-	]
+	],
 	monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
 	reMonthNames = monthNames.join("|"),
 	reMonthNamesShort = monthNamesShort.join("|"),

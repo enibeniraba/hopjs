@@ -242,8 +242,8 @@ hop.datepickerTitleAnimations.slide = {
 	{
 		var result = {},
 			translateSuffix = (horizontal ? "X" : "Y"),
-			property = (horizontal ? "left" : "top"),
-			easing = hop.css.getTransitionEasing(easing);
+			property = (horizontal ? "left" : "top");
+		easing = hop.css.getTransitionEasing(easing);
 		if (easing !== null)
 			easing = " "+easing;
 		if (animationInfo.transformProperty)
@@ -467,7 +467,7 @@ hop.datepickerPickerAnimations.scale = {
 				position.left-offset.left+elementOffset.left,
 				$element.outerHeight(),
 				$element.outerWidth()
-			)
+			);
 			hideScaleY = $element.outerHeight()/$prevNode.outerHeight();
 			hideScaleX = $element.outerWidth()/$prevNode.outerWidth();
 
@@ -492,7 +492,7 @@ hop.datepickerPickerAnimations.scale = {
 				position.left-offset.left+elementOffset.left,
 				$element.outerHeight(),
 				$element.outerWidth()
-			)
+			);
 			$nextNode.css(showPosition);
 			showScaleY = $element.outerHeight()/$nextNode.outerHeight();
 			showScaleX = $element.outerWidth()/$nextNode.outerWidth();
@@ -558,8 +558,8 @@ hop.datepickerPickerAnimations.scale = {
 
 	transitionProperties: function(offsetY, offsetX, scaleY, scaleX, opacity, duration, easing, animationInfo)
 	{
-		var result = {},
-			easing = hop.css.getTransitionEasing(easing);
+		var result = {};
+		easing = hop.css.getTransitionEasing(easing);
 		if (easing !== null)
 			easing = " "+easing;
 		result = {
