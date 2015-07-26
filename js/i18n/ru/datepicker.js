@@ -55,9 +55,8 @@ hop.datepicker.i18n["ru"] = {
 	weekShort: "Н",
 	today: "Сегодня",
 	currentTime: "Текущее время",
-	apply: "Применить",
-	clean: "Очистить",
-	hide: "Скрыть"
+	done: "Готово",
+	clean: "Очистить"
 };
 
 })(hopjs);

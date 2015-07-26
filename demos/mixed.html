@@ -152,9 +152,9 @@ $(function()
 				checkable: true,
 				onCheck: function(item)
 				{
-					if (!hop.def(item.w))
+					if (!hop.def(item.w1))
 					{
-						item.w = new hop.window({
+						item.w1 = new hop.window({
 							title: "Title",
 							content: "Content",
 							height: 240,
@@ -185,9 +185,9 @@ $(function()
 						});
 					}
 					if (item.checked)
-						item.w.show();
+						item.w1.show();
 					else
-						item.w.hide();
+						item.w1.hide();
 				}
 			}
 		]
@@ -251,7 +251,7 @@ $(function()
 			},
 			{
 				text: "Menu",
-				icon: "../themes/default/images/datepickerapply.png",
+				icon: "../themes/default/images/datepickerdone.png",
 				menu: {
 					items: [
 						{
@@ -329,7 +329,7 @@ $(function()
 						},
 						{
 							text: "On<br />Two<br />Three",
-							icon: "../themes/default/images/datepickerapply.png",
+							icon: "../themes/default/images/datepickerdone.png",
 							menu: {
 								items: [
 									{text: "One"},
@@ -435,18 +435,17 @@ $(function()
 
 	dp1 = new hop.datepicker({
 		locale: "ru",
-		input: $("#dp1")[0],
-		button: $("#dp1-button")[0],
+		maxDatescale: 4,
 		showTime: true,
 		timeDetail: 1,
 		timeFormat: 12,
 		todayButton: true,
-		applyButton: true,
+		doneButton: true,
 		cleanButton: true,
-		hideButton: true,
-		maxDatescale: 4,
 		titleAnimations: slideFadeAnimations,
-		pickerAnimations: slideScaleAnimations
+		pickerAnimations: slideScaleAnimations,
+		input: $("#dp1")[0],
+		button: $("#dp1-button")[0]
 	});
 
 	mb1 = new hop.menuButton({

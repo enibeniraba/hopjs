@@ -387,14 +387,9 @@
 	background-image: url(../images/datepickertoday.png);
 }
 
-.hop-datepicker .hop-datepicker-button-apply
+.hop-datepicker .hop-datepicker-button-done
 {
-	background-image: url(../images/datepickerapply.png);
-}
-
-.hop-datepicker .hop-datepicker-button-hide
-{
-	background-image: url(../images/datepickerhide.png);
+	background-image: url(../images/datepickerdone.png);
 }
 
 .hop-datepicker .hop-datepicker-button-clean

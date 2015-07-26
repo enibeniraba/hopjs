@@ -60,10 +60,10 @@ $(function()
 	});
 
 	dp2 = new hop.datepicker({
-		input: $("#dp2")[0],
-		button: $("#button2")[0],
+		picked: true,
 		otherMonths: false,
-		picked: true
+		input: $("#dp2")[0],
+		button: $("#button2")[0]
 	});
 
 	dp3 = new hop.datepicker({
@@ -75,38 +75,36 @@ $(function()
 	});
 
 	dp4 = new hop.datepicker({
-		input: $("#dp4")[0],
-		button: $("#button4")[0],
-		attachToButton: false,
 		date: "2000-01-01 12:00:00",
 		picked: false,
 		maxDateScale: 4,
 		showTime: true,
 		todayButton: true,
-		applyButton: true,
+		doneButton: true,
 		cleanButton: true,
-		hideButton: true,
-		applyOnDayPick: false,
-		hideOnCleanClick: false,
 		titleAnimations: slideFadeAnimations,
-		pickerAnimations: slideScaleAnimations
+		pickerAnimations: slideScaleAnimations,
+		input: $("#dp4")[0],
+		button: $("#button4")[0],
+		attachToButton: false,
+		doneOnDayPick: false,
+		hideOnCleanClick: false
 	});
 
 	dp5 = new hop.datepicker({
 		locale: "ru",
-		input: $("#dp5")[0],
-		button: $("#button5")[0],
-		attachToButton: false,
 		showWeekNumber: true,
 		maxDateScale: 4,
 		showTime: true,
 		timeDetail: 1,
 		todayButton: true,
-		applyButton: true,
+		doneButton: true,
 		cleanButton: true,
-		hideButton: true,
 		titleAnimations: slideFadeAnimations,
-		pickerAnimations: slideAnimations
+		pickerAnimations: slideAnimations,
+		input: $("#dp5")[0],
+		button: $("#button5")[0],
+		attachToButton: false
 	});
 
 	$("#select5").on("change", function(event)
@@ -132,19 +130,19 @@ $(function()
 
 	dp7 = new hop.datepicker({
 		container: $("#dp7")[0],
+		date: "2000-01-01 12:00:00",
+		minDate: "1990-01-01",
+		maxDate: "2020-06-15",
+		picked: false,
+		maxDateScale: 4,
 		todayButton: true,
+		titleAnimations: fadeAnimations,
+		pickerAnimations: fadeAnimations,
 		onDateChange: function(self)
 		{
 			if (self.picked)
 				$("#label7").html(self.formatDate());
 		},
-		maxDateScale: 4,
-		titleAnimations: fadeAnimations,
-		pickerAnimations: fadeAnimations,
-		date: "2000-01-01 12:00:00",
-		minDate: "1990-01-01",
-		maxDate: "2020-06-15",
-		picked: false,
 		onDayPickerCreateDay: function(self, eventData, data)
 		{
 			if (eventData.year == 2000 && eventData.month == 0 && eventData.day > 9 && eventData.day < 21)

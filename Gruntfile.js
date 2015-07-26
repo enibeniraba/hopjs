@@ -74,7 +74,7 @@ module.exports = function(grunt)
 				files: [
 					{
 						src: [
-							"demo/**",
+							"demos/**",
 							"external/**",
 							"themes/**",
 							"js/i18n/**",

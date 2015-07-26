@@ -30,54 +30,51 @@ hop.inherit(hop.datepicker, hop.widget, {
 			locale: null,
 			className: null,
 			classPrefix: "hop-",
-			otherMonths: true,
-			firstWeekDay: null,
-			maxDateScale: 2,
-			showWeekNumber: false,
-			showTime: false,
-			timeDetail: 2,
-			timeFormat: null,
-			titleAnimations: {},
-			pickerAnimations: {},
-			todayButton: false,
-			applyButton: false,
-			cleanButton: false,
-			hideButton: false,
+			container: null,
+			layerParams: null,
 			date: null,
-			dateFormat: null,
-			datetimeFormat: null,
-			titleFormat: "%m% %y%",
 			minDate: null,
 			maxDate: null,
 			minDatePicker: false,
 			maxDatePicker: false,
 			picked: true,
-			timePickerHolding: true,
+			titleFormat: "%m% %y%",
+			otherMonths: true,
+			firstWeekDay: null,
+			showWeekNumber: false,
+			maxDateScale: 2,
+			showTime: false,
+			timeDetail: 2,
+			timeFormat: null,
 			timePickerTimeout: 400,
 			timePickerInterval: 50,
-			container: null,
-			layerParams: null,
-			applyOnDayPick: true,
-			hideOnApply: true,
-			hideOnDocumentMousedown: true,
-			updatePositionOnWindowResize: true,
-			resetOnHidePickedOnly: false,
+			todayButton: false,
+			doneButton: false,
+			cleanButton: false,
+			titleAnimations: {},
+			pickerAnimations: {},
+			dateFormat: null,
+			datetimeFormat: null,
 			input: null,
 			inputButton: true,
 			attachToInput: true,
 			updateInputOnChange: true,
-			updateInputOnApply: true,
+			updateInputOnDone: true,
 			unpickOnInputClean: true,
 			unpickOnBadInput: true,
 			hideOnInputMousedown: false,
-			hideOnCleanClick: true,
-			cleanOnHideClick: false,
 			button: null,
 			attachToButton: true,
 			showOnButtonMousedown: false,
 			hideOnButtonMousedown: false,
 			showOnButtonClick: true,
-			hideOnButtonClick: true
+			hideOnButtonClick: true,
+			hideOnDone: true,
+			hideOnDocumentMousedown: true,
+			updatePositionOnWindowResize: true,
+			resetOnHidePickedOnly: false,
+			doneOnDayPick: true,
+			hideOnCleanClick: true
 		};
 	},
 
@@ -88,7 +85,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			"show",
 			"hide",
 			"dateChange",
-			"apply",
+			"done",
 			"dayPickerCreateDay",
 			"monthPickerCreateMonth",
 			"yearPickerCreateYear"
@@ -164,9 +161,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			weekShort: "W",
 			today: "Today",
 			currentTime: "Current time",
-			apply: "Apply",
-			clean: "Clean",
-			hide: "Hide"
+			done: "Done",
+			clean: "Clean"
 		};
 	},
 
@@ -217,12 +213,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.setTimeDetail(self.timeDetail);
 		self.setTimeFormat(self.timeFormat);
 		self.setTodayButton(self.todayButton);
-		self.setApplyButton(self.applyButton);
+		self.setDoneButton(self.doneButton);
 		self.setCleanButton(self.cleanButton);
-		self.setHideButton(self.hideButton);
 		self.updateHtml();
-		if (self.picked && self.input)
-			self.updateInput();
+		self.updateInput();
 	},
 
 	setLocale: function(locale)
@@ -253,9 +247,94 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this, dot_class_prefix = "."+self.classPrefix+"datepicker-";
 		$(dot_class_prefix+"button-current-time", self.node).attr("title", self.i18n.currentTime);
 		$(dot_class_prefix+"button-today", self.node).attr("title", self.i18n.today);
-		$(dot_class_prefix+"button-apply", self.node).attr("title", self.i18n.apply);
+		$(dot_class_prefix+"button-done", self.node).attr("title", self.i18n.done);
 		$(dot_class_prefix+"button-clean", self.node).attr("title", self.i18n.clean);
-		$(dot_class_prefix+"button-hide", self.node).attr("title", self.i18n.hide);
+	},
+
+	setDate: function(date, pick)
+	{
+		var self = this;
+		date = self.validateDate(date);
+		if (!self.date)
+			self.date = new Date();
+		if (self.minDate !== null && date.getTime() < self.minDate.getTime()
+			|| self.maxDate !== null && date.getTime() > self.maxDate.getTime())
+		{
+			return;
+		}
+		self.date.setTime(date.getTime());
+		if (pick)
+			self.picked = true;
+		if (self.node && self.picked)
+		{
+			self.dateChange();
+			self.updateHtml();
+		}
+	},
+
+	validateDate: function(date)
+	{
+		var formats, i, parsedDate;
+		if (typeof date === "string")
+		{
+			formats = ["", " H", " H:i", " H:i:s"];
+			for (i in formats)
+			{
+				parsedDate = hop.time.parse(date, "Y-m-d"+formats[i]);
+				if (parsedDate)
+					break;
+			}
+			if (parsedDate)
+				date = parsedDate;
+		}
+		if (!(date instanceof Date))
+			throw new Error("Invalid date: "+date);
+
+		return date;
+	},
+
+	setMinDate: function(date)
+	{
+		var self = this, prevTime, picked = self.picked;
+		if (date === null)
+			self.minDate = date;
+		else
+		{
+			date = self.validateDate(date);
+			date.setHours(0);
+			date.setMinutes(0);
+			date.setSeconds(0);
+			if (self.maxDate !== null && date > self.maxDate)
+				return;
+
+			self.minDate = new Date();
+			self.minDate.setTime(date.getTime());
+			if (self.date !== null && self.date.getTime() < self.minDate.getTime())
+				self.setDay(self.minDate.getFullYear(), self.minDate.getMonth(), self.minDate.getDate());
+		}
+		self.updateHtml();
+	},
+
+	setMaxDate: function(date)
+	{
+		var self = this, prevTime, picked = self.picked;
+		if (date === null)
+			self.maxDate = date;
+		else
+		{
+			date = self.validateDate(date);
+			date.setHours(23);
+			date.setMinutes(59);
+			date.setSeconds(59);
+			if (self.minDate !== null && date < self.minDate)
+				return;
+
+			self.maxDate = new Date();
+			self.maxDate.setTime(date.getTime());
+			if (self.date !== null && self.date.getTime() > self.maxDate.getTime())
+				self.setDay(self.maxDate.getFullYear(), self.maxDate.getMonth(), self.maxDate.getDate());
+		}
+		self.updateHtml();
 	},
 
 	setOtherMonths: function(value)
@@ -343,12 +422,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 		}
 	},
 
-	setApplyButton: function(value)
+	setDoneButton: function(value)
 	{
-		this.applyButton = !!value;
+		this.doneButton = !!value;
 		if (this.node)
 		{
-			$("."+this.classPrefix+"datepicker-button-apply", this.node).css("display", value ? "block" : "none");
+			$("."+this.classPrefix+"datepicker-button-done", this.node).css("display", value ? "block" : "none");
 			this.checkButtons();
 		}
 	},
@@ -363,16 +442,6 @@ hop.inherit(hop.datepicker, hop.widget, {
 		}
 	},
 
-	setHideButton: function(value)
-	{
-		this.hideButton = !!value;
-		if (this.node)
-		{
-			$("."+this.classPrefix+"datepicker-button-hide", this.node).css("display", value ? "block" : "none");
-			this.checkButtons();
-		}
-	},
-
 	checkButtons: function()
 	{
 		$("."+this.classPrefix+"datepicker-buttons-wrapper", this.node).css("display", this.hasButtons() ? "block" : "none");
@@ -380,93 +449,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	hasButtons: function()
 	{
-		return (this.todayButton || this.applyButton || this.cleanButton || this.hideButton);
-	},
-
-	setDate: function(date, pick)
-	{
-		var self = this;
-		date = self.validateDate(date);
-		if (!self.date)
-			self.date = new Date();
-		if (self.minDate !== null && date.getTime() < self.minDate.getTime()
-			|| self.maxDate !== null && date.getTime() > self.maxDate.getTime())
-		{
-			return;
-		}
-		self.date.setTime(date.getTime());
-		if (pick)
-			self.picked = true;
-		if (self.node && self.picked)
-		{
-			self.dateChange();
-			self.updateHtml();
-		}
-	},
-
-	validateDate: function(date)
-	{
-		var formats, i, parsedDate;
-		if (typeof date === "string")
-		{
-			formats = ["", " H", " H:i", " H:i:s"];
-			for (i in formats)
-			{
-				parsedDate = hop.time.parse(date, "Y-m-d"+formats[i]);
-				if (parsedDate)
-					break;
-			}
-			if (parsedDate)
-				date = parsedDate;
-		}
-		if (!(date instanceof Date))
-			throw new Error("Invalid date: "+date);
-
-		return date;
-	},
-
-	setMinDate: function(date)
-	{
-		var self = this, prevTime, picked = self.picked;
-		if (date === null)
-			self.minDate = date;
-		else
-		{
-			date = self.validateDate(date);
-			date.setHours(0);
-			date.setMinutes(0);
-			date.setSeconds(0);
-			if (self.maxDate !== null && date > self.maxDate)
-				return;
-
-			self.minDate = new Date();
-			self.minDate.setTime(date.getTime());
-			if (self.date !== null && self.date.getTime() < self.minDate.getTime())
-				self.setDay(self.minDate.getFullYear(), self.minDate.getMonth(), self.minDate.getDate());
-		}
-		self.updateHtml();
-	},
-
-	setMaxDate: function(date)
-	{
-		var self = this, prevTime, picked = self.picked;
-		if (date === null)
-			self.maxDate = date;
-		else
-		{
-			date = self.validateDate(date);
-			date.setHours(23);
-			date.setMinutes(59);
-			date.setSeconds(59);
-			if (self.minDate !== null && date < self.minDate)
-				return;
-
-			self.maxDate = new Date();
-			self.maxDate.setTime(date.getTime());
-			if (self.date !== null && self.date.getTime() > self.maxDate.getTime())
-				self.setDay(self.maxDate.getFullYear(), self.maxDate.getMonth(), self.maxDate.getDate());
-		}
-		self.updateHtml();
+		return (this.todayButton || this.doneButton || this.cleanButton);
 	},
 
 	setInput: function(input)
@@ -696,9 +679,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 				<div class="%c%button %c%button-today" title="'+hop.html.quoteValue(self.i18n.today)+'"></div>\
 			</div>\
 			<div class="%c%buttons-right">\
-				<div class="%c%button %c%button-apply" title="'+hop.html.quoteValue(self.i18n.apply)+'"></div>\
 				<div class="%c%button %c%button-clean" title="'+hop.html.quoteValue(self.i18n.clean)+'"></div>\
-				<div class="%c%button %c%button-hide" title="'+hop.html.quoteValue(self.i18n.hide)+'"></div>\
+				<div class="%c%button %c%button-done" title="'+hop.html.quoteValue(self.i18n.done)+'"></div>\
 			</div>\
 		</div>\
 	</div>\
@@ -763,19 +745,14 @@ hop.inherit(hop.datepicker, hop.widget, {
 			self.onTodayClick(event);
 		});
 
-		$(dotClassPrefix+"button-apply", node).on("click", function(event)
+		$(dotClassPrefix+"button-done", node).on("click", function(event)
 		{
-			self.onApplyClick(event);
+			self.onDoneClick(event);
 		});
 
 		$(dotClassPrefix+"button-clean", node).on("click", function(event)
 		{
 			self.onCleanClick(event);
-		});
-
-		$(dotClassPrefix+"button-hide", node).on("click", function(event)
-		{
-			self.onHideClick(event);
 		});
 
 		if (layer)
@@ -787,7 +764,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 			layer.on("hide", function(event)
 			{
-				self.onLayeHide();
+				self.onLayerHide();
 			});
 
 			$(self.node).on("mousedown", function(event)
@@ -913,9 +890,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 		this.today();
 	},
 
-	onApplyClick: function(event)
+	onDoneClick: function(event)
 	{
-		this.apply();
+		this.done();
 	},
 
 	onCleanClick: function(event)
@@ -923,13 +900,6 @@ hop.inherit(hop.datepicker, hop.widget, {
 		this.cleanInput();
 		if (this.hideOnCleanClick)
 			this.hide();
-	},
-
-	onHideClick: function(event)
-	{
-		if (this.cleanOnHideClick && this.input)
-			this.cleanInput();
-		this.hide();
 	},
 
 	onLayerShow: function()
@@ -942,7 +912,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		this.trigger("show");
 	},
 
-	onLayeHide: function()
+	onLayerHide: function()
 	{
 		this.finishAnimations();
 		if (this.picked || !this.resetOnHidePickedOnly)
@@ -1005,19 +975,19 @@ hop.inherit(hop.datepicker, hop.widget, {
 			this.layer.toggle(showParams, hideParams);
 	},
 
-	apply: function()
+	done: function()
 	{
 		var self = this;
-		if (self.updateInputOnApply && self.input)
+		if (self.updateInputOnDone)
 			self.updateInput();
-		if (self.hideOnApply && self.layer)
+		if (self.hideOnDone && self.layer)
 			self.hide();
-		self.onApply();
+		self.onDone();
 	},
 
-	onApply: function()
+	onDone: function()
 	{
-		this.trigger("apply");
+		this.trigger("done");
 	},
 
 	setDay: function(year, month, day, pick)
@@ -1448,8 +1418,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 	{
 		var data = event.data;
 		this.setDay(data.year, data.month, data.day, true);
-		if (this.applyOnDayPick)
-			this.apply();
+		if (this.doneOnDayPick)
+			this.done();
 	},
 
 	pickDate: function()
@@ -1912,24 +1882,13 @@ hop.inherit(hop.datepicker, hop.widget, {
 		node.innerHTML = hop.string.replace("%c%", classPrefix+"time-picker-", html);
 		self.$body.append(node);
 
-		$elem = $("."+classPrefix+"time-picker-hours ."+classPrefix+"time-picker-plus", node);
-		$elem.on("mousedown", function(event)
+		$elem = $("."+classPrefix+"time-picker-hours ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
 		{
 			self.onTimePickerHoursPlusMousedown(event);
 		});
-		$elem.on("click", function(event)
-		{
-			self.onTimePickerHoursPlusClick(event);
-		});
-
-		$elem = $("."+classPrefix+"time-picker-hours ."+classPrefix+"time-picker-minus", node);
-		$elem.on("mousedown", function(event)
+		$("."+classPrefix+"time-picker-hours ."+classPrefix+"time-picker-minus", node).on("mousedown", function(event)
 		{
 			self.onTimePickerHoursMinusMousedown(event);
-		});
-		$elem.on("click", function(event)
-		{
-			self.onTimePickerHoursMinusClick(event);
 		});
 
 		$elem = $("."+classPrefix+"time-picker-hours input", node);
@@ -1947,24 +1906,13 @@ hop.inherit(hop.datepicker, hop.widget, {
 		});
 		if (self.timeDetail > 0)
 		{
-			$elem = $("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-plus", node);
-			$elem.on("mousedown", function(event)
+			$("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
 			{
 				self.onTimePickerMinutesPlusMousedown(event);
 			});
-			$elem.on("click", function(event)
-			{
-				self.onTimePickerMinutesPlusClick(event);
-			});
-
-			$elem = $("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-minus", node);
-			$elem.on("mousedown", function(event)
+			$("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-minus", node).on("mousedown", function(event)
 			{
 				self.onTimePickerMinutesMinusMousedown(event);
-			});
-			$elem.on("click", function(event)
-			{
-				self.onTimePickerMinutesMinusClick(event);
 			});
 
 			$elem = $("."+classPrefix+"time-picker-minutes input", node);
@@ -1983,24 +1931,13 @@ hop.inherit(hop.datepicker, hop.widget, {
 		}
 		if (self.timeDetail > 1)
 		{
-			$elem = $("."+classPrefix+"time-picker-seconds ."+classPrefix+"time-picker-plus", node);
-			$elem.on("mousedown", function(event)
+			$("."+classPrefix+"time-picker-seconds ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
 			{
 				self.onTimePickerSecondsPlusMousedown(event);
 			});
-			$elem.on("click", function(event)
-			{
-				self.onTimePickerSecondsPlusClick(event);
-			});
-
-			$elem = $("."+classPrefix+"time-picker-seconds ."+classPrefix+"time-picker-minus", node);
-			$elem.on("mousedown", function(event)
+			$("."+classPrefix+"time-picker-seconds ."+classPrefix+"time-picker-minus", node).on("mousedown", function(event)
 			{
 				self.onTimePickerSecondsMinusMousedown(event);
-			});
-			$elem.on("click", function(event)
-			{
-				self.onTimePickerSecondsMinusClick(event);
 			});
 
 			$elem = $("."+classPrefix+"time-picker-seconds input", node);
@@ -2074,19 +2011,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
-		if (self.timePickerHolding)
+		self.runTimePickerTimer(function()
 		{
-			self.runTimePickerTimer(function()
-			{
-				self.timePickerHoursPlus();
-			});
-		}
-	},
-
-	onTimePickerHoursPlusClick: function(event)
-	{
-		if (!this.timePickerHolding)
-			this.timePickerHoursPlus();
+			self.timePickerHoursPlus();
+		});
 	},
 
 	timePickerHoursPlus: function()
@@ -2125,19 +2053,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
-		if (self.timePickerHolding)
+		self.runTimePickerTimer(function()
 		{
-			self.runTimePickerTimer(function()
-			{
-				self.timePickerHoursMinus();
-			});
-		}
-	},
-
-	onTimePickerHoursMinusClick: function(event)
-	{
-		if (!this.timePickerHolding)
-			this.timePickerHoursMinus();
+			self.timePickerHoursMinus();
+		});
 	},
 
 	timePickerHoursMinus: function()
@@ -2201,19 +2120,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
-		if (self.timePickerHolding)
+		self.runTimePickerTimer(function()
 		{
-			self.runTimePickerTimer(function()
-			{
-				self.timePickerMinutesPlus();
-			});
-		}
-	},
-
-	onTimePickerMinutesPlusClick: function(event)
-	{
-		if (!this.timePickerHolding)
-			this.timePickerMinutesPlus();
+			self.timePickerMinutesPlus();
+		});
 	},
 
 	timePickerMinutesPlus: function()
@@ -2242,19 +2152,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
-		if (self.timePickerHolding)
+		self.runTimePickerTimer(function()
 		{
-			self.runTimePickerTimer(function()
-			{
-				self.timePickerMinutesMinus();
-			});
-		}
-	},
-
-	onTimePickerMinutesMinusClick: function(event)
-	{
-		if (!this.timePickerHolding)
-			this.timePickerMinutesMinus();
+			self.timePickerMinutesMinus();
+		});
 	},
 
 	timePickerMinutesMinus: function()
@@ -2313,19 +2214,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
-		if (self.timePickerHolding)
+		self.runTimePickerTimer(function()
 		{
-			self.runTimePickerTimer(function()
-			{
-				self.timePickerSecondsPlus();
-			});
-		}
-	},
-
-	onTimePickerSecondsPlusClick: function(event)
-	{
-		if (!this.timePickerHolding)
-			this.timePickerSecondsPlus();
+			self.timePickerSecondsPlus();
+		});
 	},
 
 	timePickerSecondsPlus: function()
@@ -2354,19 +2246,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		document.activeElement.blur();
 		event.preventDefault();
-		if (self.timePickerHolding)
+		self.runTimePickerTimer(function()
 		{
-			self.runTimePickerTimer(function()
-			{
-				self.timePickerSecondsMinus();
-			});
-		}
-	},
-
-	onTimePickerSecondsMinusClick: function(event)
-	{
-		if (!this.timePickerHolding)
-			this.timePickerSecondsMinus();
+			self.timePickerSecondsMinus();
+		});
 	},
 
 	timePickerSecondsMinus: function()

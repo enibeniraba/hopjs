@@ -1,8 +1,8 @@
 # hopjs - JavaScript UI library
 
-## Demo
+## Demos
 
-Go to http://enibeniraba.ru/hopjs/demo for demo.
+Go to http://enibeniraba.ru/hopjs/demos for demos.
 
 ## Building
 

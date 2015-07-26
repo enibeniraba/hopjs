@@ -448,7 +448,6 @@ hop.datepickerPickerAnimations.scale = {
 				i = 11;
 			$element = $(dotClassPrefix+"years-year-count-"+i, $prevNode);
 		}
-		console.log(i);
 		t = -(Math.floor(i/4)*height);
 		l = -(Math.round(i%4)*width);
 		h = 3*height;

@@ -82,7 +82,7 @@
 
 .hop-window.hop-window-full-screen .hop-window-head-button-full-screen
 {
-	background-image: url(../images/windowfullscreenoff.png);
+	background-image: url(../images/windowrestore.png);
 }
 
 .hop-window .hop-window-body-wrapper
