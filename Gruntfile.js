@@ -27,10 +27,10 @@ module.exports = function(grunt)
 		});
 	}
 
-	i18nConcatFiles = [];
+	i18nConcatFilesMap = [];
 	for (i in locales)
 	{
-		i18nConcatFiles.push({
+		i18nConcatFilesMap.push({
 			src: [
 				"js/i18n/"+locales[i]+"/*.js"
 			],
@@ -70,7 +70,7 @@ module.exports = function(grunt)
 				dest: buildPath+"/js/hop.js"
 			},
 			i18n: {
-				files: i18nConcatFiles
+				files: i18nConcatFilesMap
 			},
 			css: {
 				src: [
