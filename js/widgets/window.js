@@ -666,29 +666,29 @@ hop.inherit(hop.window, hop.widget, {
 			node = document.createElement("div"),
 			html, layer, layerParams = {};
 		html = '\
-<div class="%c%head-wrapper">\
-	<div class="%c%head">\
-		<div class="%c%title"></div>\
-		<div class="%c%head-buttons">\
-			<a class="%c%head-button %c%head-button-full-screen" title="'+hop.html.quoteValue(self.i18n.fullScreen)+'"></a>\
-			<a class="%c%head-button %c%head-button-hide" title="'+hop.html.quoteValue(self.i18n.hide)+'"></a>\
+<div class="{c}head-wrapper">\
+	<div class="{c}head">\
+		<div class="{c}title"></div>\
+		<div class="{c}head-buttons">\
+			<a class="{c}head-button {c}head-button-full-screen" title="'+hop.html.quoteValue(self.i18n.fullScreen)+'"></a>\
+			<a class="{c}head-button {c}head-button-hide" title="'+hop.html.quoteValue(self.i18n.hide)+'"></a>\
 		</div>\
 	</div>\
 </div>\
-<div class="%c%body-wrapper">\
-	<div class="%c%top"></div>\
-	<div class="%c%middle">\
-		<div class="%c%left"></div>\
-		<div class="%c%inner-middle">\
-			<div class="%c%inner-top"></div>\
-			<div class="%c%body"></div>\
-			<div class="%c%inner-bottom"></div>\
+<div class="{c}body-wrapper">\
+	<div class="{c}top"></div>\
+	<div class="{c}middle">\
+		<div class="{c}left"></div>\
+		<div class="{c}inner-middle">\
+			<div class="{c}inner-top"></div>\
+			<div class="{c}body"></div>\
+			<div class="{c}inner-bottom"></div>\
 		</div>\
-		<div class="%c%right"></div>\
+		<div class="{c}right"></div>\
 	</div>\
-	<div class="%c%bottom"></div>\
+	<div class="{c}bottom"></div>\
 </div>';
-		node.innerHTML = hop.string.replace("%c%", classPrefix, html);
+		node.innerHTML = hop.string.replace("{c}", classPrefix, html);
 		node.className = self.className;
 		node.style.display = "none";
 		document.body.appendChild(node);

@@ -113,7 +113,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			dateFormat: "m/d/Y",
 			timeFormat: "g:i:s a",
 			timeFormatShort: "g:i a",
-			dateTimeFormat: "{1}, {0}",
+			dateTimeFormat: "{d}, {t}",
 			firstWeekDay: 0,
 			monthNames: [
 				"January",
@@ -1078,8 +1078,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 	buildDateTimeFormat: function()
 	{
 		var result = this.getDateTimeFormat();
-		result = hop.string.replace("{1}", this.getDateFormat(), result);
-		return hop.string.replace("{0}", this.getCurrentTimeFormat(), result);
+		result = hop.string.replace("{d}", this.getDateFormat(), result);
+		return hop.string.replace("{t}", this.getCurrentTimeFormat(), result);
 	},
 
 	getDateTimeFormat: function()

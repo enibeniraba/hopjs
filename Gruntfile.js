@@ -1,20 +1,22 @@
 module.exports = function(grunt)
 {
 	var pkg = grunt.file.readJSON("package.json"),
+		fs = require("fs"),
 		buildPath = "build/hopjs-"+pkg.version,
 		minFiles = [
-			'hop',
-			'hopbase',
-			'widgets/datepicker',
-			'widgets/datepickeranimations',
-			'widgets/dropdownmenu',
-			'widgets/layer',
-			'widgets/menu',
-			'widgets/menubutton',
-			'widgets/tabs',
-			'widgets/tooltip',
-			'widgets/window'
+			"hop",
+			"base",
+			"widgets/datepicker",
+			"widgets/datepickeranimations",
+			"widgets/dropdownmenu",
+			"widgets/layer",
+			"widgets/menu",
+			"widgets/menubutton",
+			"widgets/tabs",
+			"widgets/tooltip",
+			"widgets/window"
 		],
+		locales = fs.readdirSync("js/i18n"),
 		minFilesMap = [], i;
 
 	for (i in minFiles)
@@ -22,6 +24,17 @@ module.exports = function(grunt)
 		minFilesMap.push({
 			src: buildPath+'/js/'+minFiles[i]+'.js',
 			dest: buildPath+'/js/min/'+minFiles[i]+'.min.js',
+		});
+	}
+
+	i18nConcatFiles = [];
+	for (i in locales)
+	{
+		i18nConcatFiles.push({
+			src: [
+				"js/i18n/"+locales[i]+"/*.js"
+			],
+			dest: buildPath+"/js/i18n/"+locales[i]+".js"
 		});
 	}
 
@@ -47,20 +60,17 @@ module.exports = function(grunt)
 					"js/base/widget.js",
 					"js/base/outro.js"
 				],
-				dest: buildPath+"/js/hopbase.js"
+				dest: buildPath+"/js/base.js"
 			},
 			all: {
 				src: [
-					buildPath+"/js/hopbase.js",
+					buildPath+"/js/base.js",
 					"js/widgets/*.js"
 				],
 				dest: buildPath+"/js/hop.js"
 			},
-			ru: {
-				src: [
-					"js/i18n/ru/*.js"
-				],
-				dest: buildPath+"/js/i18n/ru/hop_ru.js"
+			i18n: {
+				files: i18nConcatFiles
 			},
 			css: {
 				src: [
