@@ -84,61 +84,44 @@ $(function()
 							}
 						},
 						{
-							text: "Time detail",
-							menu: {
-								items: [
-									{
-										text: "Hours (0)",
-										checkable: true,
-										radioGroup: "timeDetail",
-										onCheck: function(item)
-										{
-											dp1.setTimeDetail(0);
-										}
-									},
-									{
-										text: "Minutes (1)",
-										checkable: true,
-										checked: true,
-										radioGroup: "timeDetail",
-										onCheck: function(item)
-										{
-											dp1.setTimeDetail(1);
-										}
-									},
-									{
-										text: "Seconds (2)",
-										checkable: true,
-										radioGroup: "timeDetail",
-										onCheck: function(item)
-										{
-											dp1.setTimeDetail(2);
-										}
-									}
-								]
+							text: "Short time format",
+							checkable: true,
+							checked: false,
+							onCheck: function(item)
+							{
+								dp1.setShortTimeFormat(item.checked);
 							}
 						},
 						{
-							text: "Time format",
+							text: "12 hour format",
 							menu: {
 								items: [
 									{
-										text: "12",
+										text: "Default",
 										checkable: true,
 										checked: true,
 										radioGroup: "timeFormat",
 										onCheck: function(item)
 										{
-											dp1.setTimeFormat(12);
+											dp1.setTime12HourFormat(null);
 										}
 									},
 									{
-										text: "24",
+										text: "12 hour",
 										checkable: true,
 										radioGroup: "timeFormat",
 										onCheck: function(item)
 										{
-											dp1.setTimeFormat(24);
+											dp1.setTime12HourFormat(true);
+										}
+									},
+									{
+										text: "24 hour",
+										checkable: true,
+										radioGroup: "timeFormat",
+										onCheck: function(item)
+										{
+											dp1.setTime12HourFormat(false);
 										}
 									}
 								]

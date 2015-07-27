@@ -418,6 +418,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 	setTime12HourFormat: function(value)
 	{
 		var self = this;
+		if (value !== null)
+			value = !!value;
 		self.time12HourFormat = value;
 		if (self.node)
 		{
