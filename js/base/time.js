@@ -349,6 +349,30 @@ hop.time = {
 		return result;
 	},
 
+	formatIs12Hour: function(format)
+	{
+		var i, chr, prevChr = null;
+		for (i = 0; i < format.length; i++)
+		{
+			chr = format.charAt(i);
+			if (prevChr === "\\")
+			{
+				prevChr = null;
+				continue;
+			}
+			else
+			{
+				if (chr === "G" || chr === "H")
+					return false;
+
+				if (chr === "g" || chr === "h")
+					return true;
+			}
+			prevChr = chr;
+		}
+		return null;
+	},
+
 	yearIsLeap: function(year)
 	{
 		return (year%4 === 0 && year%100 !== 0 || year%400 === 0);

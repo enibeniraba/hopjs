@@ -3,7 +3,9 @@
 
 hop.datepicker.i18n["ru"] = {
 	dateFormat: "d.m.Y",
-	timeFormat: 24,
+	timeFormat: "G:i:s",
+	timeFormatShort: "G:i",
+	dateTimeFormat: "{1}, {0}",
 	firstWeekDay: 1,
 	monthNames: [
 		"Январь",

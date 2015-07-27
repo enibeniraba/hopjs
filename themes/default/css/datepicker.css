@@ -228,14 +228,9 @@
 	margin: 51px 0 0 66px;
 }
 
-.hop-datepicker-time-picker-1 .hop-datepicker-time-picker-inner
+.hop-datepicker-time-picker-short .hop-datepicker-time-picker-inner
 {
 	margin-left: 83px;
-}
-
-.hop-datepicker-time-picker-0 .hop-datepicker-time-picker-inner
-{
-	margin-left: 100px;
 }
 
 .hop-datepicker-time-picker-hours,
@@ -471,12 +466,7 @@
 	margin: 51px 0 0 86px;
 }
 
-.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-time-picker-1 .hop-datepicker-time-picker-inner
+.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-time-picker-short .hop-datepicker-time-picker-inner
 {
 	margin-left: 103px;
-}
-
-.hop-datepicker.hop-datepicker-show-week-number .hop-datepicker-time-picker-0 .hop-datepicker-time-picker-inner
-{
-	margin-left: 120px;
 }

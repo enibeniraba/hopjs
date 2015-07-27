@@ -38,14 +38,14 @@ hop.inherit(hop.datepicker, hop.widget, {
 			minDatePicker: false,
 			maxDatePicker: false,
 			picked: true,
-			titleFormat: "%m% %y%",
+			titleFormat: "{m} {y}",
 			otherMonths: true,
 			firstWeekDay: null,
 			showWeekNumber: false,
 			maxDateScale: 2,
 			showTime: false,
-			timeDetail: 2,
-			timeFormat: null,
+			shortTimeFormat: false,
+			time12HourFormat: null,
 			timePickerTimeout: 400,
 			timePickerInterval: 50,
 			todayButton: false,
@@ -54,7 +54,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 			titleAnimations: {},
 			pickerAnimations: {},
 			dateFormat: null,
-			datetimeFormat: null,
+			timeFormat: null,
+			timeFormatShort: null,
+			dateTimeFormat: null,
 			input: null,
 			inputButton: true,
 			attachToInput: true,
@@ -109,7 +111,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 	{
 		return {
 			dateFormat: "m/d/Y",
-			timeFormat: 12,
+			timeFormat: "g:i:s a",
+			timeFormatShort: "g:i a",
+			dateTimeFormat: "{1}, {0}",
 			firstWeekDay: 0,
 			monthNames: [
 				"January",
@@ -183,6 +187,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.yearPickerYear = null;
 		self.titleAnimation = null;
 		self.pickerAnimation = null;
+		self.time12HourFormatCache = null;
+		self.time12HourFormatCacheFormat = "";
 		hop.widget.prototype.create.apply(self, arguments);
 		if (self.className === null)
 			self.className = self.classPrefix+"datepicker";
@@ -210,8 +216,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.generateHtml();
 		self.showDayPicker();
 		self.setShowTime(self.showTime);
-		self.setTimeDetail(self.timeDetail);
-		self.setTimeFormat(self.timeFormat);
+		self.setShortTimeFormat(self.shortTimeFormat);
+		self.setTime12HourFormat(self.time12HourFormat);
 		self.setTodayButton(self.todayButton);
 		self.setDoneButton(self.doneButton);
 		self.setCleanButton(self.cleanButton);
@@ -381,10 +387,10 @@ hop.inherit(hop.datepicker, hop.widget, {
 		}
 	},
 
-	setTimeDetail: function(value)
+	setShortTimeFormat: function(value)
 	{
 		var self = this;
-		self.timeDetail = value;
+		self.shortTimeFormat = !!value;
 		if (self.node)
 		{
 			if (self.picker === "time")
@@ -394,15 +400,25 @@ hop.inherit(hop.datepicker, hop.widget, {
 		}
 	},
 
-	getTimeFormat: function()
-	{
-		return (this.timeFormat === null ? (def(this.i18n) ? this.i18n.timeFormat : 24) : this.timeFormat);
-	},
-
-	setTimeFormat: function(value)
+	getTime12HourFormat: function()
 	{
 		var self = this;
-		self.timeFormat = value;
+		if (self.time12HourFormat !== null)
+			return self.time12HourFormat;
+
+		var format = self.getCurrentTimeFormat();
+		if (self.time12HourFormatCacheFormat !== format)
+		{
+			self.time12HourFormatCache = hop.time.formatIs12Hour(format);
+			self.time12HourFormatCacheFormat = format;
+		}
+		return self.time12HourFormatCache;
+	},
+
+	setTime12HourFormat: function(value)
+	{
+		var self = this;
+		self.time12HourFormat = value;
 		if (self.node)
 		{
 			self.updateTimeHtml();
@@ -651,41 +667,41 @@ hop.inherit(hop.datepicker, hop.widget, {
 		if (self.showWeekNumber)
 			node.className += " "+self.classPrefix+"datepicker-show-week-number";
 		html = '\
-<div class="%c%inner">\
-	<div class="%c%head-wrapper">\
-		<div class="%c%head">\
-			<div class="%c%button %c%button-prev"></div>\
-			<div class="%c%title-wrapper">\
-				<div class="%c%title"></div>\
+<div class="{c}inner">\
+	<div class="{c}head-wrapper">\
+		<div class="{c}head">\
+			<div class="{c}button {c}button-prev"></div>\
+			<div class="{c}title-wrapper">\
+				<div class="{c}title"></div>\
 			</div>\
-			<div class="%c%button %c%button-next"></div>\
+			<div class="{c}button {c}button-next"></div>\
 		</div>\
 	</div>\
-	<div class="%c%body-wrapper">\
-		<div class="%c%body"></div>\
+	<div class="{c}body-wrapper">\
+		<div class="{c}body"></div>\
 	</div>\
-	<div class="%c%time-wrapper">\
-		<div class="%c%time">\
-			<div class="%c%button %c%button-current-time" title="'+hop.html.quoteValue(self.i18n.currentTime)+'"></div>\
-			<div class="%c%time-title">\
-				<span class="%c%time-hours"></span><span class="%c%time-sep %c%time-sep-minutes">:</span><span class="%c%time-minutes"></span><span class="%c%time-sep %c%time-sep-seconds">:</span><span class="%c%time-seconds"></span><span class="%c%time-ampm"></span>\
+	<div class="{c}time-wrapper">\
+		<div class="{c}time">\
+			<div class="{c}button {c}button-current-time" title="'+hop.html.quoteValue(self.i18n.currentTime)+'"></div>\
+			<div class="{c}time-title">\
+				<span class="{c}time-hours"></span><span class="{c}time-sep {c}time-sep-minutes">:</span><span class="{c}time-minutes"></span><span class="{c}time-sep {c}time-sep-seconds">:</span><span class="{c}time-seconds"></span><span class="{c}time-ampm"></span>\
 			</div>\
-			<div class="%c%button %c%button-zero-time" title="00:00:00"></div>\
+			<div class="{c}button {c}button-zero-time" title="00:00:00"></div>\
 		</div>\
 	</div>\
-	<div class="%c%buttons-wrapper">\
-		<div class="%c%buttons">\
-			<div class="%c%buttons-left">\
-				<div class="%c%button %c%button-today" title="'+hop.html.quoteValue(self.i18n.today)+'"></div>\
+	<div class="{c}buttons-wrapper">\
+		<div class="{c}buttons">\
+			<div class="{c}buttons-left">\
+				<div class="{c}button {c}button-today" title="'+hop.html.quoteValue(self.i18n.today)+'"></div>\
 			</div>\
-			<div class="%c%buttons-right">\
-				<div class="%c%button %c%button-clean" title="'+hop.html.quoteValue(self.i18n.clean)+'"></div>\
-				<div class="%c%button %c%button-done" title="'+hop.html.quoteValue(self.i18n.done)+'"></div>\
+			<div class="{c}buttons-right">\
+				<div class="{c}button {c}button-clean" title="'+hop.html.quoteValue(self.i18n.clean)+'"></div>\
+				<div class="{c}button {c}button-done" title="'+hop.html.quoteValue(self.i18n.done)+'"></div>\
 			</div>\
 		</div>\
 	</div>\
 </div>';
-		self.node.innerHTML = hop.string.replace("%c%", self.classPrefix+"datepicker-", html);
+		self.node.innerHTML = hop.string.replace("{c}", self.classPrefix+"datepicker-", html);
 		self.$title = $(dotClassPrefix+"title", self.node);
 		self.$body = $(dotClassPrefix+"body", self.node);
 		self.bodyNode = self.$body[0];
@@ -1054,32 +1070,41 @@ hop.inherit(hop.datepicker, hop.widget, {
 		return hop.time.format(this.date, this.getFormat());
 	},
 
+	getFormat: function()
+	{
+		return (this.showTime ? this.buildDateTimeFormat() : this.getDateFormat());
+	},
+
+	buildDateTimeFormat: function()
+	{
+		var result = this.getDateTimeFormat();
+		result = hop.string.replace("{1}", this.getDateFormat(), result);
+		return hop.string.replace("{0}", this.getCurrentTimeFormat(), result);
+	},
+
+	getDateTimeFormat: function()
+	{
+		return (this.dateTimeFormat ? this.dateTimeFormat : this.i18n.dateTimeFormat);
+	},
+
 	getDateFormat: function()
 	{
 		return (this.dateFormat ? this.dateFormat : this.i18n.dateFormat);
 	},
 
-	getDatetimeFormat: function()
+	getCurrentTimeFormat: function()
 	{
-		return (this.datetimeFormat ? this.datetimeFormat : this.buildDatetimeFormat());
+		return (this.shortTimeFormat ? this.getTimeFormatShort() : this.getTimeFormat());
 	},
 
-	buildDatetimeFormat: function()
+	getTimeFormat: function()
 	{
-		var self = this, result = self.getDateFormat()+", ";
-		result += (self.getTimeFormat() == 12 ? "h" : "H");
-		if (self.timeDetail > 0)
-			result += ":i";
-		if (self.timeDetail > 1)
-			result += ":s";
-		if (self.getTimeFormat() == 12)
-			result += " a";
-		return result;
+		return (this.timeFormat ? this.timeFormat : this.i18n.timeFormat);
 	},
 
-	getFormat: function()
+	getTimeFormatShort: function()
 	{
-		return (this.showTime ? this.getDatetimeFormat() : this.getDateFormat());
+		return (this.timeFormatShort ? this.timeFormatShort : this.i18n.timeFormatShort);
 	},
 
 	cleanInput: function()
@@ -1161,14 +1186,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 			return;
 
 		var self = this, dotClassPrefix = "."+self.classPrefix+"datepicker-",
-			hours = self.date.getHours(), value;
+			hours = self.date.getHours();
 		if (!def(updatePicker))
 			updatePicker = true;
-		value = (self.getTimeFormat() == 12 ? hop.time.hours12(hours) : hours);
-		$(dotClassPrefix+"time-sep-minutes, "+dotClassPrefix+"time-minutes", self.node).css("display", self.timeDetail > 0 ? "inline" : "none");
-		$(dotClassPrefix+"time-sep-seconds, "+dotClassPrefix+"time-seconds", self.node).css("display", self.timeDetail > 1 ? "inline" : "none");
-		$(dotClassPrefix+"time-ampm", self.node).css("display", self.getTimeFormat() == 12 ? "inline" : "none");
-		$(dotClassPrefix+"time-hours", self.node).html(value);
+		$(dotClassPrefix+"time-sep-seconds, "+dotClassPrefix+"time-seconds", self.node).css("display", self.shortTimeFormat ? "none" : "inline");
+		$(dotClassPrefix+"time-ampm", self.node).css("display", self.getTime12HourFormat() ? "inline" : "none");
+		$(dotClassPrefix+"time-hours", self.node).html(self.getTime12HourFormat() ? hop.time.hours12(hours) : hours);
 		$(dotClassPrefix+"time-minutes", self.node).html(hop.string.padLeft(self.date.getMinutes(), 2, "0"));
 		$(dotClassPrefix+"time-seconds", self.node).html(hop.string.padLeft(self.date.getSeconds(), 2, "0"));
 		$(dotClassPrefix+"time-ampm", self.node).html(hop.time.am(hours) ? 'am' : 'pm');
@@ -1232,8 +1255,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 	setDayPickerTitleDate: function(node, year, month)
 	{
 		var self = this, html = self.titleFormat;
-		html = hop.string.replace("%y%", year, html);
-		html = hop.string.replace("%m%", self.i18n.monthNames[month], html);
+		html = hop.string.replace("{y}", year, html);
+		html = hop.string.replace("{m}", self.i18n.monthNames[month], html);
 		node.innerHTML = html;
 	},
 
@@ -1243,14 +1266,14 @@ hop.inherit(hop.datepicker, hop.widget, {
 			html, head = "", i, j, classPrefix = self.classPrefix+"datepicker-";
 		node.className = classPrefix+"days";
 		if (self.showWeekNumber)
-			head += '<div class="%c%week-header" title="'+hop.html.quoteValue(self.i18n.week)+'"><div>'+self.i18n.weekShort+'</div></div>';
+			head += '<div class="{c}week-header" title="'+hop.html.quoteValue(self.i18n.week)+'"><div>'+self.i18n.weekShort+'</div></div>';
 		for (i = 0; i < 7; i++)
 		{
 			j = (i+self.getFirstWeekDay())%7;
-			head += '<div class="%c%day-header" title="'+hop.html.quoteValue(self.i18n.dayNames[j])+'"><div>'+self.i18n.dayNamesShort[j]+'</div></div>';
+			head += '<div class="{c}day-header" title="'+hop.html.quoteValue(self.i18n.dayNames[j])+'"><div>'+self.i18n.dayNamesShort[j]+'</div></div>';
 		}
-		html = '<div class="%c%head">'+head+'</div><div class="%c%body"></div>';
-		node.innerHTML = hop.string.replace("%c%", classPrefix+"days-", html);
+		html = '<div class="{c}head">'+head+'</div><div class="{c}body"></div>';
+		node.innerHTML = hop.string.replace("{c}", classPrefix+"days-", html);
 		self.$body.append(node);
 		return node;
 	},
@@ -1869,17 +1892,18 @@ hop.inherit(hop.datepicker, hop.widget, {
 	{
 		var self = this, node = document.createElement("div"),
 			html, head = "", i, j, classPrefix = self.classPrefix+"datepicker-", $elem;
-		node.className = classPrefix+"time-picker "+classPrefix+"time-picker-"+self.timeDetail;
-		html = '<div class="%c%inner">';
-		html += '<div class="%c%hours"><div class="%c%button %c%plus" tabindex="-1"></div><div class="%c%value"><input type="text" maxlength="2" /></div><div class="%c%button %c%minus"></div></div>';
-		if (self.timeDetail > 0)
-			html += '<div class="%c%minutes"><div class="%c%button %c%plus"></div><div class="%c%value"><input type="text" maxlength="2" /><div class="%c%colon">:</div></div><div class="%c%button %c%minus"></div></div>';
-		if (self.timeDetail > 1)
-			html += '<div class="%c%seconds"><div class="%c%button %c%plus"></div><div class="%c%value"><input type="text" maxlength="2" /><div class="%c%colon">:</div></div><div class="%c%button %c%minus"></div></div>';
-		if (self.getTimeFormat() == 12)
-			html += '<div class="%c%ampm"><div class="%c%button"></div></div>';
+		node.className = classPrefix+"time-picker";
+		if (self.shortTimeFormat)
+			node.className += " "+classPrefix+"time-picker-short";
+		html = '<div class="{c}inner">';
+		html += '<div class="{c}hours"><div class="{c}button {c}plus" tabindex="-1"></div><div class="{c}value"><input type="text" maxlength="2" /></div><div class="{c}button {c}minus"></div></div>';
+		html += '<div class="{c}minutes"><div class="{c}button {c}plus"></div><div class="{c}value"><input type="text" maxlength="2" /><div class="{c}colon">:</div></div><div class="{c}button {c}minus"></div></div>';
+		if (!self.shortTimeFormat)
+			html += '<div class="{c}seconds"><div class="{c}button {c}plus"></div><div class="{c}value"><input type="text" maxlength="2" /><div class="{c}colon">:</div></div><div class="{c}button {c}minus"></div></div>';
+		if (self.getTime12HourFormat())
+			html += '<div class="{c}ampm"><div class="{c}button"></div></div>';
 		html += '</div>';
-		node.innerHTML = hop.string.replace("%c%", classPrefix+"time-picker-", html);
+		node.innerHTML = hop.string.replace("{c}", classPrefix+"time-picker-", html);
 		self.$body.append(node);
 
 		$elem = $("."+classPrefix+"time-picker-hours ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
@@ -1904,32 +1928,31 @@ hop.inherit(hop.datepicker, hop.widget, {
 		{
 			self.onTimePickerHoursKeyup(event);
 		});
-		if (self.timeDetail > 0)
-		{
-			$("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
-			{
-				self.onTimePickerMinutesPlusMousedown(event);
-			});
-			$("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-minus", node).on("mousedown", function(event)
-			{
-				self.onTimePickerMinutesMinusMousedown(event);
-			});
 
-			$elem = $("."+classPrefix+"time-picker-minutes input", node);
-			$elem.on("focus click", function(event)
-			{
-				self.onTimePickerMinutesFocus(event);
-			});
-			$elem.on("blur", function(event)
-			{
-				self.onTimePickerMinutesBlur(event);
-			});
-			$elem.on("keyup change", function(event)
-			{
-				self.onTimePickerMinutesKeyup(event);
-			});
-		}
-		if (self.timeDetail > 1)
+		$("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
+		{
+			self.onTimePickerMinutesPlusMousedown(event);
+		});
+		$("."+classPrefix+"time-picker-minutes ."+classPrefix+"time-picker-minus", node).on("mousedown", function(event)
+		{
+			self.onTimePickerMinutesMinusMousedown(event);
+		});
+
+		$elem = $("."+classPrefix+"time-picker-minutes input", node);
+		$elem.on("focus click", function(event)
+		{
+			self.onTimePickerMinutesFocus(event);
+		});
+		$elem.on("blur", function(event)
+		{
+			self.onTimePickerMinutesBlur(event);
+		});
+		$elem.on("keyup change", function(event)
+		{
+			self.onTimePickerMinutesKeyup(event);
+		});
+
+		if (!self.timeShort)
 		{
 			$("."+classPrefix+"time-picker-seconds ."+classPrefix+"time-picker-plus", node).on("mousedown", function(event)
 			{
@@ -1954,32 +1977,31 @@ hop.inherit(hop.datepicker, hop.widget, {
 				self.onTimePickerSecondsKeyup(event);
 			});
 		}
-		if (self.getTimeFormat() == 12)
+
+		if (self.getTime12HourFormat())
 		{
 			$("."+classPrefix+"time-picker-ampm ."+classPrefix+"time-picker-button", node).on("click", function(event)
 			{
 				self.onTimePickerAmPmClick(event);
 			});
 		}
+
 		return node;
 	},
 
 	setTimePickerDate: function(node, date)
 	{
 		var self = this, classPrefix = self.classPrefix+"datepicker-time-picker-", value;
-		value = (self.getTimeFormat() === 24 ? date.getHours() : hop.time.hours12(date.getHours()));
+		value = (self.getTime12HourFormat() ? hop.time.hours12(date.getHours()) : date.getHours());
 		$('.'+classPrefix+'hours .'+classPrefix+'value input', node).val(value);
-		if (self.timeDetail > 0)
+		value = hop.string.padLeft(date.getMinutes(), 2, "0");
+		$('.'+classPrefix+'minutes .'+classPrefix+'value input', node).val(value);
+		if (!self.timeShort)
 		{
-			value = hop.string.padLeft(date.getMinutes(), 2, "0");
-			$('.'+classPrefix+'minutes .'+classPrefix+'value input', node).val(value);
-			if (self.timeDetail > 1)
-			{
-				value = hop.string.padLeft(date.getSeconds(), 2, "0");
-				$('.'+classPrefix+'seconds .'+classPrefix+'value input', node).val(value);
-			}
+			value = hop.string.padLeft(date.getSeconds(), 2, "0");
+			$('.'+classPrefix+'seconds .'+classPrefix+'value input', node).val(value);
 		}
-		if (self.getTimeFormat() == 12)
+		if (self.getTime12HourFormat())
 			$('.'+classPrefix+'ampm div', node).html(hop.time.am(date.getHours()) ? 'am' : 'pm');
 	},
 
@@ -2030,7 +2052,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 	{
 		var self = this;
 		self.date.setHours(hours);
-		if (self.getTimeFormat() == 12)
+		if (self.getTime12HourFormat())
 		{
 			hours = hop.time.hours12(self.date.getHours());
 			self.timePickerUpdateAmPm();
@@ -2080,7 +2102,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 	onTimePickerHoursBlur: function(event)
 	{
 		var self = this, hours = self.date.getHours();
-		if (self.getTimeFormat() == 12)
+		if (self.getTime12HourFormat())
 			hours = hop.time.hours12(hours);
 		$("."+self.classPrefix+"datepicker-time-picker-hours input", self.pickerNode).val(hours);
 	},
@@ -2097,11 +2119,11 @@ hop.inherit(hop.datepicker, hop.widget, {
 		else
 		{
 			value = parseInt(value);
-			if (value < (self.getTimeFormat() == 12 ? 1 : 0) || value > (self.getTimeFormat() == 12 ? 12 : 23))
+			if (value < (self.getTime12HourFormat() ? 1 : 0) || value > (self.getTime12HourFormat() ? 12 : 23))
 				error = true;
 			else
 			{
-				if (self.getTimeFormat() == 12)
+				if (self.getTime12HourFormat())
 					value = hop.time.hours24(value, hop.time.pm(self.date.getHours()));
 				self.date.setHours(value);
 				self.dateChange();
@@ -2109,7 +2131,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			}
 		}
 		if (error)
-			$elem.val(self.getTimeFormat() == 12 ? hop.time.hours12(self.date.getHours()) : self.date.getHours());
+			$elem.val(self.getTime12HourFormat() ? hop.time.hours12(self.date.getHours()) : self.date.getHours());
 	},
 
 	onTimePickerMinutesPlusMousedown: function(event)

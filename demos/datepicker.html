@@ -10,6 +10,9 @@
 <script type="text/javascript" src="../js/widgets/layer.js"></script>
 <script type="text/javascript" src="../js/widgets/datepicker.js"></script>
 <script type="text/javascript" src="../js/widgets/datepickeranimations.js"></script>
+<script type="text/javascript" src="../js/i18n/en/datepicker.js"></script>
+<script type="text/javascript" src="../js/i18n/en-GB/datepicker.js"></script>
+<script type="text/javascript" src="../js/i18n/en-US/datepicker.js"></script>
 <script type="text/javascript" src="../js/i18n/ru/datepicker.js"></script>
 </head>
 <body>
@@ -22,8 +25,17 @@
 <p><input id="dp3" value="Jun 15, 2000" /></p>
 <p>Time, buttons, default date, not picked:</p>
 <p><input id="dp4" /> <button id="button4">...</button></p>
-<p>Locale, week numbers, time, animation:</p>
-<p><input id="dp5" /> <button id="button5">...</button> <select id="select5"><option value="">default</option><option value="ru" selected="selected">Русский</option></select></p>
+<p>Locale, week numbers, short time format, time, animation:</p>
+<p>
+	<input id="dp5" /> <button id="button5">...</button>
+	<select id="select5">
+		<option value="">default</option>
+		<option value="en" selected="selected">en</option>
+		<option value="en-GB" selected="selected">en-GB</option>
+		<option value="en-US" selected="selected">en-US</option>
+		<option value="ru" selected="selected">ru</option>
+	</select>
+</p>
 <p>Interval:</p>
 <p><input id="dp61" /> - <input id="dp62" /></p>
 <p>Inline:</p>
@@ -96,7 +108,7 @@ $(function()
 		showWeekNumber: true,
 		maxDateScale: 4,
 		showTime: true,
-		timeDetail: 1,
+		shortTimeFormat: true,
 		todayButton: true,
 		doneButton: true,
 		cleanButton: true,
