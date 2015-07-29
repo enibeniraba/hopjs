@@ -409,7 +409,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var format = self.getCurrentTimeFormat();
 		if (self.time12HourFormatCacheFormat !== format)
 		{
-			self.time12HourFormatCache = hop.time.formatIs12Hour(format);
+			self.time12HourFormatCache = self.formatIs12Hour(format);
 			self.time12HourFormatCacheFormat = format;
 		}
 		return self.time12HourFormatCache;
@@ -1072,6 +1072,16 @@ hop.inherit(hop.datepicker, hop.widget, {
 		return hop.time.format(this.date, this.getFormat());
 	},
 
+	parseDate: function(date, format)
+	{
+		return hop.time.parse(date, format);
+	},
+
+	formatIs12Hour: function(format)
+	{
+		return hop.time.formatIs12Hour(format);
+	},
+
 	getFormat: function()
 	{
 		return (this.showTime ? this.buildDateTimeFormat() : this.getDateFormat());
@@ -1124,7 +1134,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	setDateStr: function(str, pick)
 	{
-		var date = hop.time.parse(str, this.getFormat());
+		var date = this.parseDate(str, this.getFormat());
 		if (!date)
 			return false;
 
