@@ -1246,6 +1246,53 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	}
 });
 
+hop.dropdownMenuItems.group = function(params)
+{
+	hop.dropdownMenuItems.html.apply(this, arguments);
+};
+
+hop.inherit(hop.dropdownMenuItems.group, hop.dropdownMenuItem, {
+	getDefaults: function()
+	{
+		return $.extend(hop.dropdownMenuItem.prototype.getDefaults.apply(this), {
+			text: "",
+			icon: null,
+			title: ""
+		});
+	},
+
+	create: function(params)
+	{
+		var self = this;
+		hop.dropdownMenuItem.prototype.create.apply(self, arguments);
+		self.node.className = self.className+" hop-dropdown-menu-group";
+		self.setText(self.text);
+		self.setIcon(self.icon);
+		self.setTitle(self.title);
+	},
+
+	setText: function(text)
+	{
+		this.text = text;
+		if (this.node)
+			this.node.innerHTML = text;
+	},
+
+	setIcon: function(icon)
+	{
+		this.icon = icon;
+		if (this.node)
+			this.node.style.backgroundImage = (icon === null ? "none" : "url("+icon+")");
+	},
+
+	setTitle: function(title)
+	{
+		this.title = title;
+		if (this.node)
+			this.node.title = title;
+	},
+});
+
 hop.dropdownMenuItems.html = function(params)
 {
 	hop.dropdownMenuItem.apply(this, arguments);
