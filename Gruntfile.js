@@ -3,15 +3,31 @@ module.exports = function(grunt)
 	var pkg = grunt.file.readJSON("package.json"),
 		fs = require("fs"),
 		buildPath = "build/hopjs-"+pkg.version,
+		concatAll = [
+			buildPath+"/js/base.js",
+			"js/widgets/datepicker.js",
+			"js/widgets/datepickeranimations.js",
+			"js/widgets/dropdownmenu.js",
+			"js/widgets/layer.js",
+			"js/widgets/menu.js",
+			"js/widgets/menubutton.js",
+			"js/widgets/tabs.js",
+			"js/widgets/tooltip.js",
+			"js/widgets/window.js",
+			"js/widgets/dialog.js",
+			"js/widgets/message.js"
+		],
 		minFiles = [
 			"hop",
 			"base",
 			"widgets/datepicker",
 			"widgets/datepickeranimations",
+			"widgets/dialog",
 			"widgets/dropdownmenu",
 			"widgets/layer",
 			"widgets/menu",
 			"widgets/menubutton",
+			"widgets/message",
 			"widgets/tabs",
 			"widgets/tooltip",
 			"widgets/window"
@@ -63,10 +79,7 @@ module.exports = function(grunt)
 				dest: buildPath+"/js/base.js"
 			},
 			all: {
-				src: [
-					buildPath+"/js/base.js",
-					"js/widgets/*.js"
-				],
+				src: concatAll,
 				dest: buildPath+"/js/hop.js"
 			},
 			i18n: {

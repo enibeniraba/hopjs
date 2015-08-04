@@ -878,7 +878,7 @@ hop.inherit(hop.layer, hop.widget, {
 
 	round: function(value)
 	{
-		return (hop.browser.isFirefox() ? Math.round(value) : value);
+		return (hop.browser.isChrome() ? value : Math.round(value));
 	},
 
 	moveOnTop: function()

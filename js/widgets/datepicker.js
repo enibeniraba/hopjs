@@ -27,7 +27,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 	getDefaults: function()
 	{
 		return {
-			locale: null,
+			locale: "",
 			className: null,
 			classPrefix: "hop-",
 			container: null,
@@ -192,7 +192,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		hop.widget.prototype.create.apply(self, arguments);
 		if (self.className === null)
 			self.className = self.classPrefix+"datepicker";
-		if (!self.locale)
+		if (self.locale === "")
 			self.setLocale();
 		if (self.input)
 		{
@@ -228,16 +228,16 @@ hop.inherit(hop.datepicker, hop.widget, {
 	setLocale: function(locale)
 	{
 		var self = this;
-		if (!def(locale) || locale === "" || locale === "default")
-			locale = null;
-		if (locale !== null && (typeof locale !== "string" || !hop.datepicker.i18n[locale]))
+		if (!def(locale))
+			locale = "";
+		if (typeof locale != "string")
 			return;
 
 		self.locale = locale;
 		self.i18n = {};
 		$.extend(true, self.i18n, self.defaultI18n);
-		if (locale !== null)
-			$.extend(true, self.i18n, hop.datepicker.i18n[locale]);
+		if (locale !== "")
+			self.buildI18n();
 		if (self.node)
 		{
 			self.updateLocaleHtml();
@@ -246,6 +246,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 			self.updateHtml();
 			self.updateInput();
 		}
+	},
+
+	buildI18n: function()
+	{
+		if (hop.datepicker.i18n[this.locale])
+			$.extend(true, this.i18n, hop.datepicker.i18n[this.locale])
 	},
 
 	updateLocaleHtml: function()

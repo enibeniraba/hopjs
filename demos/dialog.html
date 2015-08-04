@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Dialog</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/layer.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/window.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/dialog.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../external/jquery-ui.js"></script>
+<script type="text/javascript" src="../js/base.js"></script>
+<script type="text/javascript" src="../js/widgets/layer.js"></script>
+<script type="text/javascript" src="../js/widgets/window.js"></script>
+<script type="text/javascript" src="../js/widgets/dialog.js"></script>
+<script type="text/javascript" src="../js/i18n/en/window.js"></script>
+<script type="text/javascript" src="../js/i18n/en-GB/window.js"></script>
+<script type="text/javascript" src="../js/i18n/en-US/window.js"></script>
+<script type="text/javascript" src="../js/i18n/ru/window.js"></script>
+<script type="text/javascript" src="../js/i18n/en/dialog.js"></script>
+<script type="text/javascript" src="../js/i18n/en-GB/dialog.js"></script>
+<script type="text/javascript" src="../js/i18n/en-US/dialog.js"></script>
+<script type="text/javascript" src="../js/i18n/ru/dialog.js"></script>
+</head>
+<body>
+<h1>Dialog</h1>
+<p>Default:</p>
+<p><input type="button" id="button1" value="Open" /></p>
+<p>Icon, buttons alignment, cancel, modal, event, animation, locale:</p>
+<p>
+	<input type="button" id="button2" value="Open" />
+	<select id="select2">
+		<option value="">default</option>
+		<option value="en" selected="selected">en</option>
+		<option value="en-GB" selected="selected">en-GB</option>
+		<option value="en-US" selected="selected">en-US</option>
+		<option value="ru" selected="selected">ru</option>
+	</select>
+</p>
+<div id="content" style="display: none;">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.
+Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus. Suspendisse potenti. Donec tristique, dui non molestie ornare, risus nisi pellentesque augue, nec lobortis elit sem fermentum augue. Ut gravida tincidunt pulvinar. Nam id arcu sed lectus facilisis rutrum. Suspendisse pellentesque pellentesque molestie. Integer iaculis suscipit leo, eu facilisis justo cursus eu. Sed varius commodo vestibulum. Suspendisse placerat, justo et elementum vehicula, mi dolor cursus eros, quis dictum purus erat at urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus justo mi, sagittis vitae odio pellentesque, commodo consectetur quam. Aenean mollis orci at nulla vehicula, nec sollicitudin purus molestie. Pellentesque nec iaculis orci.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.
+Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus. Suspendisse potenti. Donec tristique, dui non molestie ornare, risus nisi pellentesque augue, nec lobortis elit sem fermentum augue. Ut gravida tincidunt pulvinar. Nam id arcu sed lectus facilisis rutrum. Suspendisse pellentesque pellentesque molestie. Integer iaculis suscipit leo, eu facilisis justo cursus eu. Sed varius commodo vestibulum. Suspendisse placerat, justo et elementum vehicula, mi dolor cursus eros, quis dictum purus erat at urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus justo mi, sagittis vitae odio pellentesque, commodo consectetur quam. Aenean mollis orci at nulla vehicula, nec sollicitudin purus molestie. Pellentesque nec iaculis orci.
+</div>
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+
+	$("#button1").on("click", function()
+	{
+		new hop.dialog({
+			title: "Title",
+			content: $("#content").html(),
+			show: true
+		});
+	});
+
+	d2 = new hop.dialog({
+		locale: "ru",
+		icon: "../themes/default/images/datepickercurrenttime.png",
+		title: "Title",
+		content: $("#content").html(),
+		showCancel: true,
+		buttonsAlign: "right",
+		modal: true,
+		height: 240,
+		width: 320,
+		destroyOnHide: false,
+		animationShow: "def",
+		animationShowParams: {
+			scale: 0.9
+		},
+		layerParams: {
+			overlayAnimationShow: "def"
+		},
+		onYes: function()
+		{
+			alert("Yes");
+		},
+		onNo: function()
+		{
+			alert("No");
+		},
+		onCancel: function()
+		{
+			alert("Cancel");
+		}
+	});
+	$("#button2").on("click", function()
+	{
+		d2.toggle();
+	});
+	$("#select2").on("change", function(event)
+	{
+		d2.setLocale(this.value);
+	});
+});
+</script>
+</body>
+</html>

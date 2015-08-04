@@ -5,7 +5,7 @@
 	overflow: hidden;
 	border: solid 1px #ccc;
 	background: #f8f8f8;
-	font: normal normal normal 13px/13px Tahoma, Verdana;
+	font: normal normal normal 13px/13px Arial;
 	box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 12px 0;
 }
 
@@ -24,7 +24,7 @@
 .hop-window .hop-window-title
 {
 	overflow: hidden;
-	padding: 6px 8px;
+	padding: 7px 8px 6px 8px;
 	font-weight: bold;
 	color: #000;
 	line-height: 15px;
@@ -39,17 +39,17 @@
 .hop-window .hop-window-title-icon
 {
 	padding-left: 24px;
-	background-position: 4px center;
+	background-position: 4px 50%;
 	background-repeat: no-repeat;
 }
 
 .hop-window .hop-window-head-buttons
 {
 	position: absolute;
-	top: 49.9%;
+	top: 50%;
 	right: 0;
-	height: 21px;
-	margin: -12px 2px 0 0;
+	height: 22px;
+	margin: -13px 2px 0 0;
 	padding: 2px;
 	overflow: hidden;
 	background: #eee;
@@ -57,9 +57,9 @@
 
 .hop-window .hop-window-head-button
 {
-	margin-left: 0px;
-	height: 21px;
-	width: 21px;
+	margin-left: 0;
+	height: 22px;
+	width: 22px;
 	display: block;
 	float: left;
 	cursor: pointer;

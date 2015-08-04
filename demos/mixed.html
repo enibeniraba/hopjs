@@ -11,7 +11,7 @@
 <style type="text/css">
 .hop-dropdown-menu, .hop-tooltip
 {
-	font: normal normal normal 13px/14px Tahoma, Verdana;
+	font: normal normal normal 13px/14px Arial;
 }
 
 .hop-window .hop-window-top
@@ -228,7 +228,14 @@ $(function()
 				text: "On click",
 				onClick: function(item, event_data, data)
 				{
-					alert(data);
+					new hop.message({
+						title: "Title",
+						content: data,
+						height: 240,
+						width: 320,
+						modal: true,
+						show: true
+					});
 				},
 				onClickData: "Action"
 			},
