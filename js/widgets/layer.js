@@ -851,14 +851,14 @@ hop.inherit(hop.layer, hop.widget, {
 			self.node.style.left = rawLeft+"px";
 			layerOffset = $node.offset();
 			if (layerOffset.top != top)
-				self.node.style.top = self.round(rawTop-(layerOffset.top-top))+"px";
+				self.node.style.top = Math.round(rawTop-(layerOffset.top-top))+"px";
 			if (layerOffset.left != left)
-				self.node.style.left = self.round(rawLeft-(layerOffset.left-left))+"px";
+				self.node.style.left = Math.round(rawLeft-(layerOffset.left-left))+"px";
 		}
 		else
 		{
-			self.node.style.top = self.round(top)+"px";
-			self.node.style.left = self.round(left)+"px";
+			self.node.style.top = Math.round(top)+"px";
+			self.node.style.left = Math.round(left)+"px";
 		}
 
 		$.extend(self.state, {
@@ -874,11 +874,6 @@ hop.inherit(hop.layer, hop.widget, {
 	onUpdatePosition: function()
 	{
 		this.trigger("updatePosition");
-	},
-
-	round: function(value)
-	{
-		return (hop.browser.isChrome() ? value : Math.round(value));
 	},
 
 	moveOnTop: function()

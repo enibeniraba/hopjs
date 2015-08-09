@@ -346,11 +346,11 @@ $.extend(hop.menuItem.prototype, {
 		{
 			item = this.parentMenu.items[i];
 			if (item != this)
-				item.onOtherItemMouseenter(this);
+				item.onOtherItemMouseenter(this, event);
 		}
 	},
 
-	onOtherItemMouseenter: function(item)
+	onOtherItemMouseenter: function(item, event)
 	{
 	},
 
@@ -406,12 +406,25 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 
 	onOtherItemMouseenter: function(item)
 	{
-		var self = this;
+		var self = this, layer, mouseY, mouseX, offset, layerTop, layerBottom, layerLeft, layerRight;
 		self.setHighlighted(false);
 		if (self.menu)
 		{
 			if (self.parentMenu.type === "click")
 			{
+				layer = self.menu.layer;
+				mouseY = event.pageY+$(document).scrollTop();
+				mouseX = event.pageX+$(document).scrollLeft();
+				offset = self.menu.layer.$node.offset();
+				layerTop = offset.top;
+				layerBottom = layerTop+layer.$node.outerHeight();
+				layerLeft = offset.left;
+				layerRight = layerLeft+layer.$node.outerWidth();
+				if ((layer.visible && !layer.isAnimation() || !layer.visible && layer.isAnimation())
+					&& (mouseY < layerTop || mouseY > layerBottom || mouseX < layerLeft || mouseX > layerRight))
+				{
+					return;
+				}
 				self.setParentMenuShowMenu = false;
 				self.menu.hide({animate: false});
 				self.setParentMenuShowMenu = true;

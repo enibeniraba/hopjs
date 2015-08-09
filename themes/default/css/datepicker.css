@@ -5,12 +5,7 @@
 	background-color: #fff;
 	border: solid 1px #ccc;
 	box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 2px -2px;
-	font: normal normal normal 13px/14px Arial;
-}
-
-.hop-datepicker input
-{
-	font: normal normal normal 13px/14px Arial;
+	font: normal normal normal 13px/13px Arial;
 }
 
 .hop-datepicker-button:hover,
@@ -56,7 +51,7 @@
 .hop-datepicker-title-wrapper
 {
 	margin: 0 28px;
-	padding: 6px 5px 4px 5px;
+	padding: 5px 5px 4px 5px;
 	white-space: nowrap;
 	cursor: pointer;
 }
@@ -69,7 +64,7 @@
 
 .hop-datepicker-title-instance
 {
-	padding: 0 4px;
+	padding: 1px 4px;
 	white-space: nowrap;
 	background-color: #fff;
 }
@@ -126,7 +121,7 @@
 .hop-datepicker-days-head > div
 {
 	float: left;
-	padding: 7px 6px 5px 6px;
+	padding: 7px 6px 6px 6px;
 	width: 20px;
 	text-align: right;
 	font-size: 11px;
@@ -137,7 +132,7 @@
 .hop-datepicker-days-body > div > div
 {
 	float: left;
-	padding: 7px 6px 5px 6px;
+	padding: 7px 6px 6px 6px;
 	width: 20px;
 	text-align: right;
 }
@@ -164,7 +159,7 @@
 
 .hop-datepicker-days-day.hop-datepicker-days-picked
 {
-	padding: 6px 5px 4px 5px;
+	padding: 6px 5px 5px 5px;
 }
 
 .hop-datepicker-days-other-month
@@ -267,12 +262,12 @@
 .hop-datepicker-time-picker-value input
 {
 	display: block;
-	width: 22px;
-	height: 16px;
 	margin: 0;
-	padding: 4px 0 2px 0;
+	padding: 0;
+	width: 22px;
+	height: 22px;
 	border: solid 1px #ccc;
-	line-height: 1;
+	font: normal normal normal 13px/normal Arial;
 	text-align: center;
 }
 
@@ -293,7 +288,8 @@
 {
 	width: 18px;
 	height: 16px;
-	padding: 5px 4px 3px 4px;
+	line-height: 1;
+	padding: 6px 4px 2px 4px;
 }
 
 .hop-datepicker-time-wrapper
@@ -314,7 +310,7 @@
 .hop-datepicker-time-title
 {
 	margin: 0 28px;
-	padding: 6px 5px 4px 5px;
+	padding: 6px 5px 5px 5px;
 	cursor: pointer;
 }
 

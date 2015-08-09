@@ -47,11 +47,6 @@ hop.browser = {
 		return hop.browser.animationInfoCache;
 	},
 
-	isChrome: function()
-	{
-		return def(window.chrome);
-	},
-
 	isOldOpera: function()
 	{
 		if (!def(hop.browser.isOldOperaCache))
