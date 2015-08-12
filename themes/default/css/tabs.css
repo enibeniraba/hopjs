@@ -86,14 +86,3 @@
 {
 	clear: both;
 }
-
-.hop-window .hop-tabs .hop-tabs-body
-{
-	background-color: #f8f8f8;
-}
-
-.hop-window .hop-tabs .hop-tabs-tab-button.hop-tabs-active,
-.hop-window .hop-tabs .hop-tabs-tab-button.hop-tabs-active:hover span
-{
-	background-color: #f8f8f8;
-}

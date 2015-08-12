@@ -404,34 +404,59 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 			self.setMenu(params.menu);
 	},
 
-	onOtherItemMouseenter: function(item)
+	onOtherItemMouseenter: function(item, event)
 	{
-		var self = this, layer, mouseY, mouseX, offset, layerTop, layerBottom, layerLeft, layerRight;
+		var self = this, layer, mouseY, mouseX, offset,
+			layerTop, layerBottom, layerLeft, layerRight,
+			itemTop, itemBottom, itemLeft, itemRight;
 		self.setHighlighted(false);
 		if (self.menu)
 		{
-			if (self.parentMenu.type === "click")
+			if (self.parentMenu.type === "hover")
+				self.menu.hideWithDelay();
+			else if (!self.isMouseenterBug(event, self, item))
 			{
-				layer = self.menu.layer;
-				mouseY = event.pageY+$(document).scrollTop();
-				mouseX = event.pageX+$(document).scrollLeft();
-				offset = self.menu.layer.$node.offset();
-				layerTop = offset.top;
-				layerBottom = layerTop+layer.$node.outerHeight();
-				layerLeft = offset.left;
-				layerRight = layerLeft+layer.$node.outerWidth();
-				if ((layer.visible && !layer.isAnimation() || !layer.visible && layer.isAnimation())
-					&& (mouseY < layerTop || mouseY > layerBottom || mouseX < layerLeft || mouseX > layerRight))
-				{
-					return;
-				}
 				self.setParentMenuShowMenu = false;
 				self.menu.hide({animate: false});
 				self.setParentMenuShowMenu = true;
 			}
-			else
-				self.menu.hideWithDelay();
 		}
+	},
+
+	isMouseenterBug: function(event, source, target)
+	{
+		var layer, mouseY, mouseX, offset,
+			layerTop, layerBottom, layerLeft, layerRight,
+			itemTop, itemBottom, itemLeft, itemRight;
+
+		layer = source.menu.layer;
+		mouseY = event.pageY+$(document).scrollTop();
+		mouseX = event.pageX+$(document).scrollLeft();
+		offset = source.menu.layer.$node.offset();
+		layerTop = offset.top;
+		layerBottom = layerTop+layer.$node.outerHeight();
+		layerLeft = offset.left;
+		layerRight = layerLeft+layer.$node.outerWidth();
+		offset = source.$node.offset();
+		sourceTop = offset.top;
+		sourceBottom = sourceTop+source.$node.outerHeight();
+		sourceLeft = offset.left;
+		sourceRight = sourceLeft+source.$node.outerWidth();
+		if ((layer.visible || layer.isAnimation())
+			&& (
+				(layerTop == mouseY+1 && mouseY < sourceBottom && sourceBottom < layerTop
+					&& sourceLeft <= mouseX && mouseX <= sourceRight)
+				|| (layerBottom == mouseY-1 && mouseY > sourceTop && sourceTop > layerBottom
+					&& sourceLeft <= mouseX && mouseX <= sourceRight)
+				|| (layerLeft == mouseX+1 && mouseX < sourceRight && sourceRight < layerLeft
+					&& sourceTop <= mouseY && mouseY <= sourceBottom)
+				|| (layerBottom == mouseX-1 && mouseX > sourceLeft && sourceLeft > layerRight
+					&& sourceTop <= mouseY && mouseY <= sourceBottom)
+			))
+		{
+			return true;
+		}
+		return false;
 	},
 
 	afterAttach: function()
@@ -657,7 +682,15 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 
 	onButtonMouseenter: function(event)
 	{
-		var self = this;
+		var self = this, i, item;
+		for (i in this.parentMenu.items)
+		{
+			item = this.parentMenu.items[i];
+			if (item.menu && item != this && item.isMouseenterBug(event, item, self))
+				return;
+		}
+		self.setHighlighted(true);
+		self.setHighlightedOnMenuHide = false;
 		if (self.menu && self.active)
 		{
 			if (self.parentMenu.type === "hover")
@@ -668,8 +701,6 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 				self.menu.show({animate: false});
 			}
 		}
-		self.setHighlighted(true);
-		self.setHighlightedOnMenuHide = false;
 	},
 
 	onButtonMouseleave: function(event)
