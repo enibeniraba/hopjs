@@ -172,7 +172,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	create: function(params)
 	{
-		var self = this;
+		var self = this, date;
 		self.defaultLayerParams = self.getDefaultLayerParams();
 		self.defaultI18n = self.getDefaultI18n();
 		self.mousedown = false;
@@ -208,7 +208,20 @@ hop.inherit(hop.datepicker, hop.widget, {
 		}
 		if (self.date === null)
 		{
-			self.setDate(new Date());
+			date = new Date();
+			if (self.minDate !== null && date.getTime() < self.minDate.getTime())
+			{
+				date.setYear(self.minDate.getFullYear());
+				date.setMonth(self.minDate.getMonth());
+				date.setDate(self.minDate.getDate());
+			}
+			else if (self.maxDate !== null && date.getTime() > self.maxDate.getTime())
+			{
+				date.setYear(self.maxDate.getFullYear());
+				date.setMonth(self.maxDate.getMonth());
+				date.setDate(self.maxDate.getDate());
+			}
+			self.setDate(date);
 			self.picked = false;
 		}
 		if (params && def(params.picked))
@@ -263,17 +276,28 @@ hop.inherit(hop.datepicker, hop.widget, {
 		$(dot_class_prefix+"button-clean", self.node).attr("title", self.i18n.clean);
 	},
 
+	configureDate: function(date)
+	{
+		try
+		{
+			this.setDate(date);
+		}
+		catch (error)
+		{
+		}
+	},
+
 	setDate: function(date, pick)
 	{
 		var self = this;
 		date = self.validateDate(date);
-		if (!self.date)
-			self.date = new Date();
 		if (self.minDate !== null && date.getTime() < self.minDate.getTime()
 			|| self.maxDate !== null && date.getTime() > self.maxDate.getTime())
 		{
-			return;
+			throw new Error("Date out of range: "+date);
 		}
+		if (!self.date)
+			self.date = new Date();
 		self.date.setTime(date.getTime());
 		if (pick)
 			self.picked = true;
@@ -305,6 +329,35 @@ hop.inherit(hop.datepicker, hop.widget, {
 		return date;
 	},
 
+	dateChange: function()
+	{
+		var self = this;
+		if (self.input)
+		{
+			if (self.keyupInput)
+				self.keyupInput = false;
+			else if (self.updateInputOnChange)
+				self.updateInput();
+		}
+		self.onDateChange();
+	},
+
+	onDateChange: function()
+	{
+		this.trigger("dateChange");
+	},
+
+	configureMinDate: function(date)
+	{
+		try
+		{
+			this.setMinDate(date);
+		}
+		catch (error)
+		{
+		}
+	},
+
 	setMinDate: function(date)
 	{
 		var self = this, prevTime, picked = self.picked;
@@ -316,8 +369,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			date.setHours(0);
 			date.setMinutes(0);
 			date.setSeconds(0);
-			if (self.maxDate !== null && date > self.maxDate)
-				return;
+			if (self.maxDate !== null && date.getTime() > self.maxDate.getTime())
+				throw new Error("minDate can't be more than maxDate");
 
 			self.minDate = new Date();
 			self.minDate.setTime(date.getTime());
@@ -325,6 +378,17 @@ hop.inherit(hop.datepicker, hop.widget, {
 				self.setDay(self.minDate.getFullYear(), self.minDate.getMonth(), self.minDate.getDate());
 		}
 		self.updateHtml();
+	},
+
+	configureMaxDate: function(date)
+	{
+		try
+		{
+			this.setMaxDate(date);
+		}
+		catch (error)
+		{
+		}
 	},
 
 	setMaxDate: function(date)
@@ -338,8 +402,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			date.setHours(23);
 			date.setMinutes(59);
 			date.setSeconds(59);
-			if (self.minDate !== null && date < self.minDate)
-				return;
+			if (self.minDate !== null && date.getTime() < self.minDate.getTime())
+				throw new Error("maxDate can't be less than minDate");
 
 			self.maxDate = new Date();
 			self.maxDate.setTime(date.getTime());
@@ -1146,24 +1210,6 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 		this.setDate(date, pick);
 		return true;
-	},
-
-	dateChange: function()
-	{
-		var self = this;
-		if (self.input)
-		{
-			if (self.keyupInput)
-				self.keyupInput = false;
-			else if (self.updateInputOnChange)
-				self.updateInput();
-		}
-		self.onDateChange();
-	},
-
-	onDateChange: function()
-	{
-		this.trigger("dateChange");
 	},
 
 	updateHtml: function()

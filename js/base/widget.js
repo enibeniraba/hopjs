@@ -68,7 +68,9 @@ hop.widget.prototype = {
 			if (def(this.defaults[param]) || $.inArray(param, this.virtualParams) != -1)
 			{
 				suffix = hop.string.upperCaseFirstChar(param);
-				if (typeof this["set"+suffix] == "function")
+				if (typeof this["configure"+suffix] == "function")
+					this["configure"+suffix](params[param]);
+				else if (typeof this["set"+suffix] == "function")
 					this["set"+suffix](params[param]);
 				else
 					this[param] = params[param];
