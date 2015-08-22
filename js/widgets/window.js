@@ -876,7 +876,10 @@ hop.inherit(hop.window, hop.widget, {
 				this.onResize();
 			}
 			else if (this.updatePositionOnWindowResize && !this.moved && !this.resized)
+			{
 				this.layer.updatePosition(true);
+				this.layer.updatePosition(true);
+			}
 		}
 	},
 
