@@ -6,6 +6,7 @@
 	background: #fff;
 	line-height: 1;
 	box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 2px -2px;
+	font: normal normal normal 14px/1 Arial;
 }
 
 .hop-dropdown-menu .hop-dropdown-menu-offset
@@ -27,12 +28,20 @@
 {
 	display: block;
 	position: relative;
-	padding: 5px 20px 5px 28px;
+	padding: 0 20px 0 28px;
 	background-repeat: no-repeat;
 	background-position: 5px center;
 	white-space: nowrap;
 	cursor: pointer;
 	z-index: 2;
+	line-height: 18px;
+}
+
+.hop-dropdown-menu .hop-dropdown-menu-button-inner
+{
+	padding: 4px 0 4px 0;
+	background-repeat: no-repeat;
+	background-position: right center;
 }
 
 .hop-dropdown-menu .hop-dropdown-menu-button,
@@ -63,7 +72,7 @@
 .hop-dropdown-menu .hop-dropdown-menu-button.hop-dropdown-menu-parent .hop-dropdown-menu-button-inner
 {
 	padding-right: 20px;
-	background: url(../images/dropdownmenusub.png) right center no-repeat;
+	background-image: url(../images/dropdownmenusub.png);
 }
 
 .hop-dropdown-menu .hop-dropdown-menu-button.hop-dropdown-menu-inactive

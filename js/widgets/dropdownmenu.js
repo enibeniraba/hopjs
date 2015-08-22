@@ -1037,9 +1037,10 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 
 	setText: function(text)
 	{
+		text = String(text);
 		this.text = text;
 		if (this.node)
-			this.buttonTextNode.innerHTML = text;
+			this.buttonTextNode.innerHTML = (text === "" ? "&nbsp;" : text);
 	},
 
 	setIcon: function(icon)

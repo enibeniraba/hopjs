@@ -1,8 +1,7 @@
 .hop-menu
 {
 	min-height: 0;
-	background: #fff;
-	line-height: 1;
+	font: normal normal normal 14px/1 Arial;
 }
 
 .hop-menu:before,
@@ -27,11 +26,12 @@
 .hop-menu .hop-menu-button
 {
 	display: block;
-	padding: 5px 8px 5px 8px;
+	padding: 4px 8px;
 	background-repeat: no-repeat;
 	background-position: 5px center;
 	white-space: nowrap;
 	cursor: pointer;
+	line-height: 18px;
 }
 
 .hop-menu .hop-menu-button.hop-menu-icon
@@ -89,7 +89,7 @@
 .hop-menu .hop-menu-separator div
 {
 	margin: 0 4px;
-	padding: 5px 0;
+	padding: 6px 0;
 	width: 1px;
 	background-color: #ccc;
 }

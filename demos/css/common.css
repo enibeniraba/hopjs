@@ -1,0 +1,20 @@
+body
+{
+	font: normal normal normal 14px/1 Arial;
+}
+
+p
+{
+	margin: 0;
+	line-height: 20px;
+}
+
+p+p
+{
+	margin: 10px 0 0 0;
+}
+
+input, button
+{
+	font: normal normal normal 14px/normal Arial;
+}

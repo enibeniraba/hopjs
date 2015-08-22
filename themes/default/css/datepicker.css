@@ -5,7 +5,7 @@
 	background-color: #fff;
 	border: solid 1px #ccc;
 	box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 2px -2px;
-	font: normal normal normal 13px/13px Arial;
+	font: normal normal normal 14px/1 Arial;
 }
 
 .hop-datepicker-button:hover,
@@ -51,7 +51,7 @@
 .hop-datepicker-title-wrapper
 {
 	margin: 0 28px;
-	padding: 5px 5px 4px 5px;
+	padding: 4px;
 	white-space: nowrap;
 	cursor: pointer;
 }
@@ -121,10 +121,10 @@
 .hop-datepicker-days-head > div
 {
 	float: left;
-	padding: 7px 6px 6px 6px;
+	padding: 6px;
 	width: 20px;
 	text-align: right;
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: bold;
 	color: #666;
 }
@@ -132,7 +132,7 @@
 .hop-datepicker-days-body > div > div
 {
 	float: left;
-	padding: 7px 6px 6px 6px;
+	padding: 6px;
 	width: 20px;
 	text-align: right;
 }
@@ -159,7 +159,7 @@
 
 .hop-datepicker-days-day.hop-datepicker-days-picked
 {
-	padding: 6px 5px 5px 5px;
+	padding: 5px;
 }
 
 .hop-datepicker-days-other-month
@@ -200,7 +200,7 @@
 .hop-datepicker-years > div > div
 {
 	float: left;
-	padding: 24px 0 22px 0;
+	padding: 23px 0;
 	width: 56px;
 	text-align: center;
 }
@@ -214,7 +214,7 @@
 .hop-datepicker-months > div > div.hop-datepicker-months-picked,
 .hop-datepicker-years > div > div.hop-datepicker-years-picked
 {
-	padding: 23px 0 21px 0;
+	padding: 22px 0;
 	width: 54px;
 }
 
@@ -267,7 +267,7 @@
 	width: 22px;
 	height: 22px;
 	border: solid 1px #ccc;
-	font: normal normal normal 13px/normal Arial;
+	font: normal normal normal 14px/normal Arial;
 	text-align: center;
 }
 
@@ -281,7 +281,7 @@
 .hop-datepicker-time-picker-ampm
 {
 	margin-left: 5px;
-	padding-top: 29px;
+	padding-top: 28px;
 }
 
 .hop-datepicker-time-picker-ampm div
@@ -310,7 +310,7 @@
 .hop-datepicker-time-title
 {
 	margin: 0 28px;
-	padding: 6px 5px 5px 5px;
+	padding: 5px;
 	cursor: pointer;
 }
 
