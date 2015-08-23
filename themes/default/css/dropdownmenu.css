@@ -108,11 +108,12 @@
 
 .hop-dropdown-menu .hop-dropdown-menu-group
 {
-	padding: 5px 20px 5px 28px;
+	padding: 4px 20px 4px 28px;
 	background-color: #eee;
 	background-repeat: no-repeat;
 	background-position: 5px center;
 	white-space: nowrap;
+	line-height: 18px;
 }
 
 .hop-dropdown-menu .hop-dropdown-menu-separator div
