@@ -58,15 +58,15 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 	{
 		return {
 			position: "absolute",
-			elementAlignY: "top",
+			elementAlignY: "bottom",
 			elementAlignX: "left",
-			alignY: "bottom",
-			alignX: "right",
-			offsetY: 0,
-			offsetX: 0,
+			alignY: "top",
+			alignX: "left",
+			offsetTop: 0,
+			offsetBottom: 0,
+			offsetLeft: 0,
+			offsetRight: 0,
 			reverse: true,
-			reverseOffsetY: 0,
-			reverseOffsetX: 0,
 			jail: true,
 			borderElement: "window"
 		};
@@ -75,6 +75,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 	getDefaultSubmenuLayerParams: function()
 	{
 		return {
+			elementAlignY: "top",
 			elementAlignX: "right"
 		};
 	},
@@ -126,7 +127,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 			layerParams = $.extend(true, {}, self.defaultLayerParams);
 		if (self.layerParams)
 			$.extend(true, layerParams, self.layerParams);
-		layerParams.paramsFunction = self.layerParamsFunction();
+		/*layerParams.paramsFunction = self.layerParamsFunction();*/
 		layer = new hop.layer(layerParams);
 		self.layer = layer;
 		layer.node.className = self.className;
@@ -179,17 +180,17 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		});
 	},
 
-	layerParamsFunction: function()
+	/*layerParamsFunction: function()
 	{
 		var self = this;
 		return function(layer)
 		{
 			var topMenu = self.getTopMenu(), $offset, offset,
 				result = {
-					offsetY: layer.offsetY,
-					offsetX: layer.offsetX,
-					reverseOffsetY: layer.reverseOffsetY,
-					reverseOffsetX: layer.reverseOffsetX
+					offsetTop: layer.offsetTop,
+					offsetBottom: layer.offsetBottom,
+					offsetLeft: layer.offsetLeft,
+					offsetRight: layer.offsetRight
 				};
 			if (self.nodeOffset || self.nodeOffset === null
 				&& topMenu && topMenu != self && topMenu.submenuNodeOffset)
@@ -197,20 +198,20 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 				$offset = $(">.hop-dropdown-menu-offset", layer.node);
 				offset = parseInt($offset.css("top"));
 				if (!isNaN(offset))
-					result.offsetY = offset;
-				offset = parseInt($offset.css("left"));
-				if (!isNaN(offset))
-					result.offsetX = offset;
+					result.offsetTop = offset;
 				offset = parseInt($offset.css("bottom"));
 				if (!isNaN(offset))
-					result.reverseOffsetY = offset;
+					result.offsetBottom = offset;
+				offset = parseInt($offset.css("left"));
+				if (!isNaN(offset))
+					result.offsetLeft = offset;
 				offset = parseInt($offset.css("right"));
 				if (!isNaN(offset))
-					result.reverseOffsetX = offset;
+					result.offsetRight = offset;
 			}
 			return result;
 		};
-	},
+	},*/
 
 	onLayerShowBefore: function()
 	{
@@ -752,8 +753,8 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 
 	updateLayerParams: function()
 	{
-		var self = this, i, layerParams = {},
-			topMenu = self.getTopMenu();
+		var self = this, topMenu = self.getTopMenu(),
+			layerParams = {}, $offset, offset, i;
 		$.extend(true, layerParams, self.defaultLayerParams);
 		if (topMenu && topMenu != self)
 			$.extend(true, layerParams, topMenu.defaultSubmenuLayerParams, topMenu.submenuLayerParams);
@@ -765,6 +766,23 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 				element: self.parentItem.buttonNode,
 				parentNode: self.parentItem.node
 			});
+		}
+		if (self.nodeOffset || self.nodeOffset === null
+			&& topMenu && topMenu != self && topMenu.submenuNodeOffset)
+		{
+			$offset = $(">.hop-dropdown-menu-offset", self.layer.node);
+			offset = parseInt($offset.css("top"));
+			if (!isNaN(offset))
+				layerParams.offsetTop = offset;
+			offset = parseInt($offset.css("bottom"));
+			if (!isNaN(offset))
+				layerParams.offsetBottom = offset;
+			offset = parseInt($offset.css("left"));
+			if (!isNaN(offset))
+				layerParams.offsetLeft = offset;
+			offset = parseInt($offset.css("right"));
+			if (!isNaN(offset))
+				layerParams.offsetRight = offset;
 		}
 		self.layer.configure(layerParams);
 		for (i in self.items)

@@ -39,8 +39,10 @@ hop.inherit(hop.tooltip, hop.widget, {
 	{
 		return {
 			position: "fixed",
-			alignY: "bottom",
-			alignX: "right",
+			elementAlignY: "bottom",
+			elementAlignX: "left",
+			alignY: "top",
+			alignX: "left",
 			reverse: true,
 			jail: true,
 			borderElement: "window"
@@ -51,22 +53,18 @@ hop.inherit(hop.tooltip, hop.widget, {
 	{
 		return {
 			element: "virtual",
-			offsetY: 15,
-			offsetX: 15,
-			reverseOffsetY: 5,
-			reverseOffsetX: 5
+			offsetTop: -15,
+			offsetBottom: 15,
+			offsetLeft: 15,
+			offsetRight: -15
 		};
 	},
 
 	getDefaultLayerParamsTarget: function()
 	{
 		return {
-			elementAlignY: "bottom",
-			elementAlignX: "left",
-			alignY: "bottom",
-			alignX: "right",
-			offsetY: 5,
-			reverseOffsetY: 5
+			offsetTop: -5,
+			offsetBottom: 5
 		};
 	},
 

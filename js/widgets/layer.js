@@ -51,16 +51,18 @@ hop.inherit(hop.layer, hop.widget, {
 				height: 0,
 				width: 0
 			},
-			elementAlignY: "top",
-			elementAlignX: "left",
-			alignY: "bottom",
-			alignX: "right",
-			offsetY: 0,
-			offsetX: 0,
-			reverseY: false,
-			reverseX: false,
-			reverseOffsetY: 0,
-			reverseOffsetX: 0,
+			elementAlignY: 0,
+			elementAlignX: 0,
+			alignY: 0,
+			alignX: 0,
+			offsetTop: 0,
+			offsetBottom: 0,
+			offsetLeft: 0,
+			offsetRight: 0,
+			reverseTop: false,
+			reverseBottom: false,
+			reverseLeft: false,
+			reverseRight: false,
 			jailTop: false,
 			jailBottom: false,
 			jailLeft: false,
@@ -72,7 +74,6 @@ hop.inherit(hop.layer, hop.widget, {
 				height: 0,
 				width: 0
 			},
-			paramsFunction: null,
 			overlay: false,
 			overlayClass: "hop-layer-overlay",
 			overlayTransparentClass: "hop-layer-overlay-transparent",
@@ -87,7 +88,8 @@ hop.inherit(hop.layer, hop.widget, {
 			overlayAnimationHide: null,
 			overlayAnimationHideParams: null,
 			animate: true,
-			parentNode: null
+			parentNode: null,
+			altUpdatePosition: null
 		};
 	},
 
@@ -95,6 +97,8 @@ hop.inherit(hop.layer, hop.widget, {
 	{
 		return [
 			"reverse",
+			"reverseY",
+			"reverseX",
 			"jail",
 			"jailY",
 			"jailX"
@@ -126,8 +130,8 @@ hop.inherit(hop.layer, hop.widget, {
 			"jail",
 			"jailX",
 			"jailY",
-			"paramsFunction",
-			"parentNode"
+			"parentNode",
+			"altUpdatePosition"
 		];
 	},
 
@@ -143,6 +147,7 @@ hop.inherit(hop.layer, hop.widget, {
 			"hideBefore",
 			"hideAnimationBefore",
 			"hide",
+			"updatePositionBefore",
 			"updatePosition",
 			"moveOnTop"
 		];
@@ -182,6 +187,13 @@ hop.inherit(hop.layer, hop.widget, {
 		self.setOverlay(self.overlay);
 	},
 
+	afterCreate: function(params)
+	{
+		hop.widget.prototype.afterCreate.apply(self, arguments);
+		if (params.show)
+			this.show();
+	},
+
 	configure: function(params)
 	{
 		if (!params)
@@ -202,6 +214,50 @@ hop.inherit(hop.layer, hop.widget, {
 		}
 	},
 
+	setElementAlignY: function(align)
+	{
+		if (align === "top")
+			align = -0.5;
+		else if (align === "center")
+			align = 0;
+		else if (align === "bottom")
+			align = 0.5;
+		this.elementAlignY = align;
+	},
+
+	setElementAlignX: function(align)
+	{
+		if (align === "left")
+			align = -0.5;
+		else if (align === "center")
+			align = 0;
+		else if (align === "right")
+			align = 0.5;
+		this.elementAlignX = align;
+	},
+
+	setAlignY: function(align)
+	{
+		if (align === "top")
+			align = 0.5;
+		else if (align === "center")
+			align = 0;
+		else if (align === "bottom")
+			align = -0.5;
+		this.alignY = align;
+	},
+
+	setAlignX: function(align)
+	{
+		if (align === "left")
+			align = 0.5;
+		else if (align === "center")
+			align = 0;
+		else if (align === "right")
+			align = -0.5;
+		this.alignX = align;
+	},
+
 	setVirtualElement: function(value)
 	{
 		$.extend(this.virtualElement, value);
@@ -214,7 +270,17 @@ hop.inherit(hop.layer, hop.widget, {
 
 	setReverse: function(value)
 	{
-		this.reverseY = this.reverseX = value;
+		this.reverseTop = this.reverseBottom = this.reverseLeft = this.reverseRight = value;
+	},
+
+	setReverseY: function(value)
+	{
+		this.reverseTop = this.reverseBottom = value;
+	},
+
+	setReverseX: function(value)
+	{
+		this.reverseLeft = this.reverseRight = value;
 	},
 
 	setJail: function(value)
@@ -273,14 +339,6 @@ hop.inherit(hop.layer, hop.widget, {
 		});
 	},
 
-	setOverlayClass: function(value)
-	{
-		var self = this, prevClass = self.overlayClass;
-		self.overlayClass = value;
-		if (self.overlayNode)
-			self.overlayNode.className = value;
-	},
-
 	setOverlayTransparent: function(transparent)
 	{
 		var self = this;
@@ -315,12 +373,17 @@ hop.inherit(hop.layer, hop.widget, {
 		self.onShowCall(params);
 		if (self.visible)
 		{
-			if (self.isAnimation())
+			if (!self.isAnimation())
+				return;
+
+			if (params.force)
+				self.finishAnimation(true);
+			else
 			{
 				self.queue = true;
 				self.queueParams = params;
+				return;
 			}
-			return;
 		}
 		else if (self.isAnimation())
 		{
@@ -442,12 +505,17 @@ hop.inherit(hop.layer, hop.widget, {
 		self.onHideCall(params);
 		if (!self.visible)
 		{
-			if (self.isAnimation())
+			if (!self.isAnimation())
+				return;
+
+			if (params.force)
+				self.finishAnimation(true);
+			else
 			{
 				self.queue = true;
 				self.queueParams = params;
+				return;
 			}
-			return;
 		}
 		else if (self.isAnimation())
 		{
@@ -570,264 +638,110 @@ hop.inherit(hop.layer, hop.widget, {
 
 	updatePosition: function(move)
 	{
-		var self = this,
-			element = self.element,
-			virtualElement = self.virtualElement,
-			elementAlignY = self.elementAlignY,
-			elementAlignX = self.elementAlignX,
-			alignY = self.alignY,
-			alignX = self.alignX,
-			offsetY = self.offsetY,
-			offsetX = self.offsetX,
-			reverseY = self.reverseY,
-			reverseX = self.reverseX,
-			reverseOffsetY = self.reverseOffsetY,
-			reverseOffsetX = self.reverseOffsetX,
-			jailTop = self.jailTop,
-			jailBottom = self.jailBottom,
-			jailLeft = self.jailLeft,
-			jailRight = self.jailRight,
-			borderElement = self.borderElement,
-			virtualBorderElement = self.virtualBorderElement,
-			$document = $(document),
-			$window = $(window),
-			$node = self.$node,
-			height = $node.outerHeight(),
-			width = $node.outerWidth(),
-			elementTop = 0, elementLeft = 0, elementHeight = 0, elementWidth = 0,
-			eay = 0, eax = 0, ay = 0, ax = 0,
-			borderTop = 0, borderBottom = 0, borderLeft = 0, borderRight = 0,
-			params, rect, $element, offset, top, left, calcBorderY, calcBorderX,
-			reverseTop, reverseLeft, parentOffset, rawTop, rawLeft, layerOffset;
+		var self = this;
+		if (self.node.style.display === "none")
+			return;
 
-		if (self.paramsFunction)
-		{
-			params = self.paramsFunction(self);
-			if (params)
-			{
-				if (def(params.element))
-					element = params.element;
-				if (def(params.virtualElement))
-					$.extend(virtualElement, params.virtualElement);
-				if (def(params.elementAlignY))
-					elementAlignY = params.elementAlignY;
-				if (def(params.elementAlignX))
-					elementAlignX = params.elementAlignX;
-				if (def(params.alignY))
-					alignY = params.alignY;
-				if (def(params.alignX))
-					alignX = params.alignX;
-				if (def(params.offsetX))
-					offsetX = params.offsetX;
-				if (def(params.offsetY))
-					offsetY = params.offsetY;
-				if (def(params.reverseX))
-					reverseX = params.reverseX;
-				if (def(params.reverseY))
-					reverseY = params.reverseY;
-				if (def(params.reverseOffsetX))
-					reverseOffsetX = params.reverseOffsetX;
-				if (def(params.reverseOffsetY))
-					reverseOffsetY = params.reverseOffsetY;
-				if (def(params.jailTop))
-					jailTop = params.jailTop;
-				if (def(params.jailBottom))
-					jailBottom = params.jailBottom;
-				if (def(params.jailLeft))
-					jailLeft = params.jailLeft;
-				if (def(params.jailRight))
-					jailRight = params.jailRight;
-				if (def(params.borderElement))
-					borderElement = params.borderElement;
-				if (def(params.virtualBorderElement))
-					$.extend(virtualBorderElement, params.virtualBorderElement);
-			}
-		}
-
+		self.finishAnimation(true);
+		self.onUpdatePositionBefore();
 		self.resetState();
-
-		if (typeof element === "string")
-		{
-			if (element === "document")
-			{
-				elementHeight = $document.outerHeight();
-				elementWidth = $document.outerWidth();
-			}
-			else if (element === "window")
-			{
-				elementTop = $window.scrollTop();
-				elementLeft = $window.scrollLeft();
-				elementHeight = $window.outerHeight();
-				elementWidth = $window.outerWidth();
-			}
-			else if (element === "virtual")
-			{
-				elementTop = virtualElement.top;
-				elementLeft = virtualElement.left;
-				elementHeight = virtualElement.height;
-				elementWidth = virtualElement.width;
-			}
-		}
-		else if (typeof element === "function")
-		{
-			rect = element(self);
-			elementTop = rect.top;
-			elementLeft = rect.left;
-			elementHeight = rect.height;
-			elementWidth = rect.width;
-		}
+		if (typeof self.altUpdatePosition === "function")
+			self.altUpdatePosition(self, move);
 		else
+			self.updatePositionDefault(move);
+		self.onUpdatePosition();
+	},
+
+	resetState: function()
+	{
+		this.state = {
+			top: null,
+			left: null,
+			height: null,
+			width: null,
+			reverseTop: false,
+			reverseBottom: false,
+			reverseLeft: false,
+			reverseRight: false,
+			jailTop: false,
+			jailBottom: false,
+			jailLeft: false,
+			jailRight: false
+		};
+	},
+
+	updatePositionDefault: function(move)
+	{
+		var self = this, $window = $(window),
+			height = self.$node.outerHeight(),
+			width = self.$node.outerWidth(),
+			elementRect, borderRect, top, left, reverse, parentOffset, rawTop, rawLeft, layerOffset;
+
+		elementRect = self.calcRect(self.element, self.virtualElement);
+		borderRect = self.calcRect(self.borderElement, self.virtualBorderElement);
+
+		top = elementRect.top+elementRect.height*(self.elementAlignY+0.5)+height*(self.alignY-0.5);
+		if (self.elementAlignY < 0)
+			top += self.offsetTop;
+		else if (self.elementAlignY > 0)
+			top += self.offsetBottom;
+		if (self.reverseTop && top < borderRect.top || self.reverseBottom && top+height > borderRect.bottom)
 		{
-			$element = $(element);
-			offset = $element.offset();
-			elementTop = offset.top;
-			elementLeft = offset.left;
-			elementHeight = $element.outerHeight();
-			elementWidth = $element.outerWidth();
-		}
-
-		if (elementAlignY === "top")
-			eay = -1;
-		else if (elementAlignY === "bottom")
-			eay = 1;
-
-		if (elementAlignX === "left")
-			eax = -1;
-		else if (elementAlignX === "right")
-			eax = 1;
-
-		if (alignY === "top")
-			ay = -1;
-		else if (alignY === "bottom")
-			ay = 1;
-
-		if (alignX === "left")
-			ax = -1;
-		else if (alignX === "right")
-			ax = 1;
-
-		top = elementTop+height*(ay-1)/2+offsetY*ay+elementHeight*(eay+1)/2;
-		left = elementLeft+width*(ax-1)/2+offsetX*ax+elementWidth*(eax+1)/2;
-
-		calcBorderY = (reverseY || jailTop || jailBottom);
-		calcBorderX = (reverseX || jailLeft || jailRight);
-		if (calcBorderY || calcBorderX)
-		{
-			if (typeof borderElement === "string")
+			reverse = elementRect.top+elementRect.height*(-self.elementAlignY+0.5)+height*(-self.alignY-0.5);
+			if (self.elementAlignY < 0)
+				reverse += self.offsetBottom;
+			else if (self.elementAlignY > 0)
+				reverse += self.offsetTop;
+			if (reverse >= borderRect.top && reverse+height <= borderRect.bottom)
 			{
-				if (borderElement === "document")
-				{
-					if (calcBorderY)
-						borderBottom = borderTop+$document.height();
-					if (calcBorderX)
-						borderRight = borderLeft+$document.width();
-				}
-				else if (borderElement === "window")
-				{
-					if (calcBorderY)
-					{
-						borderTop = $window.scrollTop();
-						borderBottom = borderTop+$window.height();
-					}
-					if (calcBorderX)
-					{
-						borderLeft = $window.scrollLeft();
-						borderRight = borderLeft+$window.width();
-					}
-				}
-				else if (borderElement === "virtual")
-				{
-					if (calcBorderY)
-					{
-						borderTop = virtualBorderElement.top;
-						borderBottom = borderTop+virtualBorderElement.height;
-					}
-					if (calcBorderX)
-					{
-						borderLeft = virtualBorderElement.left;
-						borderRight = borderLeft+virtualBorderElement.width;
-					}
-				}
-			}
-			else if (typeof borderElement === "function")
-			{
-				rect = borderElement(self);
-				if (calcBorderY)
-				{
-					borderTop = rect.top;
-					borderLeft = rect.left;
-				}
-				if (calcBorderX)
-				{
-					borderBottom = borderTop+rect.height;
-					borderRight = borderLeft+rect.width;
-				}
-			}
-			else
-			{
-				$element = $(borderElement);
-				offset = $element.offset();
-				if (calcBorderY)
-				{
-					borderTop = offset.top;
-					borderBottom = borderTop+$element.outerHeight();
-				}
-				if (calcBorderX)
-				{
-					borderLeft = offset.left;
-					borderRight = borderLeft+$element.outerWidth();
-				}
-			}
-		}
-
-		if (reverseY && (ay != 0 || eay != 0) && (top+height > borderBottom || top < borderTop))
-		{
-			reverseTop = elementTop-height*(ay+1)/2-reverseOffsetY*ay-elementHeight*(eay-1)/2;
-			if (reverseTop+height <= borderBottom && reverseTop >= borderTop)
-			{
-				top = reverseTop;
-				if (top < borderTop)
-					self.state.reverse.top = true;
+				if (top < borderRect.top)
+					self.state.reverseTop = true;
 				else
-					self.state.reverse.bottom = true;
+					self.state.reverseBottom = true;
+				top = reverse;
 			}
 		}
-
-		if (reverseX && (ax != 0 || eax != 0) && (left+width > borderRight || left < borderLeft))
+		if (self.jailBottom && top+height > borderRect.bottom)
 		{
-			reverseLeft = elementLeft-width*(ax+1)/2-reverseOffsetX*ax-elementWidth*(eax-1)/2;
-			if (reverseLeft+width <= borderRight && reverseLeft >= borderLeft)
+			top = borderRect.bottom-height;
+			self.state.jailBottom = true;
+		}
+		if (self.jailTop && top < borderRect.top)
+		{
+			top = borderRect.top;
+			self.state.jailTop = true;
+		}
+
+		left = elementRect.left+elementRect.width*(self.elementAlignX+0.5)+width*(self.alignX-0.5);
+		if (self.elementAlignX < 0)
+			left += self.offsetLeft;
+		else if (self.elementAlignX > 0)
+			left += self.offsetRight;
+		if (self.reverseLeft && left < borderRect.left || self.reverseRight && left+width > borderRect.right)
+		{
+			reverse = elementRect.left+elementRect.width*(-self.elementAlignX+0.5)+width*(-self.alignX-0.5);
+			if (self.elementAlignX < 0)
+				reverse += self.offsetRight;
+			else if (self.elementAlignX > 0)
+				reverse += self.offsetLeft;
+			if (reverse >= borderRect.left && reverse+width <= borderRect.right)
 			{
-				left = reverseLeft;
-				if (left < borderLeft)
-					self.state.reverse.left = true;
+				if (left < borderRect.left)
+					self.state.reverseLeft = true;
 				else
-					self.state.reverse.right = true;
+					self.state.reverseRight = true;
+				left = reverse;
 			}
 		}
-
-		if (jailBottom && top+height > borderBottom)
+		if (self.jailRight && left+width > borderRect.right)
 		{
-			top = borderBottom-height;
-			self.state.jail.bottom = true;
+			left = borderRect.right-width;
+			self.state.jailRight = true;
 		}
-
-		if (jailTop && top < borderTop)
+		if (self.jailLeft && left < borderRect.left)
 		{
-			top = borderTop;
-			self.state.jail.top = true;
-		}
-
-		if (jailRight && left+width > borderRight)
-		{
-			left = borderRight-width;
-			self.state.jail.right = true;
-		}
-
-		if (jailLeft && left < borderLeft)
-		{
-			left = borderLeft;
-			self.state.jail.left = true;
+			left = borderRect.left;
+			self.state.jailLeft = true;
 		}
 
 		if (self.position === "fixed")
@@ -849,7 +763,7 @@ hop.inherit(hop.layer, hop.widget, {
 			rawLeft = left-parentOffset.left;
 			self.node.style.top = rawTop+"px";
 			self.node.style.left = rawLeft+"px";
-			layerOffset = $node.offset();
+			layerOffset = self.$node.offset();
 			if (layerOffset.top != top)
 				self.node.style.top = Math.round(rawTop-(layerOffset.top-top))+"px";
 			if (layerOffset.left != left)
@@ -861,14 +775,70 @@ hop.inherit(hop.layer, hop.widget, {
 			self.node.style.left = Math.round(left)+"px";
 		}
 
-		$.extend(self.state, {
+		self.state.top = top;
+		self.state.left = left;
+		self.state.height = height;
+		self.state.width = width;
+	},
+
+	calcRect: function(element, virtualElement)
+	{
+		var $document = $(document),
+			$window = $(window),
+			top = left = height = width = 0,
+			$element, rect, offset;
+		if (typeof element === "string")
+		{
+			if (element === "document")
+			{
+				height = $document.outerHeight();
+				width = $document.outerWidth();
+			}
+			else if (element === "window")
+			{
+				top = $window.scrollTop();
+				left = $window.scrollLeft();
+				height = $window.outerHeight();
+				width = $window.outerWidth();
+			}
+			else if (element === "virtual")
+			{
+				top = virtualElement.top;
+				left = virtualElement.left;
+				height = virtualElement.height;
+				width = virtualElement.width;
+			}
+		}
+		else if (typeof element === "function")
+		{
+			rect = element(self);
+			top = rect.top;
+			left = rect.left;
+			height = rect.height;
+			width = rect.width;
+		}
+		else
+		{
+			$element = $(element);
+			offset = $element.offset();
+			top = offset.top;
+			left = offset.left;
+			height = $element.outerHeight();
+			width = $element.outerWidth();
+		}
+		return {
 			top: top,
+			bottom: top+height,
 			left: left,
+			right: left+width,
 			height: height,
 			width: width
-		});
+		};
+	},
 
-		self.onUpdatePosition();
+	onUpdatePositionBefore: function()
+	{
+		this.trigger("updatePositionBefore");
 	},
 
 	onUpdatePosition: function()
@@ -893,22 +863,6 @@ hop.inherit(hop.layer, hop.widget, {
 		this.trigger("moveOnTop", {
 			maxZIndex: maxZIndex
 		});
-	},
-
-	resetState: function()
-	{
-		this.state.reverse = {
-			top: false,
-			bottom: false,
-			left: false,
-			right: false
-		},
-		this.state.jail = {
-			top: false,
-			bottom: false,
-			left: false,
-			right: false
-		};
 	},
 
 	destroy: function()

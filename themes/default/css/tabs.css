@@ -5,7 +5,6 @@
 .hop-tabs .hop-tabs-head
 {
 	border-bottom: solid 1px #ccc;
-	padding: 0 6px;
 	min-height: 0;
 }
 
@@ -25,7 +24,6 @@
 .hop-tabs .hop-tabs-tab-button
 {
 	float: left;
-	margin: 1px 2px 0 2px;
 }
 
 .hop-tabs .hop-tabs-tab-button span
@@ -52,25 +50,16 @@
 
 .hop-tabs .hop-tabs-tab-button.hop-tabs-active
 {
-	margin-bottom: -1px;
-	border: solid 1px #ccc;
-	border-bottom-width: 0;
-	background-color: #fff;
-}
-
-.hop-tabs .hop-tabs-tab-button.hop-tabs-active span
-{
-	padding: 5px 7px 7px 7px;
+	background-color: #eee;
 }
 
 .hop-tabs .hop-tabs-tab-button.hop-tabs-active:hover span
 {
-	background-color: #fff;
+	background-color: #eee;
 }
 
 .hop-tabs .hop-tabs-body
 {
-	background: #fff;
 	overflow: auto;
 }
 

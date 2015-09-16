@@ -185,6 +185,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	afterCreate: function(params)
 	{
+		hop.widget.prototype.afterCreate.apply(self, arguments);
 		if (params.show)
 			this.show();
 	},

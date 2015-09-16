@@ -99,8 +99,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 		return {
 			position: "absolute",
 			elementAlignY: "bottom",
-			alignX: "right",
-			alignY: "bottom",
+			elementAlignX: "left",
+			alignX: "left",
+			alignY: "top",
 			jailX: true,
 			reverseY: true,
 			borderElement: "window"

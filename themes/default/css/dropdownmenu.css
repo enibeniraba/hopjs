@@ -14,8 +14,8 @@
 	display: none;
 	position: absolute;
 	top: -5px;
-	left: -2px;
-	bottom: -5px;
+	bottom: 5px;
+	left: 2px;
 	right: -2px;
 }
 
