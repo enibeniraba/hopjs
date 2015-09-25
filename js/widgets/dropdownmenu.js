@@ -180,39 +180,6 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		});
 	},
 
-	/*layerParamsFunction: function()
-	{
-		var self = this;
-		return function(layer)
-		{
-			var topMenu = self.getTopMenu(), $offset, offset,
-				result = {
-					offsetTop: layer.offsetTop,
-					offsetBottom: layer.offsetBottom,
-					offsetLeft: layer.offsetLeft,
-					offsetRight: layer.offsetRight
-				};
-			if (self.nodeOffset || self.nodeOffset === null
-				&& topMenu && topMenu != self && topMenu.submenuNodeOffset)
-			{
-				$offset = $(">.hop-dropdown-menu-offset", layer.node);
-				offset = parseInt($offset.css("top"));
-				if (!isNaN(offset))
-					result.offsetTop = offset;
-				offset = parseInt($offset.css("bottom"));
-				if (!isNaN(offset))
-					result.offsetBottom = offset;
-				offset = parseInt($offset.css("left"));
-				if (!isNaN(offset))
-					result.offsetLeft = offset;
-				offset = parseInt($offset.css("right"));
-				if (!isNaN(offset))
-					result.offsetRight = offset;
-			}
-			return result;
-		};
-	},*/
-
 	onLayerShowBefore: function()
 	{
 		if (this.parentItem)
