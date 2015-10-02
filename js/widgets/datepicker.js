@@ -68,10 +68,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			hideOnInputMousedown: false,
 			button: null,
 			attachToButton: true,
-			showOnButtonMousedown: false,
-			hideOnButtonMousedown: false,
-			showOnButtonClick: true,
-			hideOnButtonClick: true,
+			buttonMousedownAction: "",
+			buttonClickAction: "toggle",
 			hideOnDone: true,
 			hideOnDocumentMousedown: true,
 			updatePositionOnWindowResize: true,
@@ -675,31 +673,27 @@ hop.inherit(hop.datepicker, hop.widget, {
 		if (event.which != 1)
 			return;
 
-		var self = this;
-		if (self.showOnButtonMousedown)
-		{
-			if (self.hideOnButtonMousedown)
-				self.toggle();
-			else
-				self.show();
-		}
-		else if (self.hideOnButtonMousedown)
-			self.hide();
-		self.mousedown = true;
+		if (this.hideOnDocumentMousedown)
+			this.mousedown = true;
+		if (this.buttonMousedownAction === "show")
+			this.show();
+		else if (this.buttonMousedownAction === "hide")
+			this.hide();
+		else if (this.buttonMousedownAction === "toggle")
+			this.toggle();
 	},
 
 	onButtonClick: function(event)
 	{
-		var self = this;
-		if (self.showOnButtonClick)
-		{
-			if (self.hideOnButtonClick)
-				self.toggle();
-			else
-				self.show();
-		}
-		else if (self.hideOnButtonClick)
-			self.hide();
+		if (this.buttonMousedownAction !== "")
+			return;
+
+		if (this.buttonClickAction === "show")
+			this.show();
+		else if (this.buttonClickAction === "hide")
+			this.hide();
+		else if (this.buttonClickAction === "toggle")
+			this.toggle();
 	},
 
 	generateHtml: function()
