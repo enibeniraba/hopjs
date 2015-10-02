@@ -30,6 +30,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			locale: "",
 			className: null,
 			classPrefix: "hop-",
+			extraClassName: "",
 			container: null,
 			layerParams: null,
 			date: null,
@@ -63,7 +64,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			updateInputOnChange: true,
 			updateInputOnDone: true,
 			unpickOnInputClean: true,
-			unpickOnBadInput: true,
+			unpickOnInvalidInput: true,
 			hideOnInputMousedown: false,
 			button: null,
 			attachToButton: true,
@@ -190,11 +191,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.pickerAnimation = null;
 		self.time12HourFormatCache = null;
 		self.time12HourFormatCacheFormat = "";
+		self.dontUpdateDateHtml = false;
 		hop.widget.prototype.create.apply(self, arguments);
-		if (self.className === null)
-			self.className = self.classPrefix+"datepicker";
 		if (self.locale === "")
 			self.setLocale();
+		if (self.className === null)
+			self.className = self.classPrefix+"datepicker";
 		if (self.input)
 		{
 			try
@@ -244,7 +246,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this;
 		if (!def(locale))
 			locale = "";
-		if (typeof locale != "string")
+		if (typeof locale !== "string")
 			return;
 
 		self.locale = locale;
@@ -295,7 +297,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		if (self.minDate !== null && date.getTime() < self.minDate.getTime()
 			|| self.maxDate !== null && date.getTime() > self.maxDate.getTime())
 		{
-			throw new Error("Date out of range: "+date);
+			throw new Error("Date is out of range: "+date);
 		}
 		if (!self.date)
 			self.date = new Date();
@@ -607,7 +609,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 	{
 		var self = this;
 		self.keyupInput = true;
-		if (!self.setDateStr(self.input.value, true) && self.unpickOnBadInput)
+		if (!self.setDateStr(self.input.value, true) && self.unpickOnInvalidInput)
 		{
 			self.picked = false;
 			self.updateHtml();
@@ -674,8 +676,6 @@ hop.inherit(hop.datepicker, hop.widget, {
 			return;
 
 		var self = this;
-		if (self.showOnDblclick || self.hideOnDblclick)
-			event.preventDefault();
 		if (self.showOnButtonMousedown)
 		{
 			if (self.hideOnButtonMousedown)
@@ -704,7 +704,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	generateHtml: function()
 	{
-		var self = this, node, layer, layerParams = {}, element, html, daysDead = '', i, j,
+		var self = this, node, layer, layerParams = {}, element, html,
 			dotClassPrefix = "."+self.classPrefix+"datepicker-";
 		if (self.container)
 		{
@@ -737,6 +737,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.node = node;
 		self.layer = layer;
 		node.className = self.className;
+		if (self.extraClassName !== "")
+			node.className += " "+self.extraClassName;
 		if (self.showWeekNumber)
 			node.className += " "+self.classPrefix+"datepicker-show-week-number";
 		html = '\
@@ -1101,7 +1103,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 		date.setHours(hours);
 		date.setMinutes(minutes);
 		date.setSeconds(seconds);
+		this.dontUpdateDateHtml = true;
 		this.setDate(date);
+		this.dontUpdateDateHtml = false;
 		if (!self.picked)
 			this.updateTimeHtml();
 	},
@@ -1221,7 +1225,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	updateDateHtml: function()
 	{
-		if (!this.node)
+		if (!this.node || this.dontUpdateDateHtml)
 			return;
 
 		var self = this, year = self.date.getFullYear(), month = self.date.getMonth();
