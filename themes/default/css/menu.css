@@ -61,13 +61,21 @@
 
 .hop-menu .hop-menu-button.hop-menu-parent
 {
-	padding-right: 0;
+	padding-right: 20px;
+	position: relative;
 }
 
-.hop-menu .hop-menu-button.hop-menu-parent .hop-menu-button-inner
+.hop-menu .hop-menu-button.hop-menu-parent:after
 {
-	padding-right: 20px;
-	background: url(../images/dropdownmenusub.png) right center no-repeat;
+	content: "";
+	display: block;
+	height: 8px;
+	width: 8px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin: -4px 5px 0 0;
+	background: url(../images/menusub.png) center center no-repeat;
 }
 
 .hop-menu .hop-menu-button.hop-menu-inactive

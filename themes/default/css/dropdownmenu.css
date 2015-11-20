@@ -28,20 +28,13 @@
 {
 	display: block;
 	position: relative;
-	padding: 0 20px 0 28px;
+	padding: 4px 20px 4px 28px;
 	background-repeat: no-repeat;
 	background-position: 5px center;
 	white-space: nowrap;
 	cursor: pointer;
 	z-index: 2;
 	line-height: 18px;
-}
-
-.hop-dropdown-menu .hop-dropdown-menu-button-inner
-{
-	padding: 4px 0 4px 0;
-	background-repeat: no-repeat;
-	background-position: right center;
 }
 
 .hop-dropdown-menu .hop-dropdown-menu-button,
@@ -66,13 +59,19 @@
 
 .hop-dropdown-menu .hop-dropdown-menu-button.hop-dropdown-menu-parent
 {
-	padding-right: 0;
+	position: relative;
 }
-
-.hop-dropdown-menu .hop-dropdown-menu-button.hop-dropdown-menu-parent .hop-dropdown-menu-button-inner
+.hop-dropdown-menu .hop-dropdown-menu-button.hop-dropdown-menu-parent:after
 {
-	padding-right: 20px;
-	background-image: url(../images/dropdownmenusub.png);
+	content: "";
+	display: block;
+	height: 8px;
+	width: 8px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin: -3px 5px 0 0;
+	background: url(../images/dropdownmenusub.png) center center no-repeat;
 }
 
 .hop-dropdown-menu .hop-dropdown-menu-button.hop-dropdown-menu-inactive

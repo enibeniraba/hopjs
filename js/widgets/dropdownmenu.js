@@ -1150,10 +1150,10 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	{
 		var self = this;
 		hop.dropdownMenuItem.prototype.generateHtml.apply(self, arguments);
-		self.node.innerHTML = '<a class="hop-dropdown-menu-button"><div class="hop-dropdown-menu-button-inner"><div class="hop-dropdown-menu-button-text"></div></div></a>';
+		self.node.innerHTML = '<a class="hop-dropdown-menu-button"><div class="hop-dropdown-menu-button-text"></div></a>';
 		self.$button = $("a", self.node);
 		self.buttonNode = self.$button[0];
-		self.$buttonText = $("div div", self.buttonNode);
+		self.$buttonText = $("div", self.buttonNode);
 		self.buttonTextNode = self.$buttonText[0];
 
 		self.$button.on("mouseenter", function(event)

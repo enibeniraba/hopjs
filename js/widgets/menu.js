@@ -18,7 +18,7 @@ hop.menu = function(params)
 };
 
 hop.inherit(hop.menu, hop.widget, {
-	version: "v@VERSION",
+	version: "@VERSION",
 
 	getDefaults: function()
 	{
@@ -653,10 +653,10 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 	{
 		var self = this;
 		hop.menuItem.prototype.generateHtml.apply(this);
-		self.node.innerHTML = '<a class="hop-menu-button"><div class="hop-menu-button-inner"><div class="hop-menu-button-text"></div></div></a>';
+		self.node.innerHTML = '<a class="hop-menu-button"><div class="hop-menu-button-text"></div></a>';
 		self.$button = $("a", self.node);
 		self.buttonNode = self.$button[0];
-		self.$buttonText = $("div div", self.buttonNode);
+		self.$buttonText = $("div", self.buttonNode);
 		self.buttonTextNode = self.$buttonText[0];
 
 		self.$button.on("mouseenter", function(event)
