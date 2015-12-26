@@ -15,17 +15,28 @@
 <script type="text/javascript" src="../js/i18n/en-GB/datepicker.js"></script>
 <script type="text/javascript" src="../js/i18n/en-US/datepicker.js"></script>
 <script type="text/javascript" src="../js/i18n/ru/datepicker.js"></script>
+<style type="text/css">
+.open-class input.hop-datepicker-open
+{
+	outline: solid 1px #26a;
+}
+
+.open-class button.hop-datepicker-open
+{
+	outline: solid 1px #000;
+}
+</style>
 </head>
 <body>
 <h1>Datepicker</h1>
 <p>Default:</p>
 <p><input id="dp1" /></p>
-<p>Button, no other months, today:</p>
-<p><input id="dp2" /> <button id="button2">...</button></p>
+<p>Button, no other months, today, open class:</p>
+<p class="open-class"><input id="dp2" /> <button id="button2">...</button></p>
 <p>Input source, custom format, show animation:</p>
 <p><input id="dp3" value="Jun 15, 2000" /></p>
 <p>Time, buttons, default date, not picked, slide scale animation:</p>
-<p><input id="dp4" /> <button id="button4">...</button></p>
+<p class="open-class"><input id="dp4" /> <button id="button4">...</button></p>
 <p>Locale, week numbers, short time format, time, slide animation:</p>
 <p>
 	<input id="dp5" /> <button id="button5">...</button>
@@ -102,7 +113,9 @@ $(function()
 		button: $("#button4")[0],
 		attachToButton: false,
 		doneOnDayPick: false,
-		hideOnCleanClick: false
+		hideOnCleanClick: false,
+		inputOpenClass: false,
+		buttonOpenClass: false
 	});
 
 	dp5 = new hop.datepicker({

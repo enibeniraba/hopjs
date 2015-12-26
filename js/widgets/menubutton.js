@@ -26,6 +26,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 			node: null,
 			menu: null,
 			menuParams: null,
+			openClass: true,
 			openClassName: "hop-menu-button-open",
 			showOnMousedown: false,
 			hideOnMousedown: false,
@@ -220,13 +221,13 @@ hop.inherit(hop.menuButton, hop.widget, {
 
 	onMenuLayerShow: function()
 	{
-		if (this.node && this.openClassName !== null)
+		if (this.node && this.openClass)
 			$(this.node).addClass(this.openClassName);
 	},
 
 	onMenuLayerHide: function()
 	{
-		if (this.node && this.openClassName !== null)
+		if (this.node && this.openClass)
 			$(this.node).removeClass(this.openClassName);
 	},
 

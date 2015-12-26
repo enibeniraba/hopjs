@@ -68,6 +68,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 			hideOnInputMousedown: false,
 			button: null,
 			attachToButton: true,
+			inputOpenClass: true,
+			buttonOpenClass: true,
+			openClassName: 'hop-datepicker-open',
 			buttonMousedownAction: "",
 			buttonClickAction: "toggle",
 			hideOnDone: true,
@@ -994,20 +997,30 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onShow: function()
 	{
-		this.trigger("show");
+		var self = this;
+		if (self.input && self.inputOpenClass)
+			$(self.input).addClass(self.openClassName);
+		if (self.button && self.buttonOpenClass)
+			$(self.button).addClass(self.openClassName);
+		self.trigger("show");
 	},
 
 	onLayerHide: function()
 	{
-		this.finishAnimations();
-		if (this.picked || !this.resetOnHidePickedOnly)
-			this.resetDateHtml();
 		this.onHide();
 	},
 
 	onHide: function()
 	{
-		this.trigger("hide");
+		var self = this;
+		self.finishAnimations();
+		if (self.picked || !self.resetOnHidePickedOnly)
+			self.resetDateHtml();
+		if (self.input && self.inputOpenClass)
+			$(self.input).removeClass(self.openClassName);
+		if (self.button && self.buttonOpenClass)
+			$(self.button).removeClass(self.openClassName);
+		self.trigger("hide");
 	},
 
 	onLayerMousedown: function(event)
