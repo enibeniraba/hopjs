@@ -4,15 +4,15 @@ hop.dom = {
 		if (!def(childNode))
 			childNode = document.body;
 		var topNode, node;
-		if (childNode == document.body)
+		if (childNode === document.body)
 			topNode = childNode;
 		else
 		{
 			node = childNode.parentNode;
-			while (node && node != document.body)
+			while (node && node !== document.body)
 			{
 				style = (window.getComputedStyle ? window.getComputedStyle(node, null) : node.currentStyle);
-				if (style.zIndex != "auto" && (style.position == "relative" || style.position == "absolute" || style.position == "fixed"))
+				if (style.zIndex !== "auto" && (style.position === "relative" || style.position === "absolute" || style.position === "fixed"))
 				{
 					topNode = node;
 					break;
@@ -39,10 +39,10 @@ hop.dom = {
 			for (key in node.childNodes)
 			{
 				child = node.childNodes[key];
-				if (child.nodeType != 1)
+				if (child.nodeType !== 1)
 					continue;
 				style = (window.getComputedStyle ? window.getComputedStyle(child, null) : child.currentStyle);
-				if (style.zIndex != "auto" && style.zIndex != "inherit" && style.position != "static")
+				if (style.zIndex !== "auto" && style.zIndex !== "inherit" && style.position !== "static")
 				{
 					zIndex = parseInt(style.zIndex);
 					if (!isNaN(zIndex) && zIndex >= result.zIndex)

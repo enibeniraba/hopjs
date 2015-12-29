@@ -34,7 +34,7 @@ $(function()
 		node: $("#tabs1")[0],
 		onTabActivation: function(tabs, eventData, data)
 		{
-			if (eventData.tab == 3)
+			if (eventData.tab === 3)
 				alert(eventData.prevTab+" -> "+eventData.tab);
 		}
 	});

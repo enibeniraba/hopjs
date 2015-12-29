@@ -146,7 +146,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	create: function(params)
 	{
-		var self = this, data = {};
+		var self = this;
 		self.defaultLayerParams = self.getDefaultLayerParams();
 		self.defaultDraggableParams = self.getDefaultDraggableParams();
 		self.defaultResizableParams = self.getDefaultResizableParams();
@@ -195,7 +195,7 @@ hop.inherit(hop.window, hop.widget, {
 		var self = this;
 		if (!def(locale))
 			locale = "";
-		if (typeof locale != "string")
+		if (typeof locale !== "string")
 			return;
 
 		self.locale = locale;
@@ -210,7 +210,7 @@ hop.inherit(hop.window, hop.widget, {
 	buildI18n: function()
 	{
 		if (hop.window.i18n[this.locale])
-			$.extend(true, this.i18n, hop.window.i18n[this.locale])
+			$.extend(true, this.i18n, hop.window.i18n[this.locale]);
 	},
 
 	updateLocaleHtml: function()
@@ -869,7 +869,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	onWindowResize: function(event)
 	{
-		if (event.target == document || event.target == window)
+		if (event.target === document || event.target === window)
 		{
 			if (this.fullScreen)
 			{
@@ -957,7 +957,7 @@ hop.inherit(hop.window, hop.widget, {
 		var self = this, style = self.layer.node.style, display = style.display, margin = 0,
 			$buttons = $("."+self.classPrefix+"window-head-buttons", self.$head);
 		style.display = "block";
-		if ($buttons[0].style.display != "none")
+		if ($buttons[0].style.display !== "none")
 			margin = $buttons.outerWidth();
 		self.titleNode.style.marginRight = margin+"px";
 		style.display = display;

@@ -177,7 +177,7 @@ hop.inherit(hop.layer, hop.widget, {
 			left: "-10000px",
 			display: "none"
 		});
-		if (node.parentNode != self.parentNode)
+		if (node.parentNode !== self.parentNode)
 			self.parentNode.appendChild(node);
 		if (def(params.content))
 			node.innerHTML = params.content;
@@ -189,7 +189,7 @@ hop.inherit(hop.layer, hop.widget, {
 
 	afterCreate: function(params)
 	{
-		hop.widget.prototype.afterCreate.apply(self, arguments);
+		hop.widget.prototype.afterCreate.apply(this, arguments);
 		if (params.show)
 			this.show();
 	},
@@ -349,7 +349,7 @@ hop.inherit(hop.layer, hop.widget, {
 
 	setParentNode: function(node)
 	{
-		if (this.parentNode != node)
+		if (this.parentNode !== node)
 		{
 			this.parentNode = node;
 			if (this.overlayNode)
@@ -595,7 +595,7 @@ hop.inherit(hop.layer, hop.widget, {
 	animationHideComplete: function()
 	{
 		this.animation = null;
-		if (!self.overlayAnimation)
+		if (!this.overlayAnimation)
 			this.onHide();
 	},
 
@@ -756,7 +756,7 @@ hop.inherit(hop.layer, hop.widget, {
 			self.node.style.left = "-10000px";
 		}
 
-		if (self.position === "absolute" && self.parentNode != document.body)
+		if (self.position === "absolute" && self.parentNode !== document.body)
 		{
 			parentOffset = $(self.parentNode).offset();
 			rawTop = top-parentOffset.top;
@@ -764,9 +764,9 @@ hop.inherit(hop.layer, hop.widget, {
 			self.node.style.top = rawTop+"px";
 			self.node.style.left = rawLeft+"px";
 			layerOffset = self.$node.offset();
-			if (layerOffset.top != top)
+			if (layerOffset.top !== top)
 				self.node.style.top = Math.round(rawTop-(layerOffset.top-top))+"px";
-			if (layerOffset.left != left)
+			if (layerOffset.left !== left)
 				self.node.style.left = Math.round(rawLeft-(layerOffset.left-left))+"px";
 		}
 		else
@@ -811,7 +811,7 @@ hop.inherit(hop.layer, hop.widget, {
 		}
 		else if (typeof element === "function")
 		{
-			rect = element(self);
+			rect = element(this);
 			top = rect.top;
 			left = rect.left;
 			height = rect.height;
@@ -849,7 +849,7 @@ hop.inherit(hop.layer, hop.widget, {
 	moveOnTop: function()
 	{
 		var self = this, maxZIndex = hop.dom.maxZIndex(self.node);
-		if (maxZIndex.node != self.node)
+		if (maxZIndex.node !== self.node)
 		{
 			self.node.style.zIndex = maxZIndex.zIndex+1;
 			if (self.overlay)
@@ -870,7 +870,7 @@ hop.inherit(hop.layer, hop.widget, {
 		this.finishAnimation();
 		this.$node.remove();
 		if (this.$overlay)
-			$overlay.remove();
+			this.$overlay.remove();
 		this.onDestroy();
 	},
 
@@ -960,7 +960,7 @@ hop.layer.showAnimations = {
 				element, $element, scaleY, scaleX,
 				animationInfo = hop.browser.animationInfo(),
 				transformProperty = animationInfo.transformProperty;
-			if (transfer === "" && scale == 1 && !opacity)
+			if (transfer === "" && scale === 1 && !opacity)
 				return;
 
 			options = {
@@ -968,7 +968,7 @@ hop.layer.showAnimations = {
 				easing: easing,
 				complete: function()
 				{
-					if (transfer === "element" || scale != 1)
+					if (transfer === "element" || scale !== 1)
 					{
 						node.style[transformProperty] = "scale(1, 1)";
 						node.style[transformProperty] = null;
@@ -991,7 +991,7 @@ hop.layer.showAnimations = {
 					if (typeof params.element === "function")
 						params.element = params.element(self);
 					$element = $(params.element);
-					if ($element.length == 0)
+					if ($element.length === 0)
 						throw new Error("Element is not found");
 					element = $element[0];
 					startPosition = self.calcPositionElement($node, $element);
@@ -1015,7 +1015,7 @@ hop.layer.showAnimations = {
 					node.style[transformProperty] = "scale("+(scaleX+(1-scaleX)*shift)+", "+(scaleY+(1-scaleY)*shift)+")";
 				};
 			}
-			else if (scale != 1)
+			else if (scale !== 1)
 			{
 				options.progress = function(animation, progress, remaining)
 				{
@@ -1057,22 +1057,22 @@ hop.layer.showAnimations = {
 					left: null
 				};
 			angle = angle%360;
-			if (angle == 0)
+			if (angle === 0)
 			{
 				result.top = nodePosition.top;
 				result.left = scrollLeft+windowWidth;
 			}
-			else if (angle == 90)
+			else if (angle === 90)
 			{
 				result.top = scrollTop-nodeHeight;
 				result.left = nodePosition.left;
 			}
-			else if (angle == 180)
+			else if (angle === 180)
 			{
 				result.top = nodePosition.top;
 				result.left = scrollLeft-nodeWidth;
 			}
-			else if (angle == 270)
+			else if (angle === 270)
 			{
 				result.top = scrollTop+windowHeight;
 				result.left = nodePosition.left;
@@ -1177,7 +1177,7 @@ hop.layer.hideAnimations = {
 				position, finishPosition, element, $element, scaleY, scaleX,
 				animationInfo = hop.browser.animationInfo(),
 				transformProperty = animationInfo.transformProperty;
-			if (transfer === "" && scale == 1 && !opacity)
+			if (transfer === "" && scale === 1 && !opacity)
 				return;
 
 			self.get$node().show();
@@ -1187,7 +1187,7 @@ hop.layer.hideAnimations = {
 				easing: easing,
 				complete: function()
 				{
-					if (transfer === "element" || scale != 1)
+					if (transfer === "element" || scale !== 1)
 					{
 						node.style[transformProperty] = "scale(1, 1)";
 						node.style[transformProperty] = null;
@@ -1214,7 +1214,7 @@ hop.layer.hideAnimations = {
 					if (typeof params.element === "function")
 						params.element = params.element(self);
 					$element = $(params.element);
-					if ($element.length == 0)
+					if ($element.length === 0)
 						throw new Error("Element is not found");
 					element = $element[0];
 					finishPosition = hop.layer.showAnimations.def.calcPositionElement($node, $element);
@@ -1238,7 +1238,7 @@ hop.layer.hideAnimations = {
 					node.style[transformProperty] = "scale("+(1-(1-scaleX)*shift)+", "+(1-(1-scaleY)*shift)+")";
 				};
 			}
-			else if (scale != 1)
+			else if (scale !== 1)
 			{
 				options.progress = function(animation, progress, remaining)
 				{

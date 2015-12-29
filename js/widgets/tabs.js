@@ -65,14 +65,14 @@ hop.inherit(hop.tabs, hop.widget, {
 		headNode = $children[0];
 		bodyNode = $children[1];
 		$children = $(headNode).children("a");
-		if (!$children || $children.length == 0)
+		if (!$children || $children.length === 0)
 			throw new Error("Buttons are not found");
 
 		for (i = 0; i < $children.length; i++)
 			tabs.push({button: $children[i]});
 
 		$children = $(bodyNode).children("div");
-		if (!$children || $children.length == 0 || $children.length != tabs.length)
+		if (!$children || $children.length === 0 || $children.length !== tabs.length)
 			throw new Error("Bodies are not found or number of bodies is not equal to number of tabs");
 
 		$(self.node).addClass(self.className);
@@ -88,7 +88,7 @@ hop.inherit(hop.tabs, hop.widget, {
 			$(tabs[i].body).addClass(classPrefix+"tab-body");
 			$(tabs[i].button).on(self.event, {tab: i}, function(event)
 			{
-				if (event.data.tab != self.activeTab)
+				if (event.data.tab !== self.activeTab)
 					self.activateTab(event.data.tab);
 			});
 		}
@@ -105,7 +105,7 @@ hop.inherit(hop.tabs, hop.widget, {
 		{
 			for (key in self.tabs)
 			{
-				if (self.tabs[key].button.hash == document.location.hash)
+				if (self.tabs[key].button.hash === document.location.hash)
 				{
 					activeTab = key;
 					break;

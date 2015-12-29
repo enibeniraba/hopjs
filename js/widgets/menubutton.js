@@ -67,7 +67,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 	setNode: function(node)
 	{
 		var self = this;
-		if (node && self.node == node)
+		if (node && self.node === node)
 			return;
 
 		if (self.node)
@@ -124,7 +124,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 	onNodeMousedown: function(event)
 	{
 		var self = this;
-		if (event.which != 1 || !self.menu)
+		if (event.which !== 1 || !self.menu)
 			return;
 
 		if (self.showOnMousedown)
@@ -178,7 +178,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 		var self = this, menuParams = {};
 		if (menu && !(menu instanceof hop.dropdownMenu))
 			menu = new hop.dropdownMenu(menu);
-		if (menu == self.menu)
+		if (menu === self.menu)
 			return;
 
 		if (self.menu)

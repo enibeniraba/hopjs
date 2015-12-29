@@ -119,7 +119,7 @@ hop.datepickerTitleAnimations.slide = {
 		$nextNode.hide();
 		height = $container.height();
 		width = $container.width();
-		if (sync && $container[0] == self.datepicker.$title[0])
+		if (sync && $container[0] === self.datepicker.$title[0])
 			horizontalOffset = self.datepicker.$body.width();
 		else
 			horizontalOffset = width;
@@ -144,7 +144,7 @@ hop.datepickerTitleAnimations.slide = {
 			left: 0,
 			"z-index": 1
 		});
-		if (direction == 0)
+		if (direction === 0)
 		{
 			$nextNode.css({
 				left: -horizontalOffset
@@ -162,7 +162,7 @@ hop.datepickerTitleAnimations.slide = {
 				showProperties.left = 0;
 			}
 		}
-		else if (direction == 1)
+		else if (direction === 1)
 		{
 			$nextNode.css({
 				top: height
@@ -180,7 +180,7 @@ hop.datepickerTitleAnimations.slide = {
 				showProperties.top = 0;
 			}
 		}
-		else if (direction == 2)
+		else if (direction === 2)
 		{
 			$nextNode.css({
 				left: horizontalOffset
@@ -303,7 +303,7 @@ hop.datepickerPickerAnimations.scale = {
 			i, $element, t, l, h, w, position, offset, elementOffset,
 			hidePosition, showPosition, showScaleY, showScaleX, hideScaleY, hideScaleX, out = false;
 
-		if ($.inArray(self.id, ["dayMonth", "monthDay", "monthYear", "yearMonth", "yearOut", "yearIn", "yearDay"]) == -1)
+		if ($.inArray(self.id, ["dayMonth", "monthDay", "monthYear", "yearMonth", "yearOut", "yearIn", "yearDay"]) === -1)
 		{
 			$prevNode.remove();
 			datepicker.pickerAnimation = null;

@@ -127,7 +127,6 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 			layerParams = $.extend(true, {}, self.defaultLayerParams);
 		if (self.layerParams)
 			$.extend(true, layerParams, self.layerParams);
-		/*layerParams.paramsFunction = self.layerParamsFunction();*/
 		layer = new hop.layer(layerParams);
 		self.layer = layer;
 		layer.node.className = self.className;
@@ -231,7 +230,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		var self = this, i, item;
 		self.layer.moveOnTop();
 		self.stopHiding();
-		if (event.target == event.currentTarget)
+		if (event.target === event.currentTarget)
 		{
 			for (i in self.items)
 			{
@@ -320,7 +319,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		item.parentMenu = self;
 		if (!(item instanceof hop.dropdownMenuItems[item.type]))
 			item = new hop.dropdownMenuItems[item.type](item);
-		if (self.items.length == 0 || before === null || before >= self.items.length)
+		if (self.items.length === 0 || before === null || before >= self.items.length)
 		{
 			self.layer.node.appendChild(item.node);
 			self.items.push(item);
@@ -329,7 +328,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		{
 			for (i in self.items)
 			{
-				if (i == before)
+				if (i === before)
 				{
 					self.layer.node.insertBefore(item.node, self.items[i].node);
 					items.push(item);
@@ -393,7 +392,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		for (i in self.items)
 			items.push(self.items[i]);
 		self.items = items;
-		if (items.length == 0)
+		if (items.length === 0)
 		{
 			animate = self.layer.animate;
 			self.layer.animate = false;
@@ -468,7 +467,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 				for (i in self.parentItem.parentMenu.items)
 				{
 					item = self.parentItem.parentMenu.items[i];
-					if (item.menu && item.menu != self)
+					if (item.menu && item.menu !== self)
 						item.menu.hide();
 				}
 			}
@@ -516,18 +515,12 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		}
 	},
 
-	toggle: function()
+	toggle: function(showParams, hideParams)
 	{
-		if (this.showingNext())
-			this.show();
+		if (this.layer.showingNext())
+			this.show(showParams);
 		else
-			this.hide();
-	},
-
-	showingNext: function()
-	{
-		var layer = this.layer;
-		return (!layer.visible && (!layer.showing || layer.queue) || layer.visible && layer.hiding && !layer.queue);
+			this.hide(hideParams);
 	},
 
 	showWithDelay: function(params)
@@ -569,7 +562,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 				return;
 			}
 		}
-		if (topMenu && topMenu != self)
+		if (topMenu && topMenu !== self)
 		{
 			timeout = topMenu.submenuTimeoutShow;
 			if (timeout < 1)
@@ -622,7 +615,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 			if (!self.layer.visible)
 				return;
 		}
-		if (topMenu && topMenu != self)
+		if (topMenu && topMenu !== self)
 		{
 			timeout = topMenu.submenuTimeoutHide;
 			if (timeout < 1)
@@ -723,7 +716,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		var self = this, topMenu = self.getTopMenu(),
 			layerParams = {}, $offset, offset, i;
 		$.extend(true, layerParams, self.defaultLayerParams);
-		if (topMenu && topMenu != self)
+		if (topMenu && topMenu !== self)
 			$.extend(true, layerParams, topMenu.defaultSubmenuLayerParams, topMenu.submenuLayerParams);
 		if (self.layerParams)
 			$.extend(true, layerParams, self.layerParams);
@@ -735,7 +728,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 			});
 		}
 		if (self.nodeOffset || self.nodeOffset === null
-			&& topMenu && topMenu != self && topMenu.submenuNodeOffset)
+			&& topMenu && topMenu !== self && topMenu.submenuNodeOffset)
 		{
 			$offset = $(">.hop-dropdown-menu-offset", self.layer.node);
 			offset = parseInt($offset.css("top"));
@@ -902,7 +895,7 @@ $.extend(hop.dropdownMenuItem.prototype, {
 		for (i in this.parentMenu.items)
 		{
 			item = this.parentMenu.items[i];
-			if (item != this)
+			if (item !== this)
 			{
 				if (item.menu)
 					item.menu.hideWithDelay();
@@ -1065,7 +1058,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	{
 		var self = this, i, item;
 		checked = !!checked;
-		if (self.created && self.checked == checked)
+		if (self.created && self.checked === checked)
 			return;
 
 		self.checked = checked;
@@ -1076,7 +1069,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 				for (i in self.parentMenu.items)
 				{
 					item = self.parentMenu.items[i];
-					if (item != self && item.radioGroup === self.radioGroup && item.checked)
+					if (item !== self && item.radioGroup === self.radioGroup && item.checked)
 						item.setChecked(false);
 				}
 			}
@@ -1094,7 +1087,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	setRadioGroup: function(radioGroup)
 	{
 		var self = this;
-		if (radioGroup !== null && typeof radioGroup != "string")
+		if (radioGroup !== null && typeof radioGroup !== "string")
 			return;
 
 		self.radioGroup = radioGroup;
@@ -1107,7 +1100,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 		var self = this;
 		if (menu && !(menu instanceof hop.dropdownMenu))
 			menu = new hop.dropdownMenu(menu);
-		if (self.menu && self.menu != menu)
+		if (self.menu && self.menu !== menu)
 			self.menu.parentItem = null;
 		self.menu = menu;
 		if (menu)
@@ -1180,7 +1173,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	onButtonMouseenter: function(event)
 	{
 		var self = this, parentMenu = self.parentMenu;
-		if (self.menu && self.active && !(parentMenu.action1 == 0 && parentMenu.layer.isAnimation()))
+		if (self.menu && self.active && !(parentMenu.action1 === 0 && parentMenu.layer.isAnimation()))
 			self.menu.showWithDelay();
 		self.setHighlighted(true);
 		self.setHighlightedOnMenuHide = false;
@@ -1197,7 +1190,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	onButtonMousedown: function(event)
 	{
 		var self = this;
-		if (event.which == 1 && self.active && self.menu)
+		if (event.which === 1 && self.active && self.menu)
 			self.menu.toggle();
 	},
 
@@ -1276,7 +1269,7 @@ hop.inherit(hop.dropdownMenuItems.group, hop.dropdownMenuItem, {
 		this.title = title;
 		if (this.node)
 			this.node.title = title;
-	},
+	}
 });
 
 hop.dropdownMenuItems.html = function(params)

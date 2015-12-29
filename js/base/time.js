@@ -234,7 +234,7 @@ hop.time = {
 						tmp = (chr === "F" ? monthNames : monthNamesShort);
 						for (j in tmp)
 						{
-							if (tmp[j] == matches[1])
+							if (tmp[j] === matches[1])
 							{
 								month = j;
 								break;
@@ -265,7 +265,7 @@ hop.time = {
 						tmp = (chr === "F" ? dayNames : dayNamesShort);
 						for (j in tmp)
 						{
-							if (tmp[j] == matches[1])
+							if (tmp[j] === matches[1])
 							{
 								day = j;
 								break;
@@ -317,7 +317,7 @@ hop.time = {
 						if (!matches)
 							return false;
 
-						pm = (matches[1].toLowerCase() == "pm");
+						pm = (matches[1].toLowerCase() === "pm");
 						pos += matches[1].length;
 						break;
 					case " ":
@@ -343,7 +343,7 @@ hop.time = {
 		if (hours === null && hours12 !== null)
 			hours = hop.time.hours24(hours12, pm);
 		result = new Date(year, month, day, hours === null ? 0 : hours, minutes, seconds);
-		if (month != result.getMonth())
+		if (month !== result.getMonth())
 			return false;
 
 		return result;
@@ -444,13 +444,13 @@ hop.time = {
 	ordinalSuffix: function(i)
 	{
 		var j = i%10, k = i%100;
-		if (j == 1 && k != 11)
+		if (j === 1 && k !== 11)
 			return "st";
 
-		if (j == 2 && k != 12)
+		if (j === 2 && k !== 12)
 			return "nd";
 
-		if (j == 3 && k != 13)
+		if (j === 3 && k !== 13)
 			return "rd";
 
 		return "th";

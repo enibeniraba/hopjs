@@ -143,7 +143,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 	setTarget: function(target)
 	{
 		var self = this, params;
-		if (target && self.target == target)
+		if (target && self.target === target)
 			return;
 
 		if (self.target)
@@ -199,7 +199,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 
 	onTargetMouseleave: function(event)
 	{
-		if (this.layer && event.relatedTarget != this.layer.node)
+		if (this.layer && event.relatedTarget !== this.layer.node)
 			this.hideWithDelay();
 	},
 
@@ -277,7 +277,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 
 	onLayerMouseleave: function(event)
 	{
-		if (event.relatedTarget != this.layer.node)
+		if (event.relatedTarget !== this.layer.node)
 			this.hideWithDelay();
 	},
 

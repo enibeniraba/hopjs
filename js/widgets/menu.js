@@ -157,7 +157,7 @@ hop.inherit(hop.menu, hop.widget, {
 		item.parentMenu = self;
 		if (!(item instanceof hop.menuItems[item.type]))
 			item = new hop.menuItems[item.type](item);
-		if (self.items.length == 0 || before === null || before >= self.items.length)
+		if (self.items.length === 0 || before === null || before >= self.items.length)
 		{
 			self.node.appendChild(item.node);
 			self.items.push(item);
@@ -166,7 +166,7 @@ hop.inherit(hop.menu, hop.widget, {
 		{
 			for (i in self.items)
 			{
-				if (i == before)
+				if (i === before)
 				{
 					self.node.insertBefore(item.node, self.items[i].node);
 					items.push(item);
@@ -345,7 +345,7 @@ $.extend(hop.menuItem.prototype, {
 		for (i in this.parentMenu.items)
 		{
 			item = this.parentMenu.items[i];
-			if (item != this)
+			if (item !== this)
 				item.onOtherItemMouseenter(this, event);
 		}
 	},
@@ -444,13 +444,13 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		sourceRight = sourceLeft+source.$node.outerWidth();
 		if ((layer.visible || layer.isAnimation())
 			&& (
-				(layerTop == mouseY+1 && mouseY < sourceBottom && sourceBottom < layerTop
+				(layerTop === mouseY+1 && mouseY < sourceBottom && sourceBottom < layerTop
 					&& sourceLeft <= mouseX && mouseX <= sourceRight)
-				|| (layerBottom == mouseY-1 && mouseY > sourceTop && sourceTop > layerBottom
+				|| (layerBottom === mouseY-1 && mouseY > sourceTop && sourceTop > layerBottom
 					&& sourceLeft <= mouseX && mouseX <= sourceRight)
-				|| (layerLeft == mouseX+1 && mouseX < sourceRight && sourceRight < layerLeft
+				|| (layerLeft === mouseX+1 && mouseX < sourceRight && sourceRight < layerLeft
 					&& sourceTop <= mouseY && mouseY <= sourceBottom)
-				|| (layerBottom == mouseX-1 && mouseX > sourceLeft && sourceLeft > layerRight
+				|| (layerBottom === mouseX-1 && mouseX > sourceLeft && sourceLeft > layerRight
 					&& sourceTop <= mouseY && mouseY <= sourceBottom)
 			))
 		{
@@ -686,7 +686,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		for (i in this.parentMenu.items)
 		{
 			item = this.parentMenu.items[i];
-			if (item.menu && item != this && item.isMouseenterBug(event, item, self))
+			if (item.menu && item !== this && item.isMouseenterBug(event, item, self))
 				return;
 		}
 		self.setHighlighted(true);
@@ -713,7 +713,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 
 	onButtonMousedown: function(event)
 	{
-		if (event.which == 1 && this.active && this.menu)
+		if (event.which === 1 && this.active && this.menu)
 		{
 			this.menu.mousedown = true;
 			this.menu.toggle();

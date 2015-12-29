@@ -9,10 +9,8 @@
  * Date: @DATE
  */
 
-(function(window, $, hop)
+(function($, hop)
 {
-
-var def = hop.def;
 
 hop.dialog = function(params)
 {
@@ -73,7 +71,7 @@ hop.inherit(hop.dialog, hop.window, {
 	{
 		hop.window.prototype.buildI18n.apply(this);
 		if (hop.dialog.i18n[this.locale])
-			$.extend(true, this.i18n, hop.dialog.i18n[this.locale])
+			$.extend(true, this.i18n, hop.dialog.i18n[this.locale]);
 	},
 
 	updateLocaleHtml: function()
@@ -245,4 +243,4 @@ hop.inherit(hop.dialog, hop.window, {
 	}
 });
 
-})(window, jQuery, hopjs);
+})(jQuery, hopjs);

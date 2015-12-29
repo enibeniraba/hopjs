@@ -268,7 +268,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 	buildI18n: function()
 	{
 		if (hop.datepicker.i18n[this.locale])
-			$.extend(true, this.i18n, hop.datepicker.i18n[this.locale])
+			$.extend(true, this.i18n, hop.datepicker.i18n[this.locale]);
 	},
 
 	updateLocaleHtml: function()
@@ -547,12 +547,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 	setInput: function(input)
 	{
 		var self = this;
-		if (input && self.input == input)
+		if (input && self.input === input)
 			return;
 
 		if (self.input)
 		{
-			if (self.button && self.button != self.input)
+			if (self.button && self.button !== self.input)
 				self.input.removeAttribute("hopDatepicker");
 			$(self.input).off("mousedown", self.inputMousedown);
 			$(self.input).off("change", self.inputChange);
@@ -597,7 +597,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onInputMousedown: function(event)
 	{
-		if (event.which == 1 && !this.hideOnInputMousedown)
+		if (event.which === 1 && !this.hideOnInputMousedown)
 			this.mousedown = true;
 	},
 
@@ -621,12 +621,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 	setButton: function(button)
 	{
 		var self = this;
-		if (button && self.button == button)
+		if (button && self.button === button)
 			return;
 
 		if (self.button)
 		{
-			if (self.input && self.input != self.button)
+			if (self.input && self.input !== self.button)
 				self.button.removeAttribute("hopDatepicker");
 			$(self.button).off("mousedown", self.buttonMousedown);
 			$(self.button).off("click", self.buttonClick);
@@ -673,7 +673,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onButtonMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		if (this.hideOnDocumentMousedown)
@@ -1070,7 +1070,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 	toggle: function(showParams, hideParams)
 	{
 		if (this.layer)
-			this.layer.toggle(showParams, hideParams);
+		{
+			if (this.layer.showingNext())
+				this.show(showParams);
+			else
+				this.hide(hideParams);
+		}
 	},
 
 	done: function()
@@ -1113,7 +1118,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		this.dontUpdateDateHtml = true;
 		this.setDate(date);
 		this.dontUpdateDateHtml = false;
-		if (!self.picked)
+		if (!this.picked)
 			this.updateTimeHtml();
 	},
 
@@ -1239,7 +1244,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		switch (self.picker)
 		{
 			case "day":
-				if (year != self.dayPickerYear || month != self.dayPickerMonth)
+				if (year !== self.dayPickerYear || month !== self.dayPickerMonth)
 					self.changeDayPickerMonth(year, month);
 				else
 				{
@@ -1278,9 +1283,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 	resetDateHtml: function()
 	{
 		var self = this, year = self.date.getFullYear(), month = self.date.getMonth();
-		if (self.picker != "day")
+		if (self.picker !== "day")
 			self.showDayPicker(year, month);
-		else if (year != self.dayPickerYear || month != self.dayPickerMonth)
+		else if (year !== self.dayPickerYear || month != self.dayPickerMonth)
 			self.changeDayPickerMonth(year, month);
 	},
 
@@ -1428,7 +1433,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 					dayYear = year;
 					dayMonth = month;
 				}
-				if (self.showWeekNumber && j == 0)
+				if (self.showWeekNumber && j === 0)
 				{
 					date = new Date(dayYear, dayMonth, day);
 					weekNumberNode = document.createElement("div");
@@ -1436,12 +1441,12 @@ hop.inherit(hop.datepicker, hop.widget, {
 					weekNumberNode.innerHTML = hop.time.weekNumber(date).week;
 					weekNode.appendChild(weekNumberNode);
 				}
-				if (day == todayDay && dayMonth == todayMonth && dayYear == todayYear)
+				if (day === todayDay && dayMonth === todayMonth && dayYear === todayYear)
 				{
 					today = true;
 					currentWeek = true;
 				}
-				if (day === pickedDay && pickedMonth == dayMonth && pickedYear == dayYear)
+				if (day === pickedDay && pickedMonth === dayMonth && pickedYear === dayYear)
 				{
 					picked = true;
 					pickedWeek = true;
@@ -1449,11 +1454,11 @@ hop.inherit(hop.datepicker, hop.widget, {
 				dayNode = document.createElement("div");
 				if (dayCount > 0 && dayCount <= monthLastDay || self.otherMonths)
 				{
-					disabled = (minDate !== null && (dayYear < minYear || dayYear == minYear && (dayMonth < minMonth || dayMonth == minMonth && day < minDay))
-						|| maxDate !== null && (dayYear > maxYear || dayYear == maxYear && (dayMonth > maxMonth || dayMonth == maxMonth && day > maxDay)));
+					disabled = (minDate !== null && (dayYear < minYear || dayYear === minYear && (dayMonth < minMonth || dayMonth === minMonth && day < minDay))
+						|| maxDate !== null && (dayYear > maxYear || dayYear === maxYear && (dayMonth > maxMonth || dayMonth === maxMonth && day > maxDay)));
 					dayNode.innerHTML = day;
 					dayNode.className = classPrefix+"day "+classPrefix+"week-day-"+j
-						+" "+classPrefix+(day == dayCount ? "current-month" : "other-month");
+						+" "+classPrefix+(day === dayCount ? "current-month" : "other-month");
 					if (today)
 					{
 						dayNode.className += " "+classPrefix+"today";
@@ -1536,7 +1541,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			if (year < 0)
 				return;
 		}
-		if (self.minDate !== null && !self.minDatePicker && (year < self.minDate.getFullYear() || year == self.minDate.getFullYear() && month < self.minDate.getMonth()))
+		if (self.minDate !== null && !self.minDatePicker && (year < self.minDate.getFullYear() || year === self.minDate.getFullYear() && month < self.minDate.getMonth()))
 			return;
 
 		self.changeDayPickerMonth(year, month);
@@ -1550,7 +1555,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 			month = 0;
 			year++;
 		}
-		if (self.maxDate !== null && !self.maxDatePicker && (year > self.maxDate.getFullYear() || year == self.maxDate.getFullYear() && month > self.maxDate.getMonth()))
+		if (self.maxDate !== null && !self.maxDatePicker && (year > self.maxDate.getFullYear() || year === self.maxDate.getFullYear() && month > self.maxDate.getMonth()))
 			return;
 
 		self.changeDayPickerMonth(year, month);
@@ -1657,8 +1662,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			{
 				current = (month === todayMonth && todayYear === year);
 				picked = (month === pickedMonth && pickedYear === year);
-				disabled = (minDate !== null && (year < minYear || year == minYear && month < minMonth)
-					|| maxDate !== null && (year > maxYear || year == maxYear && month > maxMonth));
+				disabled = (minDate !== null && (year < minYear || year === minYear && month < minMonth)
+					|| maxDate !== null && (year > maxYear || year === maxYear && month > maxMonth));
 				monthNode = document.createElement("div");
 				monthNode.innerHTML = self.i18n.monthNamesShort[month];
 				monthNode.className = classPrefix+"month-"+month;
@@ -1752,7 +1757,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this, titleNode, pickerNode, animationId, prevPicker = self.picker,
 			prevTitleNode = self.titleNode, prevPickerNode = self.pickerNode,
 			prevScale = self.yearPickerScale;
-		if (self.picker === "year" && scale == prevScale)
+		if (self.picker === "year" && scale === prevScale)
 			return;
 
 		self.finishAnimations();
@@ -2103,7 +2108,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerHoursPlusMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		var self = this;
@@ -2145,7 +2150,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerHoursMinusMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		var self = this;
@@ -2212,7 +2217,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerMinutesPlusMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		var self = this;
@@ -2244,7 +2249,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerMinutesMinusMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		var self = this;
@@ -2306,7 +2311,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerSecondsPlusMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		var self = this;
@@ -2338,7 +2343,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	onTimePickerSecondsMinusMousedown: function(event)
 	{
-		if (event.which != 1)
+		if (event.which !== 1)
 			return;
 
 		var self = this;

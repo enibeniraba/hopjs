@@ -39,7 +39,7 @@ module.exports = function(grunt)
 	{
 		minFilesMap.push({
 			src: buildPath+'/js/'+minFiles[i]+'.js',
-			dest: buildPath+'/js/min/'+minFiles[i]+'.min.js',
+			dest: buildPath+'/js/min/'+minFiles[i]+'.min.js'
 		});
 	}
 

@@ -172,7 +172,7 @@ $(function()
 		},
 		onDayPickerCreateDay: function(self, eventData, data)
 		{
-			if (eventData.year == 2000 && eventData.month == 0 && eventData.day > 9 && eventData.day < 21)
+			if (eventData.year === 2000 && eventData.month === 0 && eventData.day > 9 && eventData.day < 21)
 				eventData.disabled = true;
 		}
 	});
