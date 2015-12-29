@@ -65,7 +65,7 @@ module.exports = function(grunt)
 			},
 			base: {
 				src: [
-					"js/base/intro.js",
+					"js/base/wrapbefore.js",
 					"js/base/core.js",
 					"js/base/string.js",
 					"js/base/html.js",
@@ -74,7 +74,7 @@ module.exports = function(grunt)
 					"js/base/browser.js",
 					"js/base/time.js",
 					"js/base/widget.js",
-					"js/base/outro.js"
+					"js/base/wrapafter.js"
 				],
 				dest: buildPath+"/js/base.js"
 			},
