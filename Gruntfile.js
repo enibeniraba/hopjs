@@ -63,21 +63,6 @@ module.exports = function(grunt)
 			options: {
 				separator: "\n\n"
 			},
-			base: {
-				src: [
-					"js/base/wrapbefore.js",
-					"js/base/core.js",
-					"js/base/string.js",
-					"js/base/html.js",
-					"js/base/dom.js",
-					"js/base/css.js",
-					"js/base/browser.js",
-					"js/base/time.js",
-					"js/base/widget.js",
-					"js/base/wrapafter.js"
-				],
-				dest: buildPath+"/js/base.js"
-			},
 			all: {
 				src: concatAll,
 				dest: buildPath+"/js/hop.js"
@@ -99,9 +84,8 @@ module.exports = function(grunt)
 						src: [
 							"demos/**",
 							"external/**",
-							"themes/**",
-							"js/i18n/**",
-							"js/widgets/**"
+							"js/**",
+							"themes/**"
 						],
 						dest: buildPath,
 						expand: true
@@ -120,16 +104,7 @@ module.exports = function(grunt)
 			},
 			src: [
 				"js/Gruntfile.js",
-				"js/base/core.js",
-				"js/base/string.js",
-				"js/base/html.js",
-				"js/base/dom.js",
-				"js/base/css.js",
-				"js/base/browser.js",
-				"js/base/time.js",
-				"js/base/widget.js",
-				"js/widgets/*.js",
-				"js/i18n/*.js"
+				"js/**"
 			]
 		},
 		"string-replace": {
