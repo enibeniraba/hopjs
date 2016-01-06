@@ -11,7 +11,7 @@
 
 (function(window, $, undefined)
 {
-	
+
 window.hopjs = {
 	version: "@VERSION",
 
@@ -29,18 +29,30 @@ window.hopjs = {
 
 	inherit: function(child, parent, proto)
 	{
+		var property, f;
+		for (property in parent)
+		{
+			if (parent.hasOwnProperty(property))
+				child[property] = parent[property];
+		}
 		if (Object.create)
 			child.prototype = Object.create(parent.prototype);
 		else
 		{
-			var f = function(){};
+			f = function(){};
 			f.prototype = parent.prototype;
 			child.prototype = new f();
 		}
 		child.prototype.constructor = child;
 		child.parentClass = parent;
 		if (proto)
-			$.extend(true, child.prototype, proto);
+		{
+			for (property in proto)
+			{
+				if (proto.hasOwnProperty(property))
+					child.prototype[property] = proto[property];
+			}
+		}
 	}
 };
 
@@ -910,5 +922,5 @@ hop.widget.prototype = {
 		}
 	}
 };
-	
+
 })(window, jQuery);
