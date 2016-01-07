@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function(window, $, hop)
+(function($, hop)
 {
 
 hop.message = function(params)
@@ -85,4 +85,4 @@ hop.inherit(hop.message, hop.window, {
 	}
 });
 
-})(window, jQuery, hopjs);
+})(jQuery, hopjs);

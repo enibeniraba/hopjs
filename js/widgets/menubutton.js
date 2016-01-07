@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function(document, $, hop)
 {
 
 hop.menuButton = function(params)
@@ -261,4 +261,4 @@ hop.inherit(hop.menuButton, hop.widget, {
 	}
 });
 
-})(jQuery, hopjs);
+})(document, jQuery, hopjs);

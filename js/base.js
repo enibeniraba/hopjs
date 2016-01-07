@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function(window, $, undefined)
+(function(window, document, $, undefined)
 {
 
 window.hopjs = {
@@ -941,4 +941,4 @@ hop.inherit(hop.widget, hop.configurable, {
 	}
 });
 
-})(window, jQuery);
+})(window, document, jQuery);

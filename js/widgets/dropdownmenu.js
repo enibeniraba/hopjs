@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function(window, document, $, hop)
 {
 
 hop.dropdownMenu = function(params)
@@ -1313,4 +1313,4 @@ hop.inherit(hop.dropdownMenuItems.separator, hop.dropdownMenuItem, {
 	}
 });
 
-})(jQuery, hopjs);
+})(window, document, jQuery, hopjs);

@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function(window, $, hop, undefined)
+(function(window, document, $, hop, undefined)
 {
 
 var def = hop.def;
@@ -2742,4 +2742,4 @@ hop.datepickerAnimationPresets.fade = function(params)
 	return result;
 };
 
-})(window, jQuery, hopjs);
+})(window, document, jQuery, hopjs);

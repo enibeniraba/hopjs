@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function(document, $, hop)
 {
 
 hop.menu = function(params)
@@ -802,4 +802,4 @@ hop.inherit(hop.menuItems.separator, hop.menuItem, {
 	}
 });
 
-})(jQuery, hopjs);
+})(document, jQuery, hopjs);

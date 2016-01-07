@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function(window, $, hop, undefined)
+(function(window, document, $, hop)
 {
 
 var def = hop.def;
@@ -1251,4 +1251,4 @@ hop.inherit(hop.layerHideAnimations.def, hop.layerShowAnimations.def, {
 	}
 });
 
-})(window, jQuery, hopjs);
+})(window, document, jQuery, hopjs);

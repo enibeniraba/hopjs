@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function(document, $, hop)
 {
 
 hop.tabs = function(params)
@@ -150,4 +150,4 @@ hop.inherit(hop.tabs, hop.widget, {
 	}
 });
 
-})(jQuery, hopjs);
+})(document, jQuery, hopjs);
