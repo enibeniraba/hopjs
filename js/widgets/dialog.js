@@ -165,7 +165,7 @@ hop.inherit(hop.dialog, hop.window, {
 	generateHtml: function()
 	{
 		hop.window.prototype.generateHtml.apply(this);
-		var self = this, html;
+		var self = this, html,
 			classPrefix = self.classPrefix+"dialog-",
 			dotClassPrefix = "."+classPrefix;
 		html = '\

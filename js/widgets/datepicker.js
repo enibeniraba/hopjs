@@ -12,7 +12,7 @@
 (function(window, $, hop, undefined)
 {
 
-var def = hop.def, ifDef = hop.ifDef;
+var def = hop.def;
 
 hop.datepicker = function(params)
 {
@@ -364,7 +364,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	setMinDate: function(date)
 	{
-		var self = this, prevTime, picked = self.picked;
+		var self = this, picked = self.picked;
 		if (date === null)
 			self.minDate = date;
 		else
@@ -397,7 +397,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	setMaxDate: function(date)
 	{
-		var self = this, prevTime, picked = self.picked;
+		var self = this, picked = self.picked;
 		if (date === null)
 			self.maxDate = date;
 		else
@@ -1285,7 +1285,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		var self = this, year = self.date.getFullYear(), month = self.date.getMonth();
 		if (self.picker !== "day")
 			self.showDayPicker(year, month);
-		else if (year !== self.dayPickerYear || month != self.dayPickerMonth)
+		else if (year !== self.dayPickerYear || month !== self.dayPickerMonth)
 			self.changeDayPickerMonth(year, month);
 	},
 
@@ -1373,7 +1373,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			weekDayOfFirstMonthDay = (7+date.getDay()-self.getFirstWeekDay())%7,
 			dayCount = 1-weekDayOfFirstMonthDay,
 			minDate = self.minDate, maxDate = self.maxDate,
-			minYear = minMonth = minDay = maxYear = maxMonth = maxDay = null,
+			minYear = null, minMonth = null, minDay = null,
+			maxYear = null, maxMonth = null, maxDay = null,
 			monthLastDay, prevMonthLastDay, prevYear, prevMonth, nextYear, nextMonth,
 			day, dayYear, dayMonth, today, picked, pickedWeek, currentWeek, weekNode,
 			weekNumberNode, dayNode, disabled, eventData, i, j,
@@ -1641,8 +1642,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 			todayYear = todayDate.getFullYear(),
 			todayMonth = todayDate.getMonth(),
 			minDate = self.minDate, maxDate = self.maxDate,
-			minYear = minMonth = maxYear = maxMonth = null,
-			month = 0, current, picked, rowNode, monthNode, disabled, eventData,
+			minYear = null, minMonth = null, maxYear = null, maxMonth = null,
+			month = 0, current, picked, rowNode, monthNode, disabled, eventData, i, j,
 			$node = $(node);
 		if (minDate !== null)
 		{
@@ -1796,8 +1797,8 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	setYearPickerTitleDate: function(node, scale, year)
 	{
-		firstYear = this.calcFirstYear(scale, year);
-		lastYear = firstYear+Math.pow(10, scale+1);
+		var firstYear = this.calcFirstYear(scale, year),
+			lastYear = firstYear+Math.pow(10, scale+1);
 		node.innerHTML = firstYear+' &ndash; '+lastYear;
 	},
 
@@ -1816,9 +1817,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 			todayDate = new Date(),
 			todayYear = todayDate.getFullYear(),
 			minDate = self.minDate, maxDate = self.maxDate,
-			minYear = maxYear = null,
+			minYear = null, maxYear = null,
 			count = -1, year, current, picked, rowNode, yearNode,
-			multiplier = Math.pow(10, scale), disabled, eventData,
+			multiplier = Math.pow(10, scale), disabled, eventData, i, j,
 			$node = $(node);
 		if (minDate !== null)
 			minYear = minDate.getFullYear();
@@ -1972,7 +1973,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 	createTimePicker: function()
 	{
 		var self = this, node = document.createElement("div"),
-			html, head = "", i, j, classPrefix = self.classPrefix+"datepicker-", $elem;
+			html, head = "", classPrefix = self.classPrefix+"datepicker-", $elem;
 		node.className = classPrefix+"time-picker";
 		if (self.shortTimeFormat)
 			node.className += " "+classPrefix+"time-picker-short";
@@ -2145,7 +2146,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	timePickerUpdateAmPm: function()
 	{
-		$("."+this.classPrefix+"datepicker-time-picker-ampm div", this.pickerNode).html(hop.time.am(this.date.getHours()) ? 'am' : 'pm');
+		$("."+this.classPrefix+"datepicker-time-picker-ampm div", this.pickerNode).html(hop.time.am(this.date.getHours()) ? "am" : "pm");
 	},
 
 	onTimePickerHoursMinusMousedown: function(event)
@@ -2411,7 +2412,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 
 	animate: function(animationId, prevTitleNode, prevPickerNode)
 	{
-		var self = this, animation, type, data, params = {}, animate = true, node = self.node;
+		var self = this, animation, type, params, animate = true, node = self.node;
 		while (def(node.style))
 		{
 			if (node.style.display === "none")
@@ -2424,22 +2425,24 @@ hop.inherit(hop.datepicker, hop.widget, {
 		if (animate && self.titleAnimations[animationId])
 		{
 			animation = self.titleAnimations[animationId];
+			params = {};
 			if (typeof animation === "string")
 				type = animation;
 			else
 			{
 				type = animation.type;
 				if (animation.params)
-					params = animation.params;
+					$.extend(true, params, animation.params);
 			}
 			if (hop.datepickerTitleAnimations[type])
 			{
-				data = {
+				$.extend(true, params, {
+					id: animationId,
+					datepicker: self,
 					prevNode: prevTitleNode,
 					nextNode: self.titleNode
-				};
-				self.titleAnimation = new hop.datepickerAnimation(self, animationId, data, params);
-				$.extend(self.titleAnimation, hop.datepickerTitleAnimations[type]);
+				});
+				self.titleAnimation = new hop.datepickerTitleAnimations[type](params);
 				self.titleAnimation.start();
 			}
 		}
@@ -2449,22 +2452,24 @@ hop.inherit(hop.datepicker, hop.widget, {
 		if (animate && self.pickerAnimations[animationId])
 		{
 			animation = self.pickerAnimations[animationId];
+			params = {};
 			if (typeof animation === "string")
 				type = animation;
 			else
 			{
 				type = animation.type;
 				if (animation.params)
-					params = animation.params;
+					$.extend(true, params, animation.params);
 			}
 			if (hop.datepickerPickerAnimations[type])
 			{
-				data = {
+				$.extend(true, params, {
+					id: animationId,
+					datepicker: self,
 					prevNode: prevPickerNode,
 					nextNode: self.pickerNode
-				};
-				self.pickerAnimation = new hop.datepickerAnimation(self, animationId, data, params);
-				$.extend(self.pickerAnimation, hop.datepickerPickerAnimations[type]);
+				});
+				self.pickerAnimation = new hop.datepickerPickerAnimations[type](params);
 				self.pickerAnimation.start();
 			}
 		}
@@ -2535,15 +2540,22 @@ hop.inherit(hop.datepicker, hop.widget, {
 	}
 });
 
-hop.datepickerAnimation = function(datepicker, id, data, params)
+hop.datepickerAnimation = function(params)
 {
-	this.id = id;
-	this.datepicker = datepicker;
-	this.data = data || {};
-	this.params = params || {};
+	hop.configurable.apply(this, arguments);
 };
 
-hop.datepickerAnimation.prototype = {
+hop.inherit(hop.datepickerAnimation, hop.configurable, {
+	getDefaults: function()
+	{
+		return {
+			id: null,
+			datepicker: null,
+			prevNode: null,
+			nextNode: null
+		};
+	},
+	
 	start: function()
 	{
 	},
@@ -2551,262 +2563,183 @@ hop.datepickerAnimation.prototype = {
 	finish: function()
 	{
 	}
+});
+
+if (!def(hop.datepickerTitleAnimations))
+	hop.datepickerTitleAnimations = {};
+
+if (!def(hop.datepickerPickerAnimations))
+	hop.datepickerPickerAnimations = {};
+
+if (!def(hop.datepickerAnimationPresets))
+	hop.datepickerAnimationPresets = {};
+
+hop.datepickerTitleAnimations.fade = function(params)
+{
+	hop.datepickerAnimation.apply(this, arguments);
 };
 
-hop.datepickerTitleAnimations = {
-	fade: {
-		defaultParams: {
-			hideAnimation: false,
-			duration: 200,
-			easing: "swing",
-			interval: 5
-		},
-
-		start: function()
-		{
-			var self = this, params = self.params, defaultParams = self.defaultParams,
-				$prevNode = $(self.data.prevNode),
-				$nextNode = $(self.data.nextNode),
-				hideAnimation = defaultParams.hideAnimation,
-				duration = defaultParams.duration,
-				easing = defaultParams.easing,
-				interval = defaultParams.interval,
-				completeCount = 0, complete, intervalOrig = $.fx.interval,
-				hideOptions = {}, showOptions = {}, hideDuration, showDuration, hideEasing, showEasing;
-
-			complete = function()
-			{
-				completeCount++;
-				if (completeCount > 1)
-				{
-					$prevNode.remove();
-					self.datepicker.titleAnimation = null;
-					$nextNode.removeAttr("style");
-					self.datepicker.$title.removeAttr("style");
-				}
-			};
-
-			if (def(params.hideAnimation))
-				hideAnimation = !!params.hideAnimation;
-
-			if (def(params.duration))
-				duration = params.duration;
-			hideDuration = duration;
-			if (def(params.hideDuration))
-				hideDuration = params.hideDuration;
-			showDuration = duration;
-			if (def(params.showDuration))
-				showDuration = params.showDuration;
-
-			if (def(params.easing))
-				easing = params.easing;
-			hideEasing = easing;
-			if (def(params.hideEasing))
-				hideEasing = params.hideEasing;
-			showEasing = easing;
-			if (def(params.showEasing))
-				showEasing = params.showEasing;
-
-			if (def(params.interval))
-				interval = params.interval;
-
-			hideOptions = {
-				duration: hideDuration,
-				easing: hideEasing,
-				complete: complete
-			};
-			showOptions = {
-				duration: showDuration,
-				easing: showEasing,
-				complete: complete
-			};
-
-			$nextNode.hide();
-			self.datepicker.$title.css({
-				height: self.datepicker.$title.height(),
-				width: self.datepicker.$title.width()
-			});
-			$nextNode.show();
-			$prevNode.css({
-				height: $prevNode.height(),
-				width: $prevNode.width(),
-				position: "absolute",
-				top: 0,
-				left: 0,
-				"z-index": 0
-			});
-			$nextNode.css({
-				height: $nextNode.height(),
-				width: $nextNode.width(),
-				position: "absolute",
-				top: 0,
-				left: 0,
-				"z-index": 1
-			});
-			$.fx.interval = interval;
-			if (hideAnimation)
-				$prevNode.fadeOut(hideOptions);
-			$nextNode.hide();
-			$nextNode.fadeIn(showOptions);
-			$.fx.interval = intervalOrig;
-		},
-
-		finish: function()
-		{
-			var self = this, data = self.data;
-			$(data.prevNode).stop(true, true);
-			$(data.nextNode).stop(true, true);
-			$(data.prevNode).remove();
-			$(data.nextNode).removeAttr("style");
-			self.datepicker.$title.removeAttr("style");
-			self.datepicker.titleAnimation = null;
-		}
-	}
-};
-
-hop.datepickerPickerAnimations = {
-	fade: {
-		defaultParams: {
-			hideAnimation: false,
-			duration: 200,
-			easing: "swing",
-			interval: 5
-		},
-
-		start: function()
-		{
-			var self = this, params = self.params, defaultParams = self.defaultParams,
-				$prevNode = $(self.data.prevNode),
-				$nextNode = $(self.data.nextNode),
-				hideAnimation = defaultParams.hideAnimation,
-				duration = defaultParams.duration,
-				easing = defaultParams.easing,
-				interval = defaultParams.interval,
-				completeCount = 0, complete, intervalOrig = $.fx.interval,
-				options = {}, hideOptions = {}, showOptions = {}, hideDuration, showDuration, hideEasing, showEasing;
-
-			complete = function()
-			{
-				completeCount++;
-				if (completeCount > 1)
-				{
-					$prevNode.remove();
-					self.datepicker.pickerAnimation = null;
-					$nextNode.removeAttr("style");
-					self.datepicker.$body.removeAttr("style");
-				}
-			};
-
-			if (def(params.hideAnimation))
-				hideAnimation = !!params.hideAnimation;
-
-			if (def(params.duration))
-				duration = params.duration;
-			hideDuration = duration;
-			if (def(params.hideDuration))
-				hideDuration = params.hideDuration;
-			showDuration = duration;
-			if (def(params.showDuration))
-				showDuration = params.showDuration;
-
-			if (def(params.easing))
-				easing = params.easing;
-			hideEasing = easing;
-			if (def(params.hideEasing))
-				hideEasing = params.hideEasing;
-			showEasing = easing;
-			if (def(params.showEasing))
-				showEasing = params.showEasing;
-
-			if (def(params.interval))
-				interval = params.interval;
-
-			hideOptions = {
-				duration: hideDuration,
-				easing: hideEasing,
-				complete: complete
-			};
-			showOptions = {
-				duration: showDuration,
-				easing: showEasing,
-				complete: complete
-			};
-
-			$nextNode.hide();
-			self.datepicker.$body.css({
-				height: self.datepicker.$body.height(),
-				width: self.datepicker.$body.width()
-			});
-			$nextNode.show();
-			$prevNode.css({
-				height: $prevNode.height(),
-				width: $prevNode.width(),
-				position: "absolute",
-				top: 0,
-				left: 0,
-				"z-index": 0
-			});
-			$nextNode.css({
-				height: $nextNode.height(),
-				width: $nextNode.width(),
-				position: "absolute",
-				top: 0,
-				left: 0,
-				"z-index": 1
-			});
-			$.fx.interval = interval;
-			if (hideAnimation)
-				$prevNode.fadeOut(hideOptions);
-			$nextNode.hide();
-			$nextNode.fadeIn(showOptions);
-			$.fx.interval = intervalOrig;
-		},
-
-		finish: function()
-		{
-			var self = this, data = self.data;
-			$(data.prevNode).stop(true, true);
-			$(data.nextNode).stop(true, true);
-			$(data.prevNode).remove();
-			$(data.nextNode).removeAttr("style");
-			self.datepicker.$body.removeAttr("style");
-			self.datepicker.pickerAnimation = null;
-		}
-	}
-};
-
-hop.datepickerAnimationPresets = {
-	fade: function(params)
+hop.inherit(hop.datepickerTitleAnimations.fade, hop.datepickerAnimation, {
+	getDefaults: function()
 	{
-		var animations = [
-				"dayPrev",
-				"dayNext",
-				"dayMonth",
-				"monthDay",
-				"monthPrev",
-				"monthNext",
-				"monthYear",
-				"yearMonth",
-				"yearPrev",
-				"yearNext",
-				"yearOut",
-				"yearIn",
-				"yearDay",
-				"timeShow",
-				"timeHide"
-			],
-			result = {}, i, animation,
-			animationParams = (params && params.animationParams ? params.animationParams : {});
-		for (i in animations)
+		return $.extend(hop.datepickerAnimation.prototype.getDefaults.apply(this), {
+			hideAnimation: false,
+			showDuration: 200,
+			hideDuration: 200,
+			showEasing: "swing",
+			hideEasing: "swing",
+			interval: 5
+		});
+	},
+	
+	getVirtualParams: function()
+	{
+		return $.merge(hop.datepickerAnimation.prototype.getVirtualParams.apply(this), [
+			"duration",
+			"easing"
+		]);
+	},
+	
+	setDuration: function(duration)
+	{
+		this.showDuration = duration;
+		this.hideDuration = duration;
+	},
+	
+	setEasing: function(easing)
+	{
+		this.showEasing = easing;
+		this.hideEasing = easing;
+	},
+	
+	start: function()
+	{
+		this.realStart(this.datepicker.$title, "titleAnimation");
+	},
+
+	finish: function()
+	{
+		this.realFinish(this.datepicker.$title, "titleAnimation");
+	},
+
+	realStart: function($container, animationProperty)
+	{
+		var self = this, $prevNode = $(self.prevNode), $nextNode = $(self.nextNode),
+			completeCount = 0, complete, intervalOrig = $.fx.interval,
+			hideOptions = {}, showOptions = {};
+
+		complete = function()
 		{
-			result[animations[i]] = {
-				type: "fade"
-			};
-			if (animationParams)
-				result[animations[i]].params = animationParams;
-		}
-		return result;
+			completeCount++;
+			if (completeCount > 1)
+			{
+				$prevNode.remove();
+				self.datepicker[animationProperty] = null;
+				$nextNode.removeAttr("style");
+				$container.removeAttr("style");
+			}
+		};
+
+		hideOptions = {
+			duration: self.hideDuration,
+			easing: self.hideEasing,
+			complete: complete
+		};
+		showOptions = {
+			duration: self.showDuration,
+			easing: self.showEasing,
+			complete: complete
+		};
+
+		$nextNode.hide();
+		self.datepicker.$title.css({
+			height: self.datepicker.$title.height(),
+			width: self.datepicker.$title.width()
+		});
+		$nextNode.show();
+		$prevNode.css({
+			height: $prevNode.height(),
+			width: $prevNode.width(),
+			position: "absolute",
+			top: 0,
+			left: 0,
+			"z-index": 0
+		});
+		$nextNode.css({
+			height: $nextNode.height(),
+			width: $nextNode.width(),
+			position: "absolute",
+			top: 0,
+			left: 0,
+			"z-index": 1
+		});
+		$.fx.interval = self.interval;
+		if (self.hideAnimation)
+			$prevNode.fadeOut(hideOptions);
+		$nextNode.hide();
+		$nextNode.fadeIn(showOptions);
+		$.fx.interval = intervalOrig;
+	},
+
+	realFinish: function($container, animationProperty)
+	{
+		var self = this;
+		$(self.prevNode).stop(true, true);
+		$(self.nextNode).stop(true, true);
+		$(self.prevNode).remove();
+		$(self.nextNode).removeAttr("style");
+		$container.removeAttr("style");
+		self.datepicker[animationProperty] = null;
 	}
+});
+
+hop.datepickerPickerAnimations.fade = function(params)
+{
+	hop.datepickerTitleAnimations.fade.apply(this, arguments);
+};
+
+hop.inherit(hop.datepickerPickerAnimations.fade, hop.datepickerTitleAnimations.fade, {
+	start: function()
+	{
+		this.realStart(this.datepicker.$body, "pickerAnimation");
+	},
+
+	finish: function()
+	{
+		this.realFinish(this.datepicker.$body, "pickerAnimation");
+	}
+});
+
+hop.datepickerAnimationPresets.fade = function(params)
+{
+	var animations = [
+			"dayPrev",
+			"dayNext",
+			"dayMonth",
+			"monthDay",
+			"monthPrev",
+			"monthNext",
+			"monthYear",
+			"yearMonth",
+			"yearPrev",
+			"yearNext",
+			"yearOut",
+			"yearIn",
+			"yearDay",
+			"timeShow",
+			"timeHide"
+		],
+		result = {}, key,
+		animationParams = (params && params.animationParams ? params.animationParams : {});
+	for (key in animations)
+	{
+		result[animations[key]] = {
+			type: "fade"
+		};
+		if (animationParams)
+			result[animations[key]].params = animationParams;
+	}
+	return result;
 };
 
 })(window, jQuery, hopjs);

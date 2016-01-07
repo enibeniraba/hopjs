@@ -3,17 +3,56 @@
 
 var def = hop.def;
 
-hop.datepickerTitleAnimations.slide = {
-	defaultParams: {
-		hideAnimation: true,
-		direction: 0,
-		duration: 200,
-		easing: "swing",
-		interval: 5,
-		transition: true,
-		sync: true
-	},
+if (!def(hop.datepickerTitleAnimations))
+	hop.datepickerTitleAnimations = {};
 
+if (!def(hop.datepickerPickerAnimations))
+	hop.datepickerPickerAnimations = {};
+
+if (!def(hop.datepickerAnimationPresets))
+	hop.datepickerAnimationPresets = {};
+
+hop.datepickerTitleAnimations.slide = function(params)
+{
+	hop.datepickerAnimation.apply(this, arguments);
+};
+
+hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
+	getDefaults: function()
+	{
+		return $.extend(hop.datepickerAnimation.prototype.getDefaults.apply(this), {
+			hideAnimation: true,
+			direction: 0,
+			showDuration: 200,
+			hideDuration: 200,
+			showEasing: "swing",
+			hideEasing: "swing",
+			interval: 5,
+			transition: true,
+			sync: true
+		});
+	},
+	
+	getVirtualParams: function()
+	{
+		return $.merge(hop.datepickerAnimation.prototype.getVirtualParams.apply(this), [
+			"duration",
+			"easing"
+		]);
+	},
+	
+	setDuration: function(duration)
+	{
+		this.showDuration = duration;
+		this.hideDuration = duration;
+	},
+	
+	setEasing: function(easing)
+	{
+		this.showEasing = easing;
+		this.hideEasing = easing;
+	},
+	
 	start: function()
 	{
 		this.realStart(this.datepicker.$title, "titleAnimation");
@@ -23,28 +62,25 @@ hop.datepickerTitleAnimations.slide = {
 	{
 		this.realFinish(this.datepicker.$title, "titleAnimation");
 	},
-
+	
 	realStart: function($container, animationProperty)
 	{
-		var self = this, params = self.params, defaultParams = self.defaultParams,
-			$prevNode = $(self.data.prevNode),
-			$nextNode = $(self.data.nextNode),
+		var self = this,
+			$prevNode = $(self.prevNode),
+			$nextNode = $(self.nextNode),
 			height, width, hideProperties = {}, showProperties = {},
-			hideAnimation = defaultParams.hideAnimation,
-			direction = defaultParams.direction,
-			duration = defaultParams.duration,
-			easing = defaultParams.easing,
-			interval = defaultParams.interval,
-			transition = defaultParams.transition,
-			sync = defaultParams.sync,
+			transition = self.transition,
 			completeCount = 0, complete, intervalOrig = $.fx.interval, horizontalOffset,
-			hideOptions = {}, showOptions = {}, hideDuration, showDuration, hideEasing, showEasing,
+			hideOptions = {}, showOptions = {},
 			animationInfo;
+		
+		if (hop.browser.isOldOpera())
+			transition = false;
 
 		complete = function()
 		{
 			completeCount++;
-			if (completeCount > (hideAnimation ? 1 : 0))
+			if (completeCount > (self.hideAnimation ? 1 : 0))
 			{
 				$prevNode.remove();
 				self.datepicker[animationProperty] = null;
@@ -52,39 +88,6 @@ hop.datepickerTitleAnimations.slide = {
 				$container.removeAttr("style");
 			}
 		};
-
-		if (def(params.hideAnimation))
-			hideAnimation = params.hideAnimation;
-
-		if (def(params.direction))
-			direction = params.direction;
-
-		if (def(params.duration))
-			duration = params.duration;
-		hideDuration = duration;
-		if (def(params.hideDuration))
-			hideDuration = params.hideDuration;
-		showDuration = duration;
-		if (def(params.showDuration))
-			showDuration = params.showDuration;
-
-		if (def(params.easing))
-			easing = params.easing;
-		hideEasing = easing;
-		if (def(params.hideEasing))
-			hideEasing = params.hideEasing;
-		showEasing = easing;
-		if (def(params.showEasing))
-			showEasing = params.showEasing;
-
-		if (def(params.interval))
-			interval = params.interval;
-
-		if (def(params.transition))
-			transition = params.transition;
-
-		if (hop.browser.isOldOpera())
-			transition = false;
 
 		if (transition)
 		{
@@ -95,31 +98,28 @@ hop.datepickerTitleAnimations.slide = {
 
 		if (transition)
 		{
-			if (hideAnimation)
+			if (self.hideAnimation)
 				$prevNode.on(animationInfo.transitionendEvent, complete);
 			$nextNode.on(animationInfo.transitionendEvent, complete);
 		}
 		else
 		{
 			hideOptions = {
-				duration: hideDuration,
-				easing: hideEasing,
+				duration: self.hideDuration,
+				easing: self.hideEasing,
 				complete: complete
 			};
 			showOptions = {
-				duration: showDuration,
-				easing: showEasing,
+				duration: self.showDuration,
+				easing: self.showEasing,
 				complete: complete
 			};
 		}
 
-		if (def(params.sync))
-			sync = !!params.sync;
-
 		$nextNode.hide();
 		height = $container.height();
 		width = $container.width();
-		if (sync && $container[0] === self.datepicker.$title[0])
+		if (self.sync && $container[0] === self.datepicker.$title[0])
 			horizontalOffset = self.datepicker.$body.width();
 		else
 			horizontalOffset = width;
@@ -144,7 +144,7 @@ hop.datepickerTitleAnimations.slide = {
 			left: 0,
 			"z-index": 1
 		});
-		if (direction === 0)
+		if (self.direction === 0)
 		{
 			$nextNode.css({
 				left: -horizontalOffset
@@ -152,9 +152,9 @@ hop.datepickerTitleAnimations.slide = {
 			if (transition)
 			{
 				$nextNode[0].offsetHeight;
-				if (hideAnimation)
-					$prevNode.css(self.transitionProperties(true, 0, horizontalOffset, hideDuration, hideEasing, animationInfo));
-				$nextNode.css(self.transitionProperties(true, -horizontalOffset, horizontalOffset, showDuration, showEasing, animationInfo));
+				if (self.hideAnimation)
+					$prevNode.css(self.transitionProperties(true, 0, horizontalOffset, self.hideDuration, self.hideEasing, animationInfo));
+				$nextNode.css(self.transitionProperties(true, -horizontalOffset, horizontalOffset, self.showDuration, self.showEasing, animationInfo));
 			}
 			else
 			{
@@ -162,7 +162,7 @@ hop.datepickerTitleAnimations.slide = {
 				showProperties.left = 0;
 			}
 		}
-		else if (direction === 1)
+		else if (self.direction === 1)
 		{
 			$nextNode.css({
 				top: height
@@ -170,9 +170,9 @@ hop.datepickerTitleAnimations.slide = {
 			if (transition)
 			{
 				$nextNode[0].offsetHeight;
-				if (hideAnimation)
-					$prevNode.css(self.transitionProperties(false, 0, -height, hideDuration, hideEasing, animationInfo));
-				$nextNode.css(self.transitionProperties(false, height, -height, showDuration, showEasing, animationInfo));
+				if (self.hideAnimation)
+					$prevNode.css(self.transitionProperties(false, 0, -height, self.hideDuration, self.hideEasing, animationInfo));
+				$nextNode.css(self.transitionProperties(false, height, -height, self.showDuration, self.showEasing, animationInfo));
 			}
 			else
 			{
@@ -180,7 +180,7 @@ hop.datepickerTitleAnimations.slide = {
 				showProperties.top = 0;
 			}
 		}
-		else if (direction === 2)
+		else if (self.direction === 2)
 		{
 			$nextNode.css({
 				left: horizontalOffset
@@ -188,9 +188,9 @@ hop.datepickerTitleAnimations.slide = {
 			if (transition)
 			{
 				$nextNode[0].offsetHeight;
-				if (hideAnimation)
-					$prevNode.css(self.transitionProperties(true, 0, -horizontalOffset, hideDuration, hideEasing, animationInfo));
-				$nextNode.css(self.transitionProperties(true, horizontalOffset, -horizontalOffset, showDuration, showEasing, animationInfo));
+				if (self.hideAnimation)
+					$prevNode.css(self.transitionProperties(true, 0, -horizontalOffset, self.hideDuration, self.hideEasing, animationInfo));
+				$nextNode.css(self.transitionProperties(true, horizontalOffset, -horizontalOffset, self.showDuration, self.showEasing, animationInfo));
 			}
 			else
 			{
@@ -206,9 +206,9 @@ hop.datepickerTitleAnimations.slide = {
 			if (transition)
 			{
 				$nextNode[0].offsetHeight;
-				if (hideAnimation)
-					$prevNode.css(self.transitionProperties(false, 0, height, hideDuration, hideEasing, animationInfo));
-				$nextNode.css(self.transitionProperties(false, -height, height, showDuration, showEasing, animationInfo));
+				if (self.hideAnimation)
+					$prevNode.css(self.transitionProperties(false, 0, height, self.hideDuration, self.hideEasing, animationInfo));
+				$nextNode.css(self.transitionProperties(false, -height, height, self.showDuration, self.showEasing, animationInfo));
 			}
 			else
 			{
@@ -218,8 +218,8 @@ hop.datepickerTitleAnimations.slide = {
 		}
 		if (!transition)
 		{
-			$.fx.interval = interval;
-			if (hideAnimation)
+			$.fx.interval = self.interval;
+			if (self.hideAnimation)
 				$prevNode.animate(hideProperties, hideOptions);
 			$nextNode.animate(showProperties, showOptions);
 			$.fx.interval = intervalOrig;
@@ -228,12 +228,11 @@ hop.datepickerTitleAnimations.slide = {
 
 	realFinish: function($container, animationProperty)
 	{
-		var data = this.data;
-		$(data.prevNode).stop(true, true);
-		$(data.nextNode).stop(true, true);
-		$(data.prevNode).remove();
-		$(data.prevNode).removeAttr("style");
-		$(data.nextNode).removeAttr("style");
+		$(this.prevNode).stop(true, true);
+		$(this.nextNode).stop(true, true);
+		$(this.prevNode).remove();
+		$(this.prevNode).removeAttr("style");
+		$(this.nextNode).removeAttr("style");
 		$container.removeAttr("style");
 		this.datepicker[animationProperty] = null;
 	},
@@ -258,9 +257,14 @@ hop.datepickerTitleAnimations.slide = {
 		}
 		return result;
 	}
+});
+
+hop.datepickerPickerAnimations.slide = function(params)
+{
+	hop.datepickerTitleAnimations.slide.apply(this, arguments);
 };
 
-hop.datepickerPickerAnimations.slide = $.extend(true, {}, hop.datepickerTitleAnimations.slide, {
+hop.inherit(hop.datepickerPickerAnimations.slide, hop.datepickerTitleAnimations.slide, {
 	start: function()
 	{
 		this.realStart(this.datepicker.$body, "pickerAnimation");
@@ -272,32 +276,56 @@ hop.datepickerPickerAnimations.slide = $.extend(true, {}, hop.datepickerTitleAni
 	}
 });
 
-hop.datepickerPickerAnimations.scale = {
-	defaultParams: {
-		hideAnimation: true,
-		duration: 200,
-		easing: "swing",
-		interval: 5,
-		transition: true
+hop.datepickerPickerAnimations.scale = function(params)
+{
+	hop.datepickerAnimation.apply(this, arguments);
+};
+
+hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
+	getDefaults: function()
+	{
+		return $.extend(hop.datepickerAnimation.prototype.getDefaults.apply(this), {
+			hideAnimation: true,
+			showDuration: 200,
+			hideDuration: 200,
+			showEasing: "swing",
+			hideEasing: "swing",
+			interval: 5,
+			transition: true
+		});
+	},
+	
+	getVirtualParams: function()
+	{
+		return $.merge(hop.datepickerAnimation.prototype.getVirtualParams.apply(this), [
+			"duration",
+			"easing"
+		]);
+	},
+	
+	setDuration: function(duration)
+	{
+		this.showDuration = duration;
+		this.hideDuration = duration;
+	},
+	
+	setEasing: function(easing)
+	{
+		this.showEasing = easing;
+		this.hideEasing = easing;
 	},
 
 	start: function()
 	{
-		var self = this, params = self.params, defaultParams = self.defaultParams,
-			datepicker = self.datepicker,
+		var self = this, datepicker = self.datepicker,
 			dotClassPrefix = "."+datepicker.classPrefix+"datepicker-",
 			$body = datepicker.$body,
-			$prevNode = $(self.data.prevNode),
-			$nextNode = $(self.data.nextNode),
+			$prevNode = $(self.prevNode),
+			$nextNode = $(self.nextNode),
 			height, width, hideProperties, showProperties,
-			hideAnimation = defaultParams.hideAnimation,
-			direction = defaultParams.direction,
-			duration = defaultParams.duration,
-			easing = defaultParams.easing,
-			interval = defaultParams.interval,
-			transition = defaultParams.transition,
-			completeCount = 0, complete, intervalOrig = $.fx.interval, horizontalOffset,
-			options = {}, hideOptions = {}, showOptions = {}, hideDuration, showDuration, hideEasing, showEasing,
+			transition = self.transition,
+			completeCount = 0, complete, intervalOrig = $.fx.interval,
+			hideOptions = {}, showOptions = {},
 			animationInfo = hop.browser.animationInfo(),
 			transformProperty = animationInfo.transformProperty,
 			i, $element, t, l, h, w, position, offset, elementOffset,
@@ -309,11 +337,14 @@ hop.datepickerPickerAnimations.scale = {
 			datepicker.pickerAnimation = null;
 			return;
 		}
+		
+		if (hop.browser.isOldOpera() || !animationInfo.transitionProperty)
+			transition = false;
 
 		complete = function()
 		{
 			completeCount++;
-			if (completeCount > (hideAnimation ? 1 : 0))
+			if (completeCount > (self.hideAnimation ? 1 : 0))
 			{
 				$prevNode.remove();
 				datepicker.pickerAnimation = null;
@@ -322,50 +353,17 @@ hop.datepickerPickerAnimations.scale = {
 			}
 		};
 
-		if (def(params.hideAnimation))
-			hideAnimation = params.hideAnimation;
-
-		if (def(params.direction))
-			direction = params.direction;
-
-		if (def(params.duration))
-			duration = params.duration;
-		hideDuration = duration;
-		if (def(params.hideDuration))
-			hideDuration = params.hideDuration;
-		showDuration = duration;
-		if (def(params.showDuration))
-			showDuration = params.showDuration;
-
-		if (def(params.easing))
-			easing = params.easing;
-		hideEasing = easing;
-		if (def(params.hideEasing))
-			hideEasing = params.hideEasing;
-		showEasing = easing;
-		if (def(params.showEasing))
-			showEasing = params.showEasing;
-
-		if (def(params.interval))
-			interval = params.interval;
-
-		if (def(params.transition))
-			transition = params.transition;
-
-		if (hop.browser.isOldOpera() || !animationInfo.transitionProperty)
-			transition = false;
-
 		if (transition)
 		{
-			if (hideAnimation)
+			if (self.hideAnimation)
 				$prevNode.on(animationInfo.transitionendEvent, complete);
 			$nextNode.on(animationInfo.transitionendEvent, complete);
 		}
 		else
 		{
 			hideOptions = {
-				duration: hideDuration,
-				easing: hideEasing,
+				duration: self.hideDuration,
+				easing: self.hideEasing,
 				complete: function()
 				{
 					$prevNode[0].style[transformProperty] = "scale(1, 1)";
@@ -374,8 +372,8 @@ hop.datepickerPickerAnimations.scale = {
 				}
 			};
 			showOptions = {
-				duration: showDuration,
-				easing: showEasing,
+				duration: self.showDuration,
+				easing: self.showEasing,
 				complete: function()
 				{
 					$nextNode[0].style[transformProperty] = "scale(1, 1)";
@@ -503,9 +501,9 @@ hop.datepickerPickerAnimations.scale = {
 		if (transition)
 		{
 			$nextNode[0].offsetHeight;
-			if (hideAnimation)
-				$prevNode.css(self.transitionProperties(hidePosition.top, hidePosition.left, hideScaleY, hideScaleX, out ? 0 : 1, hideDuration, hideEasing, animationInfo));
-			$nextNode.css(self.transitionProperties(-showPosition.top, -showPosition.left, 1, 1, 1, showDuration, showEasing, animationInfo));
+			if (self.hideAnimation)
+				$prevNode.css(self.transitionProperties(hidePosition.top, hidePosition.left, hideScaleY, hideScaleX, out ? 0 : 1, self.hideDuration, self.hideEasing, animationInfo));
+			$nextNode.css(self.transitionProperties(-showPosition.top, -showPosition.left, 1, 1, 1, self.showDuration, self.showEasing, animationInfo));
 		}
 		else
 		{
@@ -514,12 +512,12 @@ hop.datepickerPickerAnimations.scale = {
 				hideProperties.opacity = 0;
 			hideOptions.progress = function(animation, progress, remaining)
 			{
-				var shift = $.easing[easing](progress, duration*progress, 0, 1, duration);
+				var shift = $.easing[self.easing](progress, self.hideDuration*progress, 0, 1, self.hideDuration);
 				$prevNode[0].style[transformProperty] = "scale("+(1-(1-hideScaleX)*shift)+", "+(1-(1-hideScaleY)*shift)+")";
 			};
 			showOptions.progress = function(animation, progress, remaining)
 			{
-				var shift = $.easing[easing](progress, duration*progress, 0, 1, duration);
+				var shift = $.easing[easing](progress, self.showDuration*progress, 0, 1, self.showDuration);
 				$nextNode[0].style[transformProperty] = "scale("+(showScaleX+(1-showScaleX)*shift)+", "+(showScaleY+(1-showScaleY)*shift)+")";
 			};
 			showProperties = {
@@ -528,8 +526,8 @@ hop.datepickerPickerAnimations.scale = {
 			};
 			if (!out)
 				showProperties.opacity = 1;
-			$.fx.interval = interval;
-			if (hideAnimation)
+			$.fx.interval = self.interval;
+			if (self.hideAnimation)
 				$prevNode.animate(hideProperties, hideOptions);
 			$nextNode.animate(showProperties, showOptions);
 			$.fx.interval = intervalOrig;
@@ -538,12 +536,11 @@ hop.datepickerPickerAnimations.scale = {
 
 	finish: function()
 	{
-		var data = this.data;
-		$(data.prevNode).stop(true, true);
-		$(data.nextNode).stop(true, true);
-		$(data.prevNode).remove();
-		$(data.prevNode).removeAttr("style");
-		$(data.nextNode).removeAttr("style");
+		$(this.prevNode).stop(true, true);
+		$(this.nextNode).stop(true, true);
+		$(this.prevNode).remove();
+		$(this.prevNode).removeAttr("style");
+		$(this.nextNode).removeAttr("style");
 		this.datepicker.$body.removeAttr("style");
 		this.datepicker.pickerAnimation = null;
 	},
@@ -569,7 +566,7 @@ hop.datepickerPickerAnimations.scale = {
 		};
 		return result;
 	}
-};
+});
 
 hop.datepickerAnimationPresets.slide = function(params)
 {
@@ -627,7 +624,7 @@ hop.datepickerAnimationPresets.slideFade = function(params)
 			"timeShow",
 			"timeHide"
 		],
-		result = {}, animationParams, key, animation,
+		result = {}, key,
 		animationParams = (params && params.animationParams ? params.animationParams : {});
 	for (key in directions)
 	{
@@ -672,7 +669,7 @@ hop.datepickerAnimationPresets.slideScale = function(params)
 			"yearIn",
 			"yearDay"
 		],
-		result = {}, animationParams, key, animation,
+		result = {}, key,
 		animationParams = (params && params.animationParams ? params.animationParams : {});
 	for (key in directions)
 	{

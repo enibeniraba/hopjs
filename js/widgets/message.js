@@ -12,8 +12,6 @@
 (function(window, $, hop)
 {
 
-var def = hop.def;
-
 hop.message = function(params)
 {
 	hop.window.apply(this, arguments);
@@ -63,11 +61,9 @@ hop.inherit(hop.message, hop.window, {
 
 	generateHtml: function()
 	{
-		hop.window.prototype.generateHtml.apply(this);
 		var self = this;
-			classPrefix = self.classPrefix+"message-",
-			dotClassPrefix = "."+classPrefix;
-		self.$bottom.html('<div class="'+classPrefix+'buttons"><button></button></div>');
+		hop.window.prototype.generateHtml.apply(self);
+		self.$bottom.html('<div class="'+self.classPrefix+'message-buttons"><button></button></div>');
 		self.$buttons = $("div", self.$bottom);
 		self.$button = $("button", self.$buttons);
 		self.$button.on("click", function(event)

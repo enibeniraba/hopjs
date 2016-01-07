@@ -327,7 +327,7 @@ hop.time = {
 		if (date === "")
 			return false;
 
-		var i, j, chr, prevChr, str, regexp, matches, result,
+		var i, j, chr, prevChr, str, regexp, matches, tmp, result,
 			pos = 0, year = null, month = null, day = null,
 			hours = null, hours12 = null, minutes = 0, seconds = 0, pm = false;
 		for (i = 0; i < format.length; i++)
@@ -540,7 +540,7 @@ hop.time = {
 
 	monthDaysList: function(year)
 	{
-		result = monthDays.slice();
+		var result = monthDays.slice();
 		if (hop.time.yearIsLeap(year))
 			result[1]++;
 		return result;
@@ -548,7 +548,7 @@ hop.time = {
 
 	yearMonthDays: function(year, month)
 	{
-		result = monthDays[month];
+		var result = monthDays[month];
 		if (month === 1 && hop.time.yearIsLeap(year))
 			result++;
 		return result;
@@ -643,7 +643,7 @@ hop.dom = {
 	{
 		if (!def(childNode))
 			childNode = document.body;
-		var topNode, node;
+		var topNode, node, style;
 		if (childNode === document.body)
 			topNode = childNode;
 		else
@@ -757,12 +757,66 @@ hop.browser = {
 	}
 };
 
+hop.configurable = function(params)
+{
+	this.construct(params);
+};
+
+hop.configurable.prototype = {
+	construct: function(params)
+	{
+		var self = this;
+		if (!params)
+			params = {};
+		self.defaults = self.getDefaults();
+		self.virtualParams = self.getVirtualParams();
+		self.setDefaults();
+		self.configure(params);
+	},
+
+	getDefaults: function()
+	{
+		return {};
+	},
+
+	getVirtualParams: function()
+	{
+		return [];
+	},
+	
+	setDefaults: function()
+	{
+		$.extend(true, this, this.defaults);
+	},
+
+	configure: function(params)
+	{
+		if (!params)
+			return;
+
+		var param, suffix;
+		for (param in params)
+		{
+			if (def(this.defaults[param]) || $.inArray(param, this.virtualParams) !== -1)
+			{
+				suffix = hop.string.upperCaseFirstChar(param);
+				if (typeof this["configure"+suffix] === "function")
+					this["configure"+suffix](params[param]);
+				else if (typeof this["set"+suffix] === "function")
+					this["set"+suffix](params[param]);
+				else
+					this[param] = params[param];
+			}
+		}
+	}
+};
+
 hop.widget = function(params)
 {
 	this.construct(params);
 };
 
-hop.widget.prototype = {
+hop.inherit(hop.widget, hop.configurable, {
 	version: null,
 
 	construct: function(params)
@@ -796,45 +850,9 @@ hop.widget.prototype = {
 		self.initEventHandlers(params);
 	},
 
-	getDefaults: function()
-	{
-		return {};
-	},
-
-	getVirtualParams: function()
-	{
-		return [];
-	},
-
 	getEvents: function()
 	{
 		return [];
-	},
-
-	setDefaults: function()
-	{
-		$.extend(true, this, this.defaults);
-	},
-
-	configure: function(params)
-	{
-		if (!params)
-			return;
-
-		var param, suffix;
-		for (param in params)
-		{
-			if (def(this.defaults[param]) || $.inArray(param, this.virtualParams) !== -1)
-			{
-				suffix = hop.string.upperCaseFirstChar(param);
-				if (typeof this["configure"+suffix] === "function")
-					this["configure"+suffix](params[param]);
-				else if (typeof this["set"+suffix] === "function")
-					this["set"+suffix](params[param]);
-				else
-					this[param] = params[param];
-			}
-		}
 	},
 
 	initEventHandlers: function(params)
@@ -921,6 +939,6 @@ hop.widget.prototype = {
 				break;
 		}
 	}
-};
+});
 
 })(window, jQuery);

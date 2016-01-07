@@ -217,7 +217,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 
 	generateHtml: function()
 	{
-		var self = this, layerParams = {}, width;
+		var self = this, layerParams = {};
 		$.extend(true, layerParams, self.defaultLayerParams, self.cursorPosition ? self.defaultLayerParamsCursor : self.defaultLayerParamsTarget);
 		if (self.target && !self.cursorPosition)
 			layerParams.element = self.target;

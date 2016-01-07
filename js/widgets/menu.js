@@ -406,9 +406,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 
 	onOtherItemMouseenter: function(item, event)
 	{
-		var self = this, layer, mouseY, mouseX, offset,
-			layerTop, layerBottom, layerLeft, layerRight,
-			itemTop, itemBottom, itemLeft, itemRight;
+		var self = this;
 		self.setHighlighted(false);
 		if (self.menu)
 		{
@@ -427,7 +425,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 	{
 		var layer, mouseY, mouseX, offset,
 			layerTop, layerBottom, layerLeft, layerRight,
-			itemTop, itemBottom, itemLeft, itemRight;
+			sourceTop, sourceBottom, sourceLeft, sourceRight;
 
 		layer = source.menu.layer;
 		mouseY = event.pageY+$(document).scrollTop();
@@ -598,7 +596,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		for (i in this.parentMenu.items)
 		{
 			item = this.parentMenu.items[i];
-			if (item.menu && item != this)
+			if (item.menu && item !== this)
 			{
 				item.setParentMenuShowMenu = false;
 				item.menu.layer.finishAnimation();

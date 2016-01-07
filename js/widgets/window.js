@@ -185,7 +185,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	afterCreate: function(params)
 	{
-		hop.widget.prototype.afterCreate.apply(self, arguments);
+		hop.widget.prototype.afterCreate.apply(this, arguments);
 		if (params.show)
 			this.show();
 	},
@@ -516,7 +516,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	setDraggable: function(draggable)
 	{
-		var self = this, initialized, draggableClass = self.classPrefix+"window-head-draggable";
+		var self = this, params;
 		self.draggable = !!draggable;
 		if (!self.layer)
 			return;
@@ -591,7 +591,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	setResizable: function(resizable)
 	{
-		var self = this, initialized;
+		var self = this, params;
 		self.resizable = !!resizable;
 		if (!self.layer)
 			return;

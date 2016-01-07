@@ -421,7 +421,7 @@ hop.inherit(hop.layer, hop.widget, {
 
 	onShowBefore: function(params)
 	{
-		this.trigger("showBefore");
+		this.trigger("showBefore", params);
 	},
 
 	isAnimation: function()
@@ -431,32 +431,31 @@ hop.inherit(hop.layer, hop.widget, {
 
 	animateShowing: function()
 	{
-		var self = this, animation = {}, overlayAnimation = {};
-		if (self.animationShow !== null && hop.layer.showAnimations[self.animationShow])
-			$.extend(true, animation, hop.layer.showAnimations[self.animationShow]);
-		if (self.overlay && self.overlayAnimationShow !== null && hop.layer.showAnimations[self.overlayAnimationShow])
-			$.extend(true, overlayAnimation, hop.layer.showAnimations[self.overlayAnimationShow]);
-		if (!animation.start && !overlayAnimation.start)
+		var self = this, params, animationClass = null, overlayAnimationClass = null;
+		if (self.animationShow !== null && hop.layerShowAnimations[self.animationShow])
+			animationClass = hop.layerShowAnimations[self.animationShow];
+		if (self.overlay && self.overlayAnimationShow !== null && hop.layerShowAnimations[self.overlayAnimationShow])
+			overlayAnimationClass = hop.layerShowAnimations[self.overlayAnimationShow];
+		if (!animationClass && !overlayAnimationClass)
 			return false;
 
 		self.onShowAnimationBefore();
-		if (animation.start)
+		if (animationClass)
 		{
-			self.animation = new hop.layerAnimation(self, false, self.animationShowParams);
-			$.extend(true, self.animation, animation);
-			self.animation.start(function()
-			{
-				self.animationShowComplete();
+			params = $.extend(true, {}, self.animationShowParams, {
+				layer: self
 			});
+			self.animation = new animationClass(params);
+			self.animation.start();
 		}
-		if (overlayAnimation.start)
+		if (overlayAnimationClass && (!self.animation || !self.animation.overlayAnimation))
 		{
-			self.overlayAnimation = new hop.layerAnimation(self, true, self.overlayAnimationShowParams);
-			$.extend(true, self.overlayAnimation, overlayAnimation);
-			self.overlayAnimation.start(function()
-			{
-				self.overlayAnimationShowComplete();
+			params = $.extend(true, {}, self.overlayAnimationShowParams, {
+				layer: self,
+				overlay: true
 			});
+			self.overlayAnimation = new overlayAnimationClass(params);
+			self.overlayAnimation.start();
 		}
 		return true;
 	},
@@ -497,7 +496,7 @@ hop.inherit(hop.layer, hop.widget, {
 
 	hide: function(params)
 	{
-		var self = this;
+		var self = this, animate;
 		if (!params)
 			params = {};
 		if (!def(params.animate))
@@ -540,35 +539,34 @@ hop.inherit(hop.layer, hop.widget, {
 	{
 		this.trigger("hideBefore", params);
 	},
-
+	
 	animateHiding: function()
 	{
-		var self = this, animation = {}, overlayAnimation = {};
-		if (self.animationHide !== null && hop.layer.hideAnimations[self.animationHide])
-			$.extend(true, animation, hop.layer.hideAnimations[self.animationHide]);
-		if (self.overlay && self.overlayAnimationHide !== null && hop.layer.hideAnimations[self.overlayAnimationHide])
-			$.extend(true, overlayAnimation, hop.layer.hideAnimations[self.overlayAnimationHide]);
-		if (!animation.start && !overlayAnimation.start)
+		var self = this, params, animationClass = null, overlayAnimationClass = null;
+		if (self.animationHide !== null && hop.layerHideAnimations[self.animationHide])
+			animationClass = hop.layerHideAnimations[self.animationHide];
+		if (self.overlay && self.overlayAnimationHide !== null && hop.layerHideAnimations[self.overlayAnimationHide])
+			overlayAnimationClass = hop.layerHideAnimations[self.overlayAnimationHide];
+		if (!animationClass && !overlayAnimationClass)
 			return false;
 
 		self.onHideAnimationBefore();
-		if (animation.start)
+		if (animationClass)
 		{
-			self.animation = new hop.layerAnimation(self, false, self.animationHideParams);
-			$.extend(true, self.animation, animation);
-			self.animation.start(function()
-			{
-				self.animationHideComplete();
+			params = $.extend(true, {}, self.animationHideParams, {
+				layer: self
 			});
+			self.animation = new animationClass(params);
+			self.animation.start();
 		}
-		if (overlayAnimation.start)
+		if (overlayAnimationClass && (!self.animation || !self.animation.overlayAnimation))
 		{
-			self.overlayAnimation = new hop.layerAnimation(self, true, self.overlayAnimationHideParams);
-			$.extend(true, self.overlayAnimation, overlayAnimation);
-			self.overlayAnimation.start(function()
-			{
-				self.overlayAnimationHideComplete();
+			params = $.extend(true, {}, self.overlayAnimationHideParams, {
+				layer: self,
+				overlay: true
 			});
+			self.overlayAnimation = new overlayAnimationClass(params);
+			self.overlayAnimation.start();
 		}
 		return true;
 	},
@@ -675,7 +673,8 @@ hop.inherit(hop.layer, hop.widget, {
 		var self = this, $window = $(window),
 			height = self.$node.outerHeight(),
 			width = self.$node.outerWidth(),
-			elementRect, borderRect, top, left, reverse, parentOffset, rawTop, rawLeft, layerOffset;
+			elementRect, borderRect, top, left, reverse,
+			parentOffset, rawTop, rawLeft, layerOffset;
 
 		elementRect = self.calcRect(self.element, self.virtualElement);
 		borderRect = self.calcRect(self.borderElement, self.virtualBorderElement);
@@ -785,7 +784,7 @@ hop.inherit(hop.layer, hop.widget, {
 	{
 		var $document = $(document),
 			$window = $(window),
-			top = left = height = width = 0,
+			top = 0, left = 0, height = 0, width = 0,
 			$element, rect, offset;
 		if (typeof element === "string")
 		{
@@ -880,23 +879,24 @@ hop.inherit(hop.layer, hop.widget, {
 	}
 });
 
-hop.layerAnimation = function(layer, overlay, params)
+hop.layerAnimation = function(params)
 {
-	this.layer = layer;
-	if (!params)
-		params = {};
-	this.params = params;
-	this.overlay = !!overlay;
-	this.data = {};
+	hop.configurable.apply(this, arguments);
 };
 
-hop.layerAnimation.prototype = {
-	globals: {
-		duration: 200,
-		easing: "swing",
-		interval: $.fx.interval
+hop.inherit(hop.layerAnimation, hop.configurable, {
+	getDefaults: function()
+	{
+		return {
+			layer: null,
+			overlay: false,
+			overlayAnimation: false,
+			duration: 200,
+			easing: "swing",
+			interval: $.fx.interval
+		};
 	},
-
+	
 	start: function()
 	{
 	},
@@ -913,356 +913,342 @@ hop.layerAnimation.prototype = {
 	get$node: function()
 	{
 		return (this.overlay ? this.layer.$overlay : this.layer.$node);
-	},
-
-	getParamValue: function(param)
-	{
-		var self = this, functionName = "getParamValue"+hop.string.upperCaseFirstChar(param);
-		if (typeof self[functionName] === "function")
-			return self[functionName]();
-
-		if (def(self.params[param]))
-			return self.params[param];
-
-		if (def(self.defaults[param]))
-			return self.defaults[param];
-
-		if (def(self.globals[param]))
-			return self.globals[param];
 	}
+});
+
+if (!def(hop.layerShowAnimations))
+	hop.layerShowAnimations = {};
+
+hop.layerShowAnimations.def = function(params)
+{
+	hop.layerAnimation.apply(this, arguments);
 };
 
-hop.layer.showAnimations = {
-	def: {
-		defaults: {
+hop.inherit(hop.layerShowAnimations.def, hop.layerAnimation, {
+	getDefaults: function()
+	{
+		return $.extend(hop.layerAnimation.prototype.getDefaults.apply(this), {
 			transfer: "",
 			distance: 20,
 			angle: 90,
 			scale: 1,
+			element: null,
 			opacity: true
-		},
+		});
+	},
 
-		start: function(callback)
-		{
-			var self = this, params = self.params,
-				node = self.getNode(), $node = self.get$node(),
-				duration = self.getParamValue("duration"),
-				easing = self.getParamValue("easing"),
-				transfer = self.getParamValue("transfer"),
-				distance = self.getParamValue("distance"),
-				angle = self.getParamValue("angle"),
-				scale = self.getParamValue("scale"),
-				opacity = self.getParamValue("opacity"),
-				interval = self.getParamValue("interval"),
-				intervalOrig = $.fx.interval,
-				options, properties = {}, fakeProperty = true,
-				position = $node.position(), startPosition,
-				element, $element, scaleY, scaleX,
-				animationInfo = hop.browser.animationInfo(),
-				transformProperty = animationInfo.transformProperty;
-			if (transfer === "" && scale === 1 && !opacity)
-				return;
+	start: function()
+	{
+		var self = this, node = self.getNode(), $node = self.get$node(),
+			intervalOrig = $.fx.interval,
+			options, properties = {}, fakeProperty = true,
+			position = $node.position(), startPosition,
+			element, $element, scaleY, scaleX,
+			animationInfo = hop.browser.animationInfo(),
+			transformProperty = animationInfo.transformProperty;
+		if (self.transfer === "" && self.scale === 1 && !self.opacity)
+			return;
 
-			options = {
-				duration: duration,
-				easing: easing,
-				complete: function()
-				{
-					if (transfer === "element" || scale !== 1)
-					{
-						node.style[transformProperty] = "scale(1, 1)";
-						node.style[transformProperty] = null;
-					}
-					callback();
-				}
-			};
-			if (transfer !== "")
+		options = {
+			duration: self.duration,
+			easing: self.easing,
+			complete: function()
 			{
-				properties.top = position.top;
-				properties.left = position.left;
-				if (transfer === "border")
-					startPosition = self.calcPositionBorder($node, angle);
-				else if (transfer === "distance")
-					startPosition = self.calcPositionDistance($node, angle, distance);
-				else if (transfer === "element")
+				if (self.transfer === "element" || self.scale !== 1)
 				{
-					if (!def(params.element))
-						throw new Error("Element is not defined");
-					if (typeof params.element === "function")
-						params.element = params.element(self);
-					$element = $(params.element);
-					if ($element.length === 0)
-						throw new Error("Element is not found");
-					element = $element[0];
-					startPosition = self.calcPositionElement($node, $element);
+					node.style[transformProperty] = "scale(1, 1)";
+					node.style[transformProperty] = null;
 				}
+				if (self.overlay)
+					self.layer.overlayAnimationShowComplete();
 				else
-					throw new Error("Invalid transfer");
-				if (startPosition.top !== null)
-				{
-					node.style.top = startPosition.top+"px";
-					node.style.left = startPosition.left+"px";
-					fakeProperty = false;
-				}
+					self.layer.animationShowComplete();
 			}
-			if (transfer === "element")
+		};
+		if (self.transfer !== "")
+		{
+			properties.top = position.top;
+			properties.left = position.left;
+			if (self.transfer === "border")
+				startPosition = self.calcPositionBorder($node, self.angle);
+			else if (self.transfer === "distance")
+				startPosition = self.calcPositionDistance($node, self.angle, self.distance);
+			else if (self.transfer === "element")
 			{
-				scaleY = $element.outerHeight()/$node.outerHeight();
-				scaleX = $element.outerWidth()/$node.outerWidth();
-				options.progress = function(animation, progress, remaining)
-				{
-					var shift = $.easing[easing](progress, duration*progress, 0, 1, duration);
-					node.style[transformProperty] = "scale("+(scaleX+(1-scaleX)*shift)+", "+(scaleY+(1-scaleY)*shift)+")";
-				};
+				if (!self.element)
+					throw new Error("Element is not defined");
+				
+				element = self.element;
+				if (typeof self.element === "function")
+					element = self.element(self);
+				$element = $(element);
+				if ($element.length === 0)
+					throw new Error("Element is not found");
+				
+				startPosition = self.calcPositionElement($node, $element);
 			}
-			else if (scale !== 1)
+			else
+				throw new Error("Invalid transfer");
+			
+			if (startPosition.top !== null)
 			{
-				options.progress = function(animation, progress, remaining)
-				{
-					var shift = $.easing[easing](progress, duration*progress, 0, 1, duration);
-					node.style[transformProperty] = "scale("+(scale+(1-scale)*shift)+", "+(scale+(1-scale)*shift)+")";
-				};
-			}
-			if (opacity)
-			{
-				properties.opacity = $node.css("opacity");
-				$node.css("opacity", 0);
+				node.style.top = startPosition.top+"px";
+				node.style.left = startPosition.left+"px";
 				fakeProperty = false;
 			}
-			if (fakeProperty)
-				properties.fakeProperty = 0;
-			$.fx.interval = interval;
-			$node.animate(properties, options);
-			$.fx.interval = intervalOrig;
-		},
-
-		finish: function()
+		}
+		if (self.transfer === "element")
 		{
-			this.get$node().stop(true, true);
-		},
-
-		calcPositionBorder: function($node, angle)
+			scaleY = $element.outerHeight()/$node.outerHeight();
+			scaleX = $element.outerWidth()/$node.outerWidth();
+			options.progress = function(animation, progress, remaining)
+			{
+				var shift = $.easing[self.easing](progress, self.duration*progress, 0, 1, self.duration);
+				node.style[transformProperty] = "scale("+(scaleX+(1-scaleX)*shift)+", "+(scaleY+(1-scaleY)*shift)+")";
+			};
+		}
+		else if (self.scale !== 1)
 		{
-			var nodePosition = $node.position(),
-				nodeOffset = $node.offset(),
-				nodeHeight = $node.outerHeight(),
-				nodeWidth = $node.outerWidth(),
-				windowHeight = $(window).height(),
-				windowWidth = $(window).width(),
-				scrollTop = $(document).scrollTop(),
-				scrollLeft = $(document).scrollLeft(),
-				y = x = null, yw, xw, y1, x1, y2, x2,
-				result = {
-					top: null,
-					left: null
-				};
-			angle = angle%360;
-			if (angle === 0)
+			options.progress = function(animation, progress, remaining)
 			{
-				result.top = nodePosition.top;
-				result.left = scrollLeft+windowWidth;
+				var shift = $.easing[self.easing](progress, self.duration*progress, 0, 1, self.duration);
+				node.style[transformProperty] = "scale("+(self.scale+(1-self.scale)*shift)+", "+(self.scale+(1-self.scale)*shift)+")";
+			};
+		}
+		if (self.opacity)
+		{
+			properties.opacity = $node.css("opacity");
+			$node.css("opacity", 0);
+			fakeProperty = false;
+		}
+		if (fakeProperty)
+			properties.fakeProperty = 0;
+		$.fx.interval = self.interval;
+		$node.animate(properties, options);
+		$.fx.interval = intervalOrig;
+	},
+
+	finish: function()
+	{
+		this.get$node().stop(true, true);
+	},
+
+	calcPositionBorder: function($node, angle)
+	{
+		var nodePosition = $node.position(),
+			nodeOffset = $node.offset(),
+			nodeHeight = $node.outerHeight(),
+			nodeWidth = $node.outerWidth(),
+			windowHeight = $(window).height(),
+			windowWidth = $(window).width(),
+			scrollTop = $(document).scrollTop(),
+			scrollLeft = $(document).scrollLeft(),
+			y = null, x = null, yw, xw, y1, x1, y2, x2, a,
+			result = {
+				top: null,
+				left: null
+			};
+		angle = angle%360;
+		if (angle === 0)
+		{
+			result.top = nodePosition.top;
+			result.left = scrollLeft+windowWidth;
+		}
+		else if (angle === 90)
+		{
+			result.top = scrollTop-nodeHeight;
+			result.left = nodePosition.left;
+		}
+		else if (angle === 180)
+		{
+			result.top = nodePosition.top;
+			result.left = scrollLeft-nodeWidth;
+		}
+		else if (angle === 270)
+		{
+			result.top = scrollTop+windowHeight;
+			result.left = nodePosition.left;
+		}
+		else
+		{
+			yw = nodeOffset.top+nodeHeight/2-scrollTop;
+			xw = scrollLeft-nodeOffset.left-nodeWidth/2;
+			if (angle < 90)
+			{
+				y1 = yw+nodeHeight/2;
+				x2 = xw+windowWidth+nodeWidth/2;
 			}
-			else if (angle === 90)
+			else if (angle < 180)
 			{
-				result.top = scrollTop-nodeHeight;
-				result.left = nodePosition.left;
+				y1 = yw+nodeHeight/2;
+				x2 = xw-nodeWidth/2;
 			}
-			else if (angle === 180)
+			else if (angle < 270)
 			{
-				result.top = nodePosition.top;
-				result.left = scrollLeft-nodeWidth;
-			}
-			else if (angle === 270)
-			{
-				result.top = scrollTop+windowHeight;
-				result.left = nodePosition.left;
+				y1 = yw-windowHeight-nodeHeight/2;
+				x2 = xw-nodeWidth/2;
 			}
 			else
 			{
-				yw = nodeOffset.top+nodeHeight/2-scrollTop;
-				xw = scrollLeft-nodeOffset.left-nodeWidth/2;
-				if (angle < 90)
-				{
-					y1 = yw+nodeHeight/2;
-					x2 = xw+windowWidth+nodeWidth/2;
-				}
-				else if (angle < 180)
-				{
-					y1 = yw+nodeHeight/2;
-					x2 = xw-nodeWidth/2;
-				}
-				else if (angle < 270)
-				{
-					y1 = yw-windowHeight-nodeHeight/2;
-					x2 = xw-nodeWidth/2;
-				}
-				else
-				{
-					y1 = yw-windowHeight-nodeHeight/2;
-					x2 = xw+windowWidth+nodeWidth/2;
-				}
-				a = angle*Math.PI/180;
-				y2 = x2*Math.tan(a);
-				x1 = y1/Math.tan(a);
-				if (y2 > yw-windowHeight-nodeHeight/2 && y2 < yw+nodeHeight/2)
-				{
-					x = x2;
-					y = y2;
-				}
-				else if (x1 > xw-nodeWidth/2 && x1 < xw+windowWidth+nodeWidth/2)
-				{
-					x = x1;
-					y = y1;
-				}
-				if (x !== null)
-				{
-					result.top = nodeOffset.top-y;
-					result.left = nodeOffset.left+x;
-				}
+				y1 = yw-windowHeight-nodeHeight/2;
+				x2 = xw+windowWidth+nodeWidth/2;
 			}
-			return result;
-		},
-
-		calcPositionDistance: function($node, angle, distance)
-		{
-			var position = $node.position();
-			return {
-				top: position.top-(distance*Math.sin(angle*Math.PI/180)),
-				left: position.left+(distance*Math.cos(angle*Math.PI/180))
-			};
-		},
-
-		calcPositionElement: function($node, $element)
-		{
-			var position = $node.position(),
-				offset = $node.offset(),
-				offsetElement = $element.offset(),
-				height = $node.outerHeight(),
-				width = $node.outerWidth(),
-				elementHeight = $element.outerHeight(),
-				elementWidth = $element.outerWidth();
-			return {
-				top: position.top-offset.top+offsetElement.top+(elementHeight-height)/2,
-				left: position.left-offset.left+offsetElement.left+(elementWidth-width)/2
-			};
+			a = angle*Math.PI/180;
+			y2 = x2*Math.tan(a);
+			x1 = y1/Math.tan(a);
+			if (y2 > yw-windowHeight-nodeHeight/2 && y2 < yw+nodeHeight/2)
+			{
+				x = x2;
+				y = y2;
+			}
+			else if (x1 > xw-nodeWidth/2 && x1 < xw+windowWidth+nodeWidth/2)
+			{
+				x = x1;
+				y = y1;
+			}
+			if (x !== null)
+			{
+				result.top = nodeOffset.top-y;
+				result.left = nodeOffset.left+x;
+			}
 		}
+		return result;
+	},
+
+	calcPositionDistance: function($node, angle, distance)
+	{
+		var position = $node.position();
+		return {
+			top: position.top-(distance*Math.sin(angle*Math.PI/180)),
+			left: position.left+(distance*Math.cos(angle*Math.PI/180))
+		};
+	},
+
+	calcPositionElement: function($node, $element)
+	{
+		var position = $node.position(),
+			offset = $node.offset(),
+			offsetElement = $element.offset(),
+			height = $node.outerHeight(),
+			width = $node.outerWidth(),
+			elementHeight = $element.outerHeight(),
+			elementWidth = $element.outerWidth();
+		return {
+			top: position.top-offset.top+offsetElement.top+(elementHeight-height)/2,
+			left: position.left-offset.left+offsetElement.left+(elementWidth-width)/2
+		};
 	}
+});
+
+if (!def(hop.layerHideAnimations))
+	hop.layerHideAnimations = {};
+
+hop.layerHideAnimations.def = function(params)
+{
+	hop.layerShowAnimations.def.apply(this, arguments);
 };
 
-hop.layer.hideAnimations = {
-	def: {
-		defaults: {
-			transfer: "",
-			distance: 20,
-			angle: 90,
-			scale: 1,
-			opacity: true
-		},
+hop.inherit(hop.layerHideAnimations.def, hop.layerShowAnimations.def, {
+	start: function()
+	{
+		var self = this, node = self.getNode(), $node = self.get$node(),
+			intervalOrig = $.fx.interval,
+			opacityOrig = $node.css("opacity"),
+			options, properties = {}, fakeProperty = true,
+			position, finishPosition, element, $element, scaleY, scaleX,
+			animationInfo = hop.browser.animationInfo(),
+			transformProperty = animationInfo.transformProperty;
+		if (self.transfer === "" && self.scale === 1 && !self.opacity)
+			return;
 
-		start: function(callback)
-		{
-			var self = this, params = self.params,
-				node = self.getNode(), $node = self.get$node(),
-				duration = self.getParamValue("duration"),
-				easing = self.getParamValue("easing"),
-				transfer = self.getParamValue("transfer"),
-				distance = self.getParamValue("distance"),
-				angle = self.getParamValue("angle"),
-				scale = self.getParamValue("scale"),
-				opacity = self.getParamValue("opacity"),
-				interval = self.getParamValue("interval"),
-				intervalOrig = $.fx.interval,
-				opacityOrig = $node.css("opacity"),
-				options, properties = {}, fakeProperty = true,
-				position, finishPosition, element, $element, scaleY, scaleX,
-				animationInfo = hop.browser.animationInfo(),
-				transformProperty = animationInfo.transformProperty;
-			if (transfer === "" && scale === 1 && !opacity)
-				return;
-
-			self.get$node().show();
-			position = $node.position();
-			options = {
-				duration: duration,
-				easing: easing,
-				complete: function()
-				{
-					if (transfer === "element" || scale !== 1)
-					{
-						node.style[transformProperty] = "scale(1, 1)";
-						node.style[transformProperty] = null;
-					}
-					$node.css({
-						top: position.top,
-						left: position.left,
-						opacity: opacityOrig,
-						display: "none"
-					});
-					callback();
-				}
-			};
-			if (transfer !== "")
+		self.get$node().show();
+		position = $node.position();
+		options = {
+			duration: self.duration,
+			easing: self.easing,
+			complete: function()
 			{
-				if (transfer === "border")
-					finishPosition = hop.layer.showAnimations.def.calcPositionBorder($node, angle);
-				else if (transfer === "distance")
-					finishPosition = hop.layer.showAnimations.def.calcPositionDistance($node, angle, distance);
-				else if (transfer === "element")
+				if (self.transfer === "element" || self.scale !== 1)
 				{
-					if (!def(params.element))
-						throw new Error("Element is not defined");
-					if (typeof params.element === "function")
-						params.element = params.element(self);
-					$element = $(params.element);
-					if ($element.length === 0)
-						throw new Error("Element is not found");
-					element = $element[0];
-					finishPosition = hop.layer.showAnimations.def.calcPositionElement($node, $element);
+					node.style[transformProperty] = "scale(1, 1)";
+					node.style[transformProperty] = null;
 				}
+				$node.css({
+					top: position.top,
+					left: position.left,
+					opacity: opacityOrig,
+					display: "none"
+				});
+				if (self.overlay)
+					self.layer.overlayAnimationHideComplete();
 				else
-					throw new Error("Invalid transfer");
-				if (finishPosition.top !== null)
-				{
-					properties.top = finishPosition.top;
-					properties.left = finishPosition.left;
-					fakeProperty = false;
-				}
+					self.layer.animationHideComplete();
 			}
-			if (transfer === "element")
+		};
+		if (self.transfer !== "")
+		{
+			if (self.transfer === "border")
+				finishPosition = self.calcPositionBorder($node, self.angle);
+			else if (self.transfer === "distance")
+				finishPosition = self.calcPositionDistance($node, self.angle, self.distance);
+			else if (self.transfer === "element")
 			{
-				scaleY = $element.outerHeight()/$node.outerHeight();
-				scaleX = $element.outerWidth()/$node.outerWidth();
-				options.progress = function(animation, progress, remaining)
-				{
-					var shift = $.easing[easing](progress, duration*progress, 0, 1, duration);
-					node.style[transformProperty] = "scale("+(1-(1-scaleX)*shift)+", "+(1-(1-scaleY)*shift)+")";
-				};
+				if (!self.element)
+					throw new Error("Element is not defined");
+				
+				element = self.element;
+				if (typeof self.element === "function")
+					element = self.element(self);
+				$element = $(element);
+				if ($element.length === 0)
+					throw new Error("Element is not found");
+				
+				finishPosition = self.calcPositionElement($node, $element);
 			}
-			else if (scale !== 1)
+			else
+				throw new Error("Invalid transfer");
+			
+			if (finishPosition.top !== null)
 			{
-				options.progress = function(animation, progress, remaining)
-				{
-					var shift = $.easing[easing](progress, duration*progress, 0, 1, duration);
-					node.style[transformProperty] = "scale("+(1-(1-scale)*shift)+", "+(1-(1-scale)*shift)+")";
-				};
-			}
-			if (opacity)
-			{
-				properties.opacity = 0;
+				properties.top = finishPosition.top;
+				properties.left = finishPosition.left;
 				fakeProperty = false;
 			}
-			if (fakeProperty)
-				properties.fakeProperty = 0;
-			$.fx.interval = interval;
-			$node.animate(properties, options);
-			$.fx.interval = intervalOrig;
-		},
-
-		finish: function()
-		{
-			this.get$node().stop(true, true);
 		}
+		if (self.transfer === "element")
+		{
+			scaleY = $element.outerHeight()/$node.outerHeight();
+			scaleX = $element.outerWidth()/$node.outerWidth();
+			options.progress = function(animation, progress, remaining)
+			{
+				var shift = $.easing[self.easing](progress, self.duration*progress, 0, 1, self.duration);
+				node.style[transformProperty] = "scale("+(1-(1-scaleX)*shift)+", "+(1-(1-scaleY)*shift)+")";
+			};
+		}
+		else if (self.scale !== 1)
+		{
+			options.progress = function(animation, progress, remaining)
+			{
+				var shift = $.easing[self.easing](progress, self.duration*progress, 0, 1, self.duration);
+				node.style[transformProperty] = "scale("+(1-(1-self.scale)*shift)+", "+(1-(1-self.scale)*shift)+")";
+			};
+		}
+		if (self.opacity)
+		{
+			properties.opacity = 0;
+			fakeProperty = false;
+		}
+		if (fakeProperty)
+			properties.fakeProperty = 0;
+		$.fx.interval = self.interval;
+		$node.animate(properties, options);
+		$.fx.interval = intervalOrig;
+	},
+
+	finish: function()
+	{
+		this.get$node().stop(true, true);
 	}
-};
+});
 
 })(window, jQuery, hopjs);
