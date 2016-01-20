@@ -43,10 +43,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 		return {
 			layerParams: {
 				elementAlignY: "bottom",
-				reverseY: true,
-				reverseX: true,
-				jailY: true,
-				jailX: true
+				collision: "flipfit"
 			}
 		};
 	},

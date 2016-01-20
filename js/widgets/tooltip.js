@@ -43,16 +43,15 @@ hop.inherit(hop.tooltip, hop.widget, {
 			elementAlignX: "left",
 			alignY: "top",
 			alignX: "left",
-			reverse: true,
-			jail: true,
-			borderElement: "window"
+			collision: "flipfit",
+			collisionElement: "window"
 		};
 	},
 
 	getDefaultLayerParamsCursor: function()
 	{
 		return {
-			element: "virtual",
+			element: "rect",
 			offsetTop: -15,
 			offsetBottom: 15,
 			offsetLeft: 15,
@@ -98,8 +97,8 @@ hop.inherit(hop.tooltip, hop.widget, {
 			if (self.target && self.cursorPosition && params.event)
 			{
 				event = $.event.fix(params.event);
-				self.layer.virtualElement.top = event.pageY;
-				self.layer.virtualElement.left = event.pageX;
+				self.layer.elementRect.top = event.pageY;
+				self.layer.elementRect.left = event.pageX;
 			}
 			self.showWithDelay();
 		}
@@ -135,7 +134,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 		if (this.layer && this.target)
 		{
 			this.layer.configure({
-				element: (cursorPosition ? "virtual" : this.target)
+				element: (cursorPosition ? "rect" : this.target)
 			});
 		}
 	},
@@ -161,7 +160,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 		if (self.layer)
 		{
 			self.layer.configure({
-				element: (self.cursorPosition ? "virtual" : self.target)
+				element: (self.cursorPosition ? "rect" : self.target)
 			});
 		}
 
@@ -191,8 +190,8 @@ hop.inherit(hop.tooltip, hop.widget, {
 
 		if (this.cursorPosition)
 		{
-			this.layer.virtualElement.top = event.pageY;
-			this.layer.virtualElement.left = event.pageX;
+			this.layer.elementRect.top = event.pageY;
+			this.layer.elementRect.left = event.pageX;
 		}
 		this.showWithDelay();
 	},
@@ -208,8 +207,8 @@ hop.inherit(hop.tooltip, hop.widget, {
 		var self = this;
 		if (self.layer && self.cursorPosition && (self.followCursor || self.showing || self.layer.animation))
 		{
-			self.layer.virtualElement.top = event.pageY;
-			self.layer.virtualElement.left = event.pageX;
+			self.layer.elementRect.top = event.pageY;
+			self.layer.elementRect.left = event.pageX;
 			if (self.followCursor)
 				self.layer.updatePosition();
 		}

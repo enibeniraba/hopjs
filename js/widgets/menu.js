@@ -43,8 +43,8 @@ hop.inherit(hop.menu, hop.widget, {
 		return {
 			layerParams: {
 				elementAlignY: "bottom",
-				jailX: true,
-				reverseY: true
+				collisionX: "fit",
+				collisionY: "flip"
 			}
 		};
 	},

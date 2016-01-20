@@ -1,0 +1,93 @@
+.hop-resizable
+{
+	position: relative;
+}
+
+.hop-resizable-handle
+{
+	position: absolute;
+	background: url(#);
+}
+
+.hop-resizable.hop-resizable-disabled .hop-resizable-handle
+{
+	display: none;
+}
+
+.hop-resizable-handle-n
+{
+	height: 5px;
+	width: 100%;
+	top: 0;
+	left: 0;
+	cursor: n-resize;
+}
+
+.hop-resizable-handle-s
+{
+	height: 5px;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	cursor: s-resize;
+}
+
+.hop-resizable-handle-w
+{
+	height: 100%;
+	width: 5px;
+	top: 0;
+	left: 0;
+	cursor: w-resize;
+}
+
+.hop-resizable-handle-e
+{
+	height: 100%;
+	width: 5px;
+	top: 0;
+	right: 0;
+	cursor: e-resize;
+}
+
+.hop-resizable-handle-nw
+{
+	height: 5px;
+	width: 5px;
+	top: 0;
+	left: 0;
+	cursor: nw-resize;
+}
+
+.hop-resizable-handle-ne
+{
+	height: 5px;
+	width: 5px;
+	top: 0;
+	right: 0;
+	cursor: ne-resize;
+}
+
+.hop-resizable-handle-se
+{
+	height: 5px;
+	width: 5px;
+	bottom: 0;
+	right: 0;
+	cursor: se-resize;
+}
+
+.hop-resizable-handle-sw
+{
+	height: 5px;
+	width: 5px;
+	bottom: 0;
+	left: 0;
+	cursor: sw-resize;
+}
+
+.hop-resizable-helper
+{
+	position: absolute;
+	border: dashed 1px #888;
+}

@@ -66,9 +66,8 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 			offsetBottom: 0,
 			offsetLeft: 0,
 			offsetRight: 0,
-			reverse: true,
-			jail: true,
-			borderElement: "window"
+			collision: "flipfit",
+			collisionElement: "window"
 		};
 	},
 

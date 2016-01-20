@@ -97,8 +97,8 @@ hop.inherit(hop.window, hop.widget, {
 			elementAlignX: "center",
 			alignY: "center",
 			alignX: "center",
-			jail: true,
-			borderElement: "window"
+			collision: "fit",
+			collisionElement: "window"
 		};
 	},
 
@@ -112,7 +112,7 @@ hop.inherit(hop.window, hop.widget, {
 	getDefaultResizableParams: function()
 	{
 		return {
-			containment: "document"
+			limiter: "window"
 		};
 	},
 
@@ -315,7 +315,7 @@ hop.inherit(hop.window, hop.widget, {
 		if (self.draggable)
 			$layer.draggable("option", "disabled", fullScreen);
 		if (self.resizable)
-			$layer.resizable("option", "disabled", fullScreen);
+			self.hopResizable.setEnabled(!fullScreen);
 		if (fullScreen)
 		{
 			$layer.css({
@@ -352,6 +352,10 @@ hop.inherit(hop.window, hop.widget, {
 	setHeight: function(height, event)
 	{
 		var self = this;
+		height = parseFloat(height);
+		if (isNaN(height))
+			return;
+		
 		if (self.maxHeight !== null && height > self.maxHeight)
 			height = self.maxHeight;
 		if (height < self.minHeight)
@@ -373,6 +377,10 @@ hop.inherit(hop.window, hop.widget, {
 	setWidth: function(width, event)
 	{
 		var self = this;
+		width = parseFloat(width);
+		if (isNaN(width))
+			return;
+		
 		if (self.maxWidth !== null && width > self.maxWidth)
 			width = self.maxWidth;
 		if (width < self.minWidth)
@@ -400,6 +408,10 @@ hop.inherit(hop.window, hop.widget, {
 
 	setMinHeight: function(height)
 	{
+		height = parseFloat(height);
+		if (isNaN(height))
+			return;
+		
 		if (this.maxHeight !== null && height > this.maxHeight)
 			height = this.maxHeight;
 		this.minHeight = height;
@@ -409,6 +421,10 @@ hop.inherit(hop.window, hop.widget, {
 
 	setMinWidth: function(width)
 	{
+		width = parseFloat(width);
+		if (isNaN(width))
+			return;
+		
 		if (this.maxWidth !== null && width > this.maxWidth)
 			width = this.maxWidth;
 		this.minWidth = width;
@@ -418,20 +434,38 @@ hop.inherit(hop.window, hop.widget, {
 
 	setMaxHeight: function(height)
 	{
-		if (height < this.minHeight)
-			height = this.minHeight;
+		if (height === "")
+			height = null;
+		if (height !== null)
+		{
+			height = parseFloat(height);
+			if (isNaN(height))
+				return;
+			
+			if (height < this.minHeight)
+				height = this.minHeight;
+		}
 		this.maxHeight = height;
-		if (this.height > height)
+		if (height !== null && this.height > height)
 			this.setHeight(height);
 	},
 
 	setMaxWidth: function(width)
 	{
-		if (width < this.minWidth)
-			width = this.minWidth;
+		if (width === "")
+			width = null;
+		if (width !== null)
+		{
+			width = parseFloat(width);
+			if (isNaN(width))
+				return;
+			
+			if (width < this.minWidth)
+				width = this.minWidth;
+		}
 		this.maxWidth = width;
-		if (this.width > width)
-			this.setWidth(width);
+		if (width !== null && this.width > width)
+			this.setHeight(width);
 	},
 
 	setModal: function(modal)
@@ -598,70 +632,65 @@ hop.inherit(hop.window, hop.widget, {
 
 		if (resizable)
 		{
-			if (!self.resizableInitialized())
+			if (!self.hopResizable)
 			{
 				params = {
-					resize: function(event, ui)
+					node: self.layer.node,
+					enabled: false,
+					onResize: function(resizable)
 					{
-						self.onResizableResize(event, ui);
+						self.onResizableResize(resizable);
 					},
-					start: function(event, ui)
+					onStart: function(resizable)
 					{
-						self.onResizableResizeStart(event, ui);
+						self.onResizableResizeStart(resizable);
 					},
-					stop: function(event, ui)
+					onStop: function(resizable)
 					{
-						self.onResizableResizeStop(event, ui);
-					},
-					handle: "."+self.classPrefix+"window-head",
-					cancel: "."+self.classPrefix+"window-head-button",
-					disabled: true
+						self.onResizableResizeStop(resizable);
+					}
 				};
 				if (self.defaultResizableParams)
 					$.extend(true, params, self.defaultResizableParams);
 				if (self.resizableParams)
 					$.extend(true, params, self.resizableParams);
-				self.layer.$node.resizable(params);
+				
+				self.hopResizable = new hop.resizable(params);
 			}
 			if (!self.fullScreen)
-				self.layer.$node.resizable("option", "disabled", false);
+				self.hopResizable.setEnabled(true);
 		}
-		else if (self.resizableInitialized())
-			self.layer.$node.resizable("option", "disabled", true);
+		else if (self.hopResizable)
+			self.hopResizable.setEnabled(false);
 	},
 
-	resizableInitialized: function()
-	{
-		return (this.layer && this.layer.$node.is(".ui-resizable"));
-	},
-
-	onResizableResize: function(event, ui)
+	onResizableResize: function(resizable)
 	{
 		this.resized = true;
-		this.trigger("resizableResize", {event: event, ui: ui});
+		this.trigger("resizableResize", {resizable: resizable});
 		this.onResize();
 	},
 
-	onResizableResizeStart: function(event, ui)
+	onResizableResizeStart: function(resizable)
 	{
 		var self = this;
 		self.resizing = true;
-		self.layer.$node.resizable("option", {
-			maxHeight: (self.maxHeight === null ? null : self.calcInnerHeight(self.maxHeight)),
-			maxWidth: (self.maxWidth === null ? null : self.calcInnerWidth(self.maxWidth)),
-			minHeight: self.calcInnerHeight(self.minHeight),
-			minWidth: self.calcInnerWidth(self.minWidth)
+		resizable.configure({
+			maxHeight: self.maxHeight,
+			maxWidth: self.maxWidth,
+			minHeight: self.minHeight,
+			minWidth: self.minWidth
 		});
 		self.layer.$node.addClass(self.classPrefix+"window-resizing");
-		self.trigger("resizableStart", {event: event, ui: ui});
+		self.trigger("resizableStart", {resizable: resizable});
 	},
 
-	onResizableResizeStop: function(event, ui)
+	onResizableResizeStop: function(resizable)
 	{
 		var self = this;
 		self.resizing = false;
 		self.layer.$node.removeClass(self.classPrefix+"window-resizing");
-		self.trigger("resizableStop", {event: event, ui: ui});
+		self.trigger("resizableStop", {resizable: resizable});
 		self.setSize(self.layer.$node.outerHeight(), self.layer.$node.outerWidth());
 	},
 

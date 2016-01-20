@@ -45,7 +45,7 @@ hop.inherit(hop.layer, hop.widget, {
 		return {
 			position: "absolute",
 			element: "document",
-			virtualElement: {
+			elementRect: {
 				top: 0,
 				left: 0,
 				height: 0,
@@ -59,16 +59,12 @@ hop.inherit(hop.layer, hop.widget, {
 			offsetBottom: 0,
 			offsetLeft: 0,
 			offsetRight: 0,
-			reverseTop: false,
-			reverseBottom: false,
-			reverseLeft: false,
-			reverseRight: false,
-			jailTop: false,
-			jailBottom: false,
-			jailLeft: false,
-			jailRight: false,
-			borderElement: "document",
-			virtualBorderElement: {
+			collisionTop: "none",
+			collisionBottom: "none",
+			collisionLeft: "none",
+			collisionRight: "none",
+			collisionElement: "document",
+			collisionRect: {
 				top: 0,
 				left: 0,
 				height: 0,
@@ -96,12 +92,9 @@ hop.inherit(hop.layer, hop.widget, {
 	getVirtualParams: function()
 	{
 		return [
-			"reverse",
-			"reverseY",
-			"reverseX",
-			"jail",
-			"jailY",
-			"jailX"
+			"collision",
+			"collisionY",
+			"collisionX"
 		];
 	},
 
@@ -109,27 +102,24 @@ hop.inherit(hop.layer, hop.widget, {
 	{
 		return [
 			"element",
-			"virtualElement",
+			"elementRect",
 			"elementAlignY",
 			"elementAlignX",
 			"alignY",
 			"alignX",
-			"offsetY",
-			"offsetX",
-			"reverseY",
-			"reverseX",
-			"reverseOffsetY",
-			"reverseOffsetX",
-			"jailTop",
-			"jailBottom",
-			"jailLeft",
-			"jailRight",
-			"borderElement",
-			"virtualBorderElement",
-			"reverse",
-			"jail",
-			"jailX",
-			"jailY",
+			"offsetTop",
+			"offsetBottom",
+			"offsetLeft",
+			"offsetRight",
+			"collisionTop",
+			"collisionBottom",
+			"collisionLeft",
+			"collisionRight",
+			"collisionElement",
+			"collisionRect",
+			"collision",
+			"collisionX",
+			"collisionY",
 			"parentNode",
 			"altUpdatePosition"
 		];
@@ -258,44 +248,29 @@ hop.inherit(hop.layer, hop.widget, {
 		this.alignX = align;
 	},
 
-	setVirtualElement: function(value)
+	setElementRect: function(value)
 	{
-		$.extend(this.virtualElement, value);
+		$.extend(this.elementRect, value);
 	},
 
-	setVirtualBorderElement: function(value)
+	setCollisionRect: function(value)
 	{
-		$.extend(this.virtualBorderElement, value);
+		$.extend(this.collisionRect, value);
 	},
 
-	setReverse: function(value)
+	setCollision: function(value)
 	{
-		this.reverseTop = this.reverseBottom = this.reverseLeft = this.reverseRight = value;
+		this.collisionTop = this.collisionBottom = this.collisionLeft = this.collisionRight = value;
 	},
 
-	setReverseY: function(value)
+	setCollisionY: function(value)
 	{
-		this.reverseTop = this.reverseBottom = value;
+		this.collisionTop = this.collisionBottom = value;
 	},
 
-	setReverseX: function(value)
+	setCollisionX: function(value)
 	{
-		this.reverseLeft = this.reverseRight = value;
-	},
-
-	setJail: function(value)
-	{
-		this.jailTop = this.jailBottom = this.jailLeft = this.jailRight = value;
-	},
-
-	setJailY: function(value)
-	{
-		this.jailTop = this.jailBottom = value;
-	},
-
-	setJailX: function(value)
-	{
-		this.jailLeft = this.jailRight = value;
+		this.collisionLeft = this.collisionRight = value;
 	},
 
 	setOverlay: function(value)
@@ -657,14 +632,10 @@ hop.inherit(hop.layer, hop.widget, {
 			left: null,
 			height: null,
 			width: null,
-			reverseTop: false,
-			reverseBottom: false,
-			reverseLeft: false,
-			reverseRight: false,
-			jailTop: false,
-			jailBottom: false,
-			jailLeft: false,
-			jailRight: false
+			collisionTop: "none",
+			collisionBottom: "none",
+			collisionLeft: "none",
+			collisionRight: "none"
 		};
 	},
 
@@ -673,42 +644,43 @@ hop.inherit(hop.layer, hop.widget, {
 		var self = this, $window = $(window),
 			height = self.$node.outerHeight(),
 			width = self.$node.outerWidth(),
-			elementRect, borderRect, top, left, reverse,
+			elementRect, collisionRect, top, left, value,
 			parentOffset, rawTop, rawLeft, layerOffset;
 
-		elementRect = self.calcRect(self.element, self.virtualElement);
-		borderRect = self.calcRect(self.borderElement, self.virtualBorderElement);
+		elementRect = self.calcRect(self.element, self.elementRect);
+		collisionRect = self.calcRect(self.collisionElement, self.collisionRect);
 
 		top = elementRect.top+elementRect.height*(self.elementAlignY+0.5)+height*(self.alignY-0.5);
 		if (self.elementAlignY < 0)
 			top += self.offsetTop;
 		else if (self.elementAlignY > 0)
 			top += self.offsetBottom;
-		if (self.reverseTop && top < borderRect.top || self.reverseBottom && top+height > borderRect.bottom)
+		if ((self.collisionTop === "flip" || self.collisionTop === "flipfit") && top < collisionRect.top
+			|| (self.collisionBottom === "flip" || self.collisionBottom === "flipfit") && top+height > collisionRect.bottom)
 		{
-			reverse = elementRect.top+elementRect.height*(-self.elementAlignY+0.5)+height*(-self.alignY-0.5);
+			value = elementRect.top+elementRect.height*(-self.elementAlignY+0.5)+height*(-self.alignY-0.5);
 			if (self.elementAlignY < 0)
-				reverse += self.offsetBottom;
+				value += self.offsetBottom;
 			else if (self.elementAlignY > 0)
-				reverse += self.offsetTop;
-			if (reverse >= borderRect.top && reverse+height <= borderRect.bottom)
+				value += self.offsetTop;
+			if (value >= collisionRect.top && value+height <= collisionRect.bottom)
 			{
-				if (top < borderRect.top)
-					self.state.reverseTop = true;
+				if (top < collisionRect.top)
+					self.state.collisionTop = "flip";
 				else
-					self.state.reverseBottom = true;
-				top = reverse;
+					self.state.collisionBottom = "flip";
+				top = value;
 			}
 		}
-		if (self.jailBottom && top+height > borderRect.bottom)
+		if ((self.collisionBottom === "fit" || self.collisionBottom === "flipfit") && top+height > collisionRect.bottom)
 		{
-			top = borderRect.bottom-height;
-			self.state.jailBottom = true;
+			top = collisionRect.bottom-height;
+			self.state.collisionBottom = (self.state.collisionBottom === "flip" ? "flipfit" : "fit");
 		}
-		if (self.jailTop && top < borderRect.top)
+		if ((self.collisionTop === "fit" || self.collisionTop === "flipfit") && top < collisionRect.top)
 		{
-			top = borderRect.top;
-			self.state.jailTop = true;
+			top = collisionRect.top;
+			self.state.collisionTop = (self.state.collisionTop === "flip" ? "flipfit" : "fit");
 		}
 
 		left = elementRect.left+elementRect.width*(self.elementAlignX+0.5)+width*(self.alignX-0.5);
@@ -716,31 +688,32 @@ hop.inherit(hop.layer, hop.widget, {
 			left += self.offsetLeft;
 		else if (self.elementAlignX > 0)
 			left += self.offsetRight;
-		if (self.reverseLeft && left < borderRect.left || self.reverseRight && left+width > borderRect.right)
+		if ((self.collisionLeft === "flip" || self.collisionLeft === "flipfit") && left < collisionRect.left
+			|| (self.collisionRight === "flip" || self.collisionRight === "flipfit") && left+width > collisionRect.right)
 		{
-			reverse = elementRect.left+elementRect.width*(-self.elementAlignX+0.5)+width*(-self.alignX-0.5);
+			value = elementRect.left+elementRect.width*(-self.elementAlignX+0.5)+width*(-self.alignX-0.5);
 			if (self.elementAlignX < 0)
-				reverse += self.offsetRight;
+				value += self.offsetRight;
 			else if (self.elementAlignX > 0)
-				reverse += self.offsetLeft;
-			if (reverse >= borderRect.left && reverse+width <= borderRect.right)
+				value += self.offsetLeft;
+			if (value >= collisionRect.left && value+width <= collisionRect.right)
 			{
-				if (left < borderRect.left)
-					self.state.reverseLeft = true;
+				if (left < collisionRect.left)
+					self.state.collisionLeft = "flip";
 				else
-					self.state.reverseRight = true;
-				left = reverse;
+					self.state.collisionRight = "flip";
+				left = value;
 			}
 		}
-		if (self.jailRight && left+width > borderRect.right)
+		if ((self.collisionRight === "fit" || self.collisionRight === "flipfit") && left+width > collisionRect.right)
 		{
-			left = borderRect.right-width;
-			self.state.jailRight = true;
+			left = collisionRect.right-width;
+			self.state.collisionRight = (self.state.collisionRight === "flip" ? "flipfit" : "fit");
 		}
-		if (self.jailLeft && left < borderRect.left)
+		if ((self.collisionLeft === "fit" || self.collisionLeft === "flipfit") && left < collisionRect.left)
 		{
-			left = borderRect.left;
-			self.state.jailLeft = true;
+			left = collisionRect.left;
+			self.state.collisionLeft = (self.state.collisionLeft === "flip" ? "flipfit" : "fit");
 		}
 
 		if (self.position === "fixed")
@@ -780,12 +753,12 @@ hop.inherit(hop.layer, hop.widget, {
 		self.state.width = width;
 	},
 
-	calcRect: function(element, virtualElement)
+	calcRect: function(element, rect)
 	{
 		var $document = $(document),
 			$window = $(window),
 			top = 0, left = 0, height = 0, width = 0,
-			$element, rect, offset;
+			$element, value, offset;
 		if (typeof element === "string")
 		{
 			if (element === "document")
@@ -800,21 +773,21 @@ hop.inherit(hop.layer, hop.widget, {
 				height = $window.outerHeight();
 				width = $window.outerWidth();
 			}
-			else if (element === "virtual")
+			else if (element === "rect")
 			{
-				top = virtualElement.top;
-				left = virtualElement.left;
-				height = virtualElement.height;
-				width = virtualElement.width;
+				top = rect.top;
+				left = rect.left;
+				height = rect.height;
+				width = rect.width;
 			}
 		}
 		else if (typeof element === "function")
 		{
-			rect = element(this);
-			top = rect.top;
-			left = rect.left;
-			height = rect.height;
-			width = rect.width;
+			value = element(this);
+			top = value.top;
+			left = value.left;
+			height = value.height;
+			width = value.width;
 		}
 		else
 		{

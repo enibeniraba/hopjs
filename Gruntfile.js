@@ -11,6 +11,7 @@ module.exports = function(grunt)
 			"js/widgets/layer.js",
 			"js/widgets/menu.js",
 			"js/widgets/menubutton.js",
+			"js/widgets/resizable.js",
 			"js/widgets/tabs.js",
 			"js/widgets/tooltip.js",
 			"js/widgets/window.js",
@@ -28,6 +29,7 @@ module.exports = function(grunt)
 			"widgets/menu",
 			"widgets/menubutton",
 			"widgets/message",
+			"widgets/resizable",
 			"widgets/tabs",
 			"widgets/tooltip",
 			"widgets/window"

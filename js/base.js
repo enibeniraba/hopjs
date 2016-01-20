@@ -287,10 +287,10 @@ hop.time = {
 						result += padLeft(date.getSeconds(), 2, "0");
 						break;
 					case "a":
-						result += (hop.time.am(hours) ? 'am' : 'pm');
+						result += (hop.time.am(hours) ? "am" : "pm");
 						break;
 					case "A":
-						result += (hop.time.am(hours) ? 'AM' : 'PM');
+						result += (hop.time.am(hours) ? "AM" : "PM");
 						break;
 					case "O":
 					case "P":
@@ -711,7 +711,7 @@ hop.browser = {
 					OTransition: "oTransitionEnd",
 					MozTransition: "transitionend",
 					WebkitTransition: "webkitTransitionEnd",
-					msTransition: 'MSTransitionEnd'
+					msTransition: "MSTransitionEnd"
 				},
 				transforms = {
 					transform: "transform",

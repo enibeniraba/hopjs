@@ -104,9 +104,9 @@ hop.inherit(hop.datepicker, hop.widget, {
 			elementAlignX: "left",
 			alignX: "left",
 			alignY: "top",
-			jailX: true,
-			reverseY: true,
-			borderElement: "window"
+			collisionX: "fit",
+			collisionY: "flip",
+			collisionElement: "window"
 		};
 	},
 

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Resizable</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/resizable.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../js/base.js"></script>
+<script type="text/javascript" src="../js/widgets/layer.js"></script>
+<script type="text/javascript" src="../js/widgets/resizable.js"></script>
+<style type="text/css">
+.settings
+{
+	float: left;
+	margin: 0 20px 20px 0;
+}
+
+.table
+{
+	border-collapse: collapse;
+	background: #f8f8f8;
+}
+
+.table td
+{
+	padding: 8px;
+	border: solid 1px #ccc;
+}
+
+.table input[type="text"]
+{
+	width: 100px;
+}
+
+#container0
+{
+	margin: 20px;
+	padding: 20px;
+	border: solid 3px #888;
+	background: #fff;
+}
+
+#container1
+{
+	margin: 20px;
+	padding: 20px;
+	border: solid 3px #a9bdc7;
+	background: #d9edf7;
+}
+
+#container2
+{
+	margin: 20px;
+	padding: 20px;
+	border: solid 3px #afc0a8;
+	background: #dff0d8;
+}
+
+#container3
+{
+	margin: 20px;
+	padding: 20px;
+	border: solid 3px #ccc8b3;
+	background: #fcf8e3;
+}
+
+.hop-resizable-handle-n
+{
+	top: -3px;
+}
+
+.hop-resizable-handle-s
+{
+	bottom: -3px;
+}
+
+.hop-resizable-handle-w
+{
+	left: -3px;
+}
+
+.hop-resizable-handle-e
+{
+	right: -3px;
+}
+
+.hop-resizable-handle-nw
+{
+	top: -3px;
+	left: -3px;
+}
+
+.hop-resizable-handle-ne
+{
+	top: -3px;
+	right: -3px;
+}
+
+.hop-resizable-handle-se
+{
+	bottom: -3px;
+	right: -3px;
+}
+
+.hop-resizable-handle-sw
+{
+	bottom: -3px;
+	left: -3px;
+}
+</style>
+</head>
+<body>
+<h1>Resizable</h1>
+<div class="settings">
+	<p>Container params</p>
+	<table class="table">
+		<tr>
+			<td>Param</td>
+			<td>Resizable</td>
+			<td>Container 1</td>
+			<td>Container 2</td>
+			<td>Container 3</td>
+		</tr>
+		<tr>
+			<td>Position</td>
+			<td>
+				<select id="container0-position">
+					<option value="relative">relative</option>
+					<option value="absolute">absolute</option>
+					<option value="fixed">fixed</option>
+				</select>
+			</td>
+			<td>
+				<select id="container1-position">
+					<option value="static">static</option>
+					<option value="relative">relative</option>
+					<option value="absolute">absolute</option>
+					<option value="fixed">fixed</option>
+				</select>
+			</td>
+			<td>
+				<select id="container2-position">
+					<option value="static">static</option>
+					<option value="relative">relative</option>
+					<option value="absolute">absolute</option>
+					<option value="fixed">fixed</option>
+				</select>
+			</td>
+			<td>
+				<select id="container3-position">
+					<option value="static">static</option>
+					<option value="relative">relative</option>
+					<option value="absolute">absolute</option>
+					<option value="fixed">fixed</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Top</td>
+			<td>
+				<input type="text" id="container0-top" value="" />
+			</td>
+			<td>
+				<input type="text" id="container1-top" value="" />
+			</td>
+			<td>
+				<input type="text" id="container2-top" value="" />
+			</td>
+			<td>
+				<input type="text" id="container3-top" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td>Left</td>
+			<td>
+				<input type="text" id="container0-left" value="" />
+			</td>
+			<td>
+				<input type="text" id="container1-left" value="" />
+			</td>
+			<td>
+				<input type="text" id="container2-left" value="" />
+			</td>
+			<td>
+				<input type="text" id="container3-left" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td>Height</td>
+			<td>
+				<input type="text" id="container0-height" value="" />
+			</td>
+			<td>
+				<input type="text" id="container1-height" value="" />
+			</td>
+			<td>
+				<input type="text" id="container2-height" value="" />
+			</td>
+			<td>
+				<input type="text" id="container3-height" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td>Width</td>
+			<td>
+				<input type="text" id="container0-width" value="" />
+			</td>
+			<td>
+				<input type="text" id="container1-width" value="" />
+			</td>
+			<td>
+				<input type="text" id="container2-width" value="" />
+			</td>
+			<td>
+				<input type="text" id="container3-width" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td>Margin</td>
+			<td>
+				<input type="text" id="container0-margin" value="20" />
+			</td>
+			<td>
+				<input type="text" id="container1-margin" value="20" />
+			</td>
+			<td>
+				<input type="text" id="container2-margin" value="20" />
+			</td>
+			<td>
+				<input type="text" id="container3-margin" value="20" />
+			</td>
+		</tr>
+		<tr>
+			<td>Padding</td>
+			<td>
+				<input type="text" id="container0-padding" value="20" />
+			</td>
+			<td>
+				<input type="text" id="container1-padding" value="20" />
+			</td>
+			<td>
+				<input type="text" id="container2-padding" value="20" />
+			</td>
+			<td>
+				<input type="text" id="container3-padding" value="20" />
+			</td>
+		</tr>
+		<tr>
+			<td>Overflow</td>
+			<td>
+				<select id="container0-overflow">
+					<option value="auto">auto</option>
+					<option value="hidden">hidden</option>
+					<option value="scroll">scroll</option>
+					<option value="visible" selected="selected">visible</option>
+				</select>
+			</td>
+			<td>
+				<select id="container1-overflow">
+					<option value="auto">auto</option>
+					<option value="hidden">hidden</option>
+					<option value="scroll">scroll</option>
+					<option value="visible" selected="selected">visible</option>
+				</select>
+			</td>
+			<td>
+				<select id="container2-overflow">
+					<option value="auto">auto</option>
+					<option value="hidden">hidden</option>
+					<option value="scroll">scroll</option>
+					<option value="visible" selected="selected">visible</option>
+				</select>
+			</td>
+			<td>
+				<select id="container3-overflow">
+					<option value="auto">auto</option>
+					<option value="hidden">hidden</option>
+					<option value="scroll">scroll</option>
+					<option value="visible" selected="selected">visible</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Float</td>
+			<td>
+				<select id="container0-float">
+					<option value="none">none</option>
+					<option value="left">left</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+			<td>
+				<select id="container1-float">
+					<option value="none">none</option>
+					<option value="left">left</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+			<td>
+				<select id="container2-float">
+					<option value="none">none</option>
+					<option value="left">left</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+			<td>
+				<select id="container3-float">
+					<option value="none">none</option>
+					<option value="left">left</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="settings">
+	<p>Resizable params</p>
+	<table class="table">
+		<tr>
+			<td>Param</td>
+			<td>Value</td>
+		</tr>
+		<tr>
+			<td>Enabled</td>
+			<td>
+				<input type="checkbox" id="resizable-enabled" checked="checked" />
+			</td>
+		</tr>
+		<tr>
+			<td>Handles</td>
+			<td>
+				<select id="resizable-handles">
+					<option value="all">all</option>
+					<option value="s e se">s e se</option>
+					<option value="s">s</option>
+					<option value="e">e</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Helper</td>
+			<td>
+				<input type="checkbox" id="resizable-helper" />
+			</td>
+		</tr>
+		<tr>
+			<td>Min height</td>
+			<td>
+				<input type="text" id="resizable-min-height" value="0" />
+			</td>
+		</tr>
+		<tr>
+			<td>Max height</td>
+			<td>
+				<input type="text" id="resizable-max-height" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td>Min width</td>
+			<td>
+				<input type="text" id="resizable-min-width" value="0" />
+			</td>
+		</tr>
+		<tr>
+			<td>Max width</td>
+			<td>
+				<input type="text" id="resizable-max-width" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td>Preserve ratio</td>
+			<td>
+				<input type="checkbox" id="resizable-preserve-ratio" />
+			</td>
+		</tr>
+		<tr>
+			<td>Height increment</td>
+			<td>
+				<input type="text" id="resizable-height-increment" value="1" />
+			</td>
+		</tr>
+		<tr>
+			<td>Width increment</td>
+			<td>
+				<input type="text" id="resizable-width-increment" value="1" />
+			</td>
+		</tr>
+		<tr>
+			<td>Limiter</td>
+			<td>
+				<select id="resizable-limiter">
+					<option value="">none</option>
+					<option value="window">window</option>
+					<option value="document">document</option>
+					<option value="parent">parent</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Limiter box</td>
+			<td>
+				<select id="resizable-limiter-box">
+					<option value="content">content</option>
+					<option value="padding">padding</option>
+					<option value="border">border</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="clear: both;"></div>
+<div id="container3">
+	Container 3
+	<div id="container2">
+		Container 2
+		<div id="container1">
+			Container 1
+			<div id="container0">Resizable. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function()
+{
+	var i, attachEvents;
+	
+	attachEvents = function(i)
+	{
+		$("#container"+i+"-position").on("change", function()
+		{
+			$("#container"+i).css("position", this.value);
+		});
+		$("#container"+i+"-top").on("change", function()
+		{
+			$("#container"+i).css("top", (this.value === "" ? "auto" : this.value+"px"));
+		});
+		$("#container"+i+"-left").on("change", function()
+		{
+			$("#container"+i).css("left", (this.value === "" ? "auto" : this.value+"px"));
+		});
+		$("#container"+i+"-height").on("change", function()
+		{
+			$("#container"+i).css("height", (this.value === "" ? "auto" : this.value+"px"));
+		});
+		$("#container"+i+"-width").on("change", function()
+		{
+			$("#container"+i).css("width", (this.value === "" ? "auto" : this.value+"px"));
+		});
+		$("#container"+i+"-margin").on("change", function()
+		{
+			$("#container"+i).css("margin", (this.value === "" ? "auto" : this.value+"px"));
+		});
+		$("#container"+i+"-padding").on("change", function()
+		{
+			$("#container"+i).css("padding", (this.value === "" ? "auto" : this.value+"px"));
+		});
+		$("#container"+i+"-overflow").on("change", function()
+		{
+			$("#container"+i).css("overflow", this.value);
+		});
+		$("#container"+i+"-float").on("change", function()
+		{
+			$("#container"+i).css("float", this.value);
+		});
+	};
+	for (i = 0; i < 4; i++)
+		attachEvents(i);
+	$("#resizable-enabled").on("change", function()
+	{
+		rs1.setEnabled(this.checked);
+	});
+	$("#resizable-handles").on("change", function()
+	{
+		rs1.setHandles(this.value);
+	});
+	$("#resizable-helper").on("change", function()
+	{
+		rs1.helper = this.checked;
+	});
+	$("#resizable-handles").on("change", function()
+	{
+		rs1.setHandles(this.value);
+	});
+	$("#resizable-min-height").on("change", function()
+	{
+		rs1.setMinHeight(this.value);
+	});
+	$("#resizable-max-height").on("change", function()
+	{
+		rs1.setMaxHeight(this.value);
+	});
+	$("#resizable-min-width").on("change", function()
+	{
+		rs1.setMinWidth(this.value);
+	});
+	$("#resizable-max-width").on("change", function()
+	{
+		rs1.setMaxWidth(this.value);
+	});
+	$("#resizable-preserve-ratio").on("change", function()
+	{
+		rs1.preserveRatio = this.checked;
+	});
+	$("#resizable-height-increment").on("change", function()
+	{
+		rs1.heightIncrement = this.value;
+	});
+	$("#resizable-width-increment").on("change", function()
+	{
+		rs1.widthIncrement = this.value;
+	});
+	$("#resizable-limiter").on("change", function()
+	{
+		rs1.setLimiter(this.value);
+	});
+	$("#resizable-limiter-box").on("change", function()
+	{
+		rs1.limiterBox = this.value;
+	});
+	rs1 = new hopjs.resizable({
+		node: $("#container0")[0],
+		handles: "all"
+	});
+});
+</script>
+</body>
+</html>
