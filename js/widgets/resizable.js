@@ -12,7 +12,8 @@
 (function(window, document, $, hop)
 {
 
-var allHandles = ["n", "s", "w", "e", "nw", "ne", "sw", "se"];
+var allHandles = ["n", "s", "w", "e", "nw", "ne", "sw", "se"],
+	def = hop.def;
 
 hop.resizable = function(params)
 {
@@ -568,7 +569,7 @@ hop.inherit(hop.resizable, hop.widget, {
 			$document = $(document),
 			$window = $(window),
 			top = 0, left = 0, height = 0, width = 0,
-			region, element = null, $element, offset, cache;
+			region, element = null, $element, offset, node, value, cache;
 		if (typeof limiter === "string")
 		{
 			if (limiter === "document")
@@ -625,31 +626,71 @@ hop.inherit(hop.resizable, hop.widget, {
 			left = offset.left;
 			height = $element.outerHeight();
 			width = $element.outerWidth();
-			if (self.limiterBox === "padding" || self.limiterBox === "content")
+			if (self.limiterCache === null)
 			{
-				if (self.limiterCache === null)
+				value = false;
+				node = self.node.parentNode;
+				while (node && node.tagName !== "BODY")
 				{
-					self.limiterCache = {
-						borderTop: parseFloat($element.css("border-top-width")) || 0,
-						borderBottom: parseFloat($element.css("border-bottom-width")) || 0,
-						borderLeft: parseFloat($element.css("border-left-width")) || 0,
-						borderRight: parseFloat($element.css("border-right-width")) || 0,
-						paddingTop: parseFloat($element.css("padding-top")) || 0,
-						paddingBottom: parseFloat($element.css("padding-bottom")) || 0,
-						paddingLeft: parseFloat($element.css("padding-left")) || 0,
-						paddingRight: parseFloat($element.css("padding-right")) || 0
-					};
+					if (node === element)
+					{
+						value = true;
+						break;
+					}
+					node = node.parentNode;
 				}
-				cache = self.limiterCache;
-				top += cache.borderTop;
-				left += cache.borderLeft;
-				height -= cache.borderTop+cache.borderBottom;
-				width -= cache.borderLeft+cache.borderRight;
+				self.limiterCache = {
+					isParent: value,
+					overflowY: $element.css("overflow-y"),
+					overflowX: $element.css("overflow-x"),
+					borderTop: parseFloat($element.css("border-top-width")) || 0,
+					borderBottom: parseFloat($element.css("border-bottom-width")) || 0,
+					borderLeft: parseFloat($element.css("border-left-width")) || 0,
+					borderRight: parseFloat($element.css("border-right-width")) || 0,
+					paddingTop: parseFloat($element.css("padding-top")) || 0,
+					paddingBottom: parseFloat($element.css("padding-bottom")) || 0,
+					paddingLeft: parseFloat($element.css("padding-left")) || 0,
+					paddingRight: parseFloat($element.css("padding-right")) || 0
+				};
+			}
+			cache = self.limiterCache;
+			if (cache.isParent && (cache.overflowY === "auto" || cache.overflowY === "scroll"))
+			{
+				top += cache.borderTop-element.scrollTop;
+				height = element.scrollHeight;
 				if (self.limiterBox === "content")
 				{
 					top += cache.paddingTop;
-					left += cache.paddingLeft;
 					height -= cache.paddingTop+cache.paddingBottom;
+				}
+			}
+			else if (self.limiterBox === "padding" || self.limiterBox === "content")
+			{
+				top += cache.borderTop;
+				height -= cache.borderTop+cache.borderBottom;
+				if (self.limiterBox === "content")
+				{
+					top += cache.paddingTop;
+					height -= cache.paddingTop+cache.paddingBottom;
+				}
+			}
+			if (cache.isParent && (cache.overflowX === "auto" || cache.overflowX === "scroll"))
+			{
+				left += cache.borderLeft-element.scrollLeft;
+				width = element.scrollWidth;
+				if (self.limiterBox === "content")
+				{
+					left += cache.paddingLeft;
+					width -= cache.paddingLeft+cache.paddingRight;
+				}
+			}
+			else if (self.limiterBox === "padding" || self.limiterBox === "content")
+			{
+				left += cache.borderLeft;
+				width -= cache.borderLeft+cache.borderRight;
+				if (self.limiterBox === "content")
+				{
+					left += cache.paddingLeft;
 					width -= cache.paddingLeft+cache.paddingRight;
 				}
 			}
