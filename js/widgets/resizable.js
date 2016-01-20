@@ -568,7 +568,7 @@ hop.inherit(hop.resizable, hop.widget, {
 			$document = $(document),
 			$window = $(window),
 			top = 0, left = 0, height = 0, width = 0,
-			element = null, $element, offset, cache;
+			region, element = null, $element, offset, cache;
 		if (typeof limiter === "string")
 		{
 			if (limiter === "document")
@@ -596,6 +596,17 @@ hop.inherit(hop.resizable, hop.widget, {
 			{
 				console.log("hop.resizable: Invalid limiter ("+limiter+").");
 				return;
+			}
+		}
+		else if (typeof limiter === "function")
+		{
+			region = limiter();
+			if (region !== null)
+			{
+				top = region.top;
+				left = region.left;
+				height = region.height;
+				width = region.width;
 			}
 		}
 		else

@@ -51,7 +51,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 	getDefaultLayerParamsCursor: function()
 	{
 		return {
-			element: "rect",
+			element: "region",
 			offsetTop: -15,
 			offsetBottom: 15,
 			offsetLeft: 15,
@@ -97,8 +97,12 @@ hop.inherit(hop.tooltip, hop.widget, {
 			if (self.target && self.cursorPosition && params.event)
 			{
 				event = $.event.fix(params.event);
-				self.layer.elementRect.top = event.pageY;
-				self.layer.elementRect.left = event.pageX;
+				self.layer.elementRegion = {
+					top: event.pageY,
+					left: event.pageX,
+					height: 0,
+					width: 0
+				};
 			}
 			self.showWithDelay();
 		}
@@ -134,7 +138,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 		if (this.layer && this.target)
 		{
 			this.layer.configure({
-				element: (cursorPosition ? "rect" : this.target)
+				element: (cursorPosition ? "region" : this.target)
 			});
 		}
 	},
@@ -160,7 +164,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 		if (self.layer)
 		{
 			self.layer.configure({
-				element: (self.cursorPosition ? "rect" : self.target)
+				element: (self.cursorPosition ? "region" : self.target)
 			});
 		}
 
@@ -190,8 +194,8 @@ hop.inherit(hop.tooltip, hop.widget, {
 
 		if (this.cursorPosition)
 		{
-			this.layer.elementRect.top = event.pageY;
-			this.layer.elementRect.left = event.pageX;
+			this.layer.elementRegion.top = event.pageY;
+			this.layer.elementRegion.left = event.pageX;
 		}
 		this.showWithDelay();
 	},
@@ -207,8 +211,8 @@ hop.inherit(hop.tooltip, hop.widget, {
 		var self = this;
 		if (self.layer && self.cursorPosition && (self.followCursor || self.showing || self.layer.animation))
 		{
-			self.layer.elementRect.top = event.pageY;
-			self.layer.elementRect.left = event.pageX;
+			self.layer.elementRegion.top = event.pageY;
+			self.layer.elementRegion.left = event.pageX;
 			if (self.followCursor)
 				self.layer.updatePosition();
 		}

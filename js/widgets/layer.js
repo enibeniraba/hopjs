@@ -45,12 +45,8 @@ hop.inherit(hop.layer, hop.widget, {
 		return {
 			position: "absolute",
 			element: "document",
-			elementRect: {
-				top: 0,
-				left: 0,
-				height: 0,
-				width: 0
-			},
+			elementBox: "border",
+			elementRegion: null,
 			elementAlignY: 0,
 			elementAlignX: 0,
 			alignY: 0,
@@ -64,12 +60,8 @@ hop.inherit(hop.layer, hop.widget, {
 			collisionLeft: "none",
 			collisionRight: "none",
 			collisionElement: "document",
-			collisionRect: {
-				top: 0,
-				left: 0,
-				height: 0,
-				width: 0
-			},
+			collisionElementBox: "border",
+			collisionRegion: null,
 			overlay: false,
 			overlayClass: "hop-layer-overlay",
 			overlayTransparentClass: "hop-layer-overlay-transparent",
@@ -102,7 +94,8 @@ hop.inherit(hop.layer, hop.widget, {
 	{
 		return [
 			"element",
-			"elementRect",
+			"elementBox",
+			"elementRegion",
 			"elementAlignY",
 			"elementAlignX",
 			"alignY",
@@ -116,7 +109,8 @@ hop.inherit(hop.layer, hop.widget, {
 			"collisionLeft",
 			"collisionRight",
 			"collisionElement",
-			"collisionRect",
+			"collisionElementBox",
+			"collisionRegion",
 			"collision",
 			"collisionX",
 			"collisionY",
@@ -248,14 +242,14 @@ hop.inherit(hop.layer, hop.widget, {
 		this.alignX = align;
 	},
 
-	setElementRect: function(value)
+	setElementRegion: function(value)
 	{
-		$.extend(this.elementRect, value);
+		$.extend(this.elementRegion, value);
 	},
 
-	setCollisionRect: function(value)
+	setCollisionRegion: function(value)
 	{
-		$.extend(this.collisionRect, value);
+		$.extend(this.collisionRegion, value);
 	},
 
 	setCollision: function(value)
@@ -644,75 +638,75 @@ hop.inherit(hop.layer, hop.widget, {
 		var self = this, $window = $(window),
 			height = self.$node.outerHeight(),
 			width = self.$node.outerWidth(),
-			elementRect, collisionRect, top, left, value,
+			elementRegion, collisionRegion, top, left, value,
 			parentOffset, rawTop, rawLeft, layerOffset;
 
-		elementRect = self.calcRect(self.element, self.elementRect);
-		collisionRect = self.calcRect(self.collisionElement, self.collisionRect);
+		elementRegion = self.calcRegion(self.element, self.elementBox, self.elementRegion);
+		collisionRegion = self.calcRegion(self.collisionElement, self.collisionElementBox, self.collisionRegion);
 
-		top = elementRect.top+elementRect.height*(self.elementAlignY+0.5)+height*(self.alignY-0.5);
+		top = elementRegion.top+elementRegion.height*(self.elementAlignY+0.5)+height*(self.alignY-0.5);
 		if (self.elementAlignY < 0)
 			top += self.offsetTop;
 		else if (self.elementAlignY > 0)
 			top += self.offsetBottom;
-		if ((self.collisionTop === "flip" || self.collisionTop === "flipfit") && top < collisionRect.top
-			|| (self.collisionBottom === "flip" || self.collisionBottom === "flipfit") && top+height > collisionRect.bottom)
+		if ((self.collisionTop === "flip" || self.collisionTop === "flipfit") && top < collisionRegion.top
+			|| (self.collisionBottom === "flip" || self.collisionBottom === "flipfit") && top+height > collisionRegion.bottom)
 		{
-			value = elementRect.top+elementRect.height*(-self.elementAlignY+0.5)+height*(-self.alignY-0.5);
+			value = elementRegion.top+elementRegion.height*(-self.elementAlignY+0.5)+height*(-self.alignY-0.5);
 			if (self.elementAlignY < 0)
 				value += self.offsetBottom;
 			else if (self.elementAlignY > 0)
 				value += self.offsetTop;
-			if (value >= collisionRect.top && value+height <= collisionRect.bottom)
+			if (value >= collisionRegion.top && value+height <= collisionRegion.bottom)
 			{
-				if (top < collisionRect.top)
+				if (top < collisionRegion.top)
 					self.state.collisionTop = "flip";
 				else
 					self.state.collisionBottom = "flip";
 				top = value;
 			}
 		}
-		if ((self.collisionBottom === "fit" || self.collisionBottom === "flipfit") && top+height > collisionRect.bottom)
+		if ((self.collisionBottom === "fit" || self.collisionBottom === "flipfit") && top+height > collisionRegion.bottom)
 		{
-			top = collisionRect.bottom-height;
+			top = collisionRegion.bottom-height;
 			self.state.collisionBottom = (self.state.collisionBottom === "flip" ? "flipfit" : "fit");
 		}
-		if ((self.collisionTop === "fit" || self.collisionTop === "flipfit") && top < collisionRect.top)
+		if ((self.collisionTop === "fit" || self.collisionTop === "flipfit") && top < collisionRegion.top)
 		{
-			top = collisionRect.top;
+			top = collisionRegion.top;
 			self.state.collisionTop = (self.state.collisionTop === "flip" ? "flipfit" : "fit");
 		}
 
-		left = elementRect.left+elementRect.width*(self.elementAlignX+0.5)+width*(self.alignX-0.5);
+		left = elementRegion.left+elementRegion.width*(self.elementAlignX+0.5)+width*(self.alignX-0.5);
 		if (self.elementAlignX < 0)
 			left += self.offsetLeft;
 		else if (self.elementAlignX > 0)
 			left += self.offsetRight;
-		if ((self.collisionLeft === "flip" || self.collisionLeft === "flipfit") && left < collisionRect.left
-			|| (self.collisionRight === "flip" || self.collisionRight === "flipfit") && left+width > collisionRect.right)
+		if ((self.collisionLeft === "flip" || self.collisionLeft === "flipfit") && left < collisionRegion.left
+			|| (self.collisionRight === "flip" || self.collisionRight === "flipfit") && left+width > collisionRegion.right)
 		{
-			value = elementRect.left+elementRect.width*(-self.elementAlignX+0.5)+width*(-self.alignX-0.5);
+			value = elementRegion.left+elementRegion.width*(-self.elementAlignX+0.5)+width*(-self.alignX-0.5);
 			if (self.elementAlignX < 0)
 				value += self.offsetRight;
 			else if (self.elementAlignX > 0)
 				value += self.offsetLeft;
-			if (value >= collisionRect.left && value+width <= collisionRect.right)
+			if (value >= collisionRegion.left && value+width <= collisionRegion.right)
 			{
-				if (left < collisionRect.left)
+				if (left < collisionRegion.left)
 					self.state.collisionLeft = "flip";
 				else
 					self.state.collisionRight = "flip";
 				left = value;
 			}
 		}
-		if ((self.collisionRight === "fit" || self.collisionRight === "flipfit") && left+width > collisionRect.right)
+		if ((self.collisionRight === "fit" || self.collisionRight === "flipfit") && left+width > collisionRegion.right)
 		{
-			left = collisionRect.right-width;
+			left = collisionRegion.right-width;
 			self.state.collisionRight = (self.state.collisionRight === "flip" ? "flipfit" : "fit");
 		}
-		if ((self.collisionLeft === "fit" || self.collisionLeft === "flipfit") && left < collisionRect.left)
+		if ((self.collisionLeft === "fit" || self.collisionLeft === "flipfit") && left < collisionRegion.left)
 		{
-			left = collisionRect.left;
+			left = collisionRegion.left;
 			self.state.collisionLeft = (self.state.collisionLeft === "flip" ? "flipfit" : "fit");
 		}
 
@@ -752,51 +746,92 @@ hop.inherit(hop.layer, hop.widget, {
 		self.state.height = height;
 		self.state.width = width;
 	},
-
-	calcRect: function(element, rect)
+	
+	calcRegion: function(element, box, region)
 	{
 		var $document = $(document),
 			$window = $(window),
 			top = 0, left = 0, height = 0, width = 0,
-			$element, value, offset;
+			region, $element, offset,
+			borderTop, borderBottom, borderLeft, borderRight,
+			paddingTop, paddingBottom, paddingLeft, paddingRight;
 		if (typeof element === "string")
 		{
 			if (element === "document")
 			{
-				height = $document.outerHeight();
-				width = $document.outerWidth();
+				height = $document.height();
+				width = $document.width();
 			}
 			else if (element === "window")
 			{
 				top = $window.scrollTop();
 				left = $window.scrollLeft();
-				height = $window.outerHeight();
-				width = $window.outerWidth();
+				height = $window.height();
+				width = $window.width();
 			}
-			else if (element === "rect")
+			else if (element === "region")
 			{
-				top = rect.top;
-				left = rect.left;
-				height = rect.height;
-				width = rect.width;
+				if (region !== null)
+				{
+					top = region.top;
+					left = region.left;
+					height = region.height;
+					width = region.width;
+				}
+			}
+			else
+			{
+				console.log("hop.layer: Invalid element ("+element+").");
+				return;
 			}
 		}
 		else if (typeof element === "function")
 		{
-			value = element(this);
-			top = value.top;
-			left = value.left;
-			height = value.height;
-			width = value.width;
+			region = element(this);
+			if (region !== null)
+			{
+				top = region.top;
+				left = region.left;
+				height = region.height;
+				width = region.width;
+			}
 		}
 		else
 		{
 			$element = $(element);
+			if ($element.length !== 1)
+			{
+				console.log("hop.layer: Element not found.");
+				console.log(element);
+				return;
+			}
 			offset = $element.offset();
-			top = offset.top;
+			top = offset.top;;
 			left = offset.left;
 			height = $element.outerHeight();
 			width = $element.outerWidth();
+			if (box === "padding" || box === "content")
+			{
+				borderTop = parseFloat($element.css("border-top-width")) || 0;
+				borderBottom = parseFloat($element.css("border-bottom-width")) || 0;
+				borderLeft = parseFloat($element.css("border-left-width")) || 0;
+				borderRight = parseFloat($element.css("border-right-width")) || 0;
+				top += borderTop;
+				left += borderLeft;
+				height -= borderTop+borderBottom;
+				width -= borderLeft+borderRight;
+				if (box === "content")
+				{
+					paddingTop = parseFloat($element.css("padding-top")) || 0;
+					paddingBottom = parseFloat($element.css("padding-bottom")) || 0;
+					paddingLeft = parseFloat($element.css("padding-left")) || 0;
+					paddingRight = parseFloat($element.css("padding-right")) || 0;
+					top += paddingTop;
+					left += paddingLeft;
+					height -= paddingTop+paddingBottom;
+					width -= paddingLeft+paddingRight;
+				}
+			}
 		}
 		return {
 			top: top,
