@@ -13,7 +13,7 @@
 {
 
 var allHandles = ["n", "s", "w", "e", "nw", "ne", "sw", "se"],
-	def = hop.def;
+	allLimiterSides = ["top", "bottom", "left", "right"];
 
 hop.resizable = function(params)
 {
@@ -43,7 +43,8 @@ hop.inherit(hop.resizable, hop.widget, {
 			widthIncrement: 1,
 			limiter: null,
 			limiterBox: "content",
-			limiterRegion: null
+			limiterRegion: null,
+			limiterSides: allLimiterSides
 		};
 	},
 	
@@ -131,7 +132,7 @@ hop.inherit(hop.resizable, hop.widget, {
 		}
 		if ($.inArray(handle, allHandles) === -1)
 		{
-			console.warn("hop.resizable: Undefined handle "+handle+".");
+			console.warn("hop.resizable: Unknown handle "+handle+".");
 			return false;
 		}
 		return true;
@@ -167,6 +168,39 @@ hop.inherit(hop.resizable, hop.widget, {
 	{
 		this.limiter = (value === null || value === "" ? null : value);
 		this.limiterCache = null;
+	},
+	
+	setLimiterSides: function(sides)
+	{
+		var self = this, i;
+		if (typeof sides === "string")
+		{
+			if (sides === "all")
+				sides = allLimiterSides.slice(0);
+			else
+				sides = sides.split(/\s+/);
+		}
+		self.limiterSides = [];
+		for (i in sides)
+		{
+			if (self.validateLimiterSide(sides[i]))
+				self.limiterSides.push(sides[i]);
+		}
+	},
+	
+	validateLimiterSide: function(side)
+	{
+		if (typeof side !== "string")
+		{
+			console.warn("hop.resizable: Invalid limiter side variable type. Expected string.");
+			return false;
+		}
+		if ($.inArray(side, allLimiterSides) === -1)
+		{
+			console.warn("hop.resizable: Unknown limiter side "+side+".");
+			return false;
+		}
+		return true;
 	},
 
 	generateHtml: function()
@@ -429,14 +463,17 @@ hop.inherit(hop.resizable, hop.widget, {
 			{
 				if (upwards && is.cssTop !== "auto")
 				{
-					var value = is.offsetTop-is.marginTop-(height-is.height);
-					if (value < limiter.top)
+					if ($.inArray("top", self.limiterSides) !== -1)
 					{
-						height -= limiter.top-value;
-						width = height/is.ratio;
+						value = is.offsetTop-is.marginTop-(height-is.height);
+						if (value < limiter.top)
+						{
+							height -= limiter.top-value;
+							width = height/is.ratio;
+						}
 					}
 				}
-				else
+				else if ($.inArray("bottom", self.limiterSides) !== -1)
 				{
 					value = is.offsetTop+is.height+is.marginBottom+(height-is.height);
 					if (value > limiter.bottom)
@@ -447,14 +484,17 @@ hop.inherit(hop.resizable, hop.widget, {
 				}
 				if (leftwards && is.cssLeft !== "auto")
 				{
-					value = is.offsetLeft-is.marginLeft-(width-is.width);
-					if (value < limiter.left)
+					if ($.inArray("left", self.limiterSides) !== -1)
 					{
-						width -= limiter.left-value;
-						height = width*is.ratio;
+						value = is.offsetLeft-is.marginLeft-(width-is.width);
+						if (value < limiter.left)
+						{
+							width -= limiter.left-value;
+							height = width*is.ratio;
+						}
 					}
 				}
-				else
+				else if ($.inArray("right", self.limiterSides) !== -1)
 				{
 					value = is.offsetLeft+is.width+is.marginRight+(width-is.width);
 					if (value > limiter.right)
@@ -499,11 +539,14 @@ hop.inherit(hop.resizable, hop.widget, {
 				{
 					if (upwards && is.cssTop !== "auto")
 					{
-						value = is.offsetTop-is.marginTop-(height-is.height);
-						if (value < limiter.top)
-							height -= limiter.top-value;
+						if ($.inArray("top", self.limiterSides) !== -1)
+						{
+							value = is.offsetTop-is.marginTop-(height-is.height);
+							if (value < limiter.top)
+								height -= limiter.top-value;
+						}
 					}
-					else
+					else if ($.inArray("bottom", self.limiterSides) !== -1)
 					{
 						value = is.offsetTop+is.height+is.marginBottom+(height-is.height);
 						if (value > limiter.bottom)
@@ -526,11 +569,14 @@ hop.inherit(hop.resizable, hop.widget, {
 				{
 					if (leftwards && is.cssLeft !== "auto")
 					{
-						value = is.offsetLeft-is.marginLeft-(width-is.width);
-						if (value < limiter.left)
-							width -= limiter.left-value;
+						if ($.inArray("left", self.limiterSides) !== -1)
+						{
+							value = is.offsetLeft-is.marginLeft-(width-is.width);
+							if (value < limiter.left)
+								width -= limiter.left-value;
+						}
 					}
-					else
+					else if ($.inArray("right", self.limiterSides) !== -1)
 					{
 						value = is.offsetLeft+is.width+is.marginRight+(width-is.width);
 						if (value > limiter.right)

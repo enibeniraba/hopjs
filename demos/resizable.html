@@ -407,6 +407,18 @@
 				</select>
 			</td>
 		</tr>
+		<tr>
+			<td>Limiter sides</td>
+			<td>
+				<select id="resizable-limiter-sides">
+					<option value="all">all</option>
+					<option value="top bottom">top bottom</option>
+					<option value="left right">left right</option>
+					<option value="top left">top left</option>
+					<option value="top left right">top left right</option>
+				</select>
+			</td>
+		</tr>
 	</table>
 </div>
 <div style="clear: both;"></div>
@@ -517,6 +529,10 @@ $(function()
 	$("#resizable-limiter-box").on("change", function()
 	{
 		rs1.limiterBox = this.value;
+	});
+	$("#resizable-limiter-sides").on("change", function()
+	{
+		rs1.setLimiterSides(this.value);
 	});
 	rs1 = new hopjs.resizable({
 		node: $("#container0")[0],
