@@ -295,8 +295,8 @@ hop.inherit(hop.resizable, hop.widget, {
 		var self = this, is,
 			height = self.$node.outerHeight(),
 			width = self.$node.outerWidth(),
-			innerHeight = self.$node.height(),
-			innerWidth = self.$node.width(),
+			innerHeight = parseFloat(self.$node.css("height")) || 0,
+			innerWidth = parseFloat(self.$node.css("width")) || 0,
 			offset = self.$node.offset(),
 			marginTop = parseFloat(self.$node.css("margin-top")) || 0,
 			marginBottom = parseFloat(self.$node.css("margin-bottom")) || 0,
@@ -371,8 +371,10 @@ hop.inherit(hop.resizable, hop.widget, {
 				top: -10000,
 				left: -10000,
 				height: 100,
-				width: 100
+				width: 100,
+				zIndex: "10000"
 			});
+			self.$helper[0].style.zIndex = "100";
 			is.helperHeightDiff = self.$helper.outerHeight(true)-self.$helper.height();
 			is.helperWidthDiff = self.$helper.outerWidth(true)-self.$helper.width();
 			self.updateHelper();
@@ -410,7 +412,8 @@ hop.inherit(hop.resizable, hop.widget, {
 			top: top,
 			left: left,
 			height: height-is.helperHeightDiff,
-			width: width-is.helperWidthDiff
+			width: width-is.helperWidthDiff,
+			zIndex: "10000"
 		});
 	},
 	
