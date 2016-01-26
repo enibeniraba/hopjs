@@ -105,7 +105,7 @@ hop.inherit(hop.window, hop.widget, {
 	getDefaultDraggableParams: function()
 	{
 		return {
-			containment: "window"
+			limiter: "window"
 		};
 	},
 
@@ -135,9 +135,11 @@ hop.inherit(hop.window, hop.widget, {
 			"hide",
 			"resize",
 			"bodyResize",
+			"draggableDragBefore",
 			"draggableDrag",
 			"draggableStart",
 			"draggableStop",
+			"draggableCancel",
 			"resizableResize",
 			"resizableStart",
 			"resizableStop"
@@ -313,7 +315,7 @@ hop.inherit(hop.window, hop.widget, {
 		$layer.toggleClass(classPrefix+"full-screen", fullScreen);
 		$("."+classPrefix+"head-button-full-screen", self.layer.node).attr("title", fullScreen ? self.i18n.restore : self.i18n.fullScreen);
 		if (self.draggable)
-			$layer.draggable("option", "disabled", fullScreen);
+			self.hopDraggable.setEnabled(!fullScreen);
 		if (self.resizable)
 			self.hopResizable.setEnabled(!fullScreen);
 		if (fullScreen)
@@ -557,70 +559,79 @@ hop.inherit(hop.window, hop.widget, {
 
 		if (draggable)
 		{
-			if (!self.draggableInitialized())
+			if (!self.hopDraggable)
 			{
 				params = {
-					drag: function(event, ui)
+					node: self.layer.node,
+					handles: "."+self.classPrefix+"window-head",
+					cancelHandles: "."+self.classPrefix+"window-head-button",
+					onDragBefore: function(draggable)
 					{
-						self.onDraggableDrag(event, ui);
+						self.onDraggableDragBefore(draggable);
 					},
-					start: function(event, ui)
+					onDrag: function(draggable)
 					{
-						self.onDraggableStart(event, ui);
+						self.onDraggableDrag(draggable);
 					},
-					stop: function(event, ui)
+					onStart: function(draggable)
 					{
-						self.onDraggableStop(event, ui);
+						self.onDraggableStart(draggable);
 					},
-					handle: "."+self.classPrefix+"window-head",
-					cancel: "."+self.classPrefix+"window-head-button",
-					disabled: true
+					onStop: function(draggable)
+					{
+						self.onDraggableStop(draggable);
+					},
+					onCancel: function(draggable)
+					{
+						self.onDraggableCancel(draggable);
+					}
 				};
 				if (self.defaultDraggableParams)
 					$.extend(true, params, self.defaultDraggableParams);
 				if (self.draggableParams)
 					$.extend(true, params, self.draggableParams);
-				self.layer.$node.draggable(params);
+				self.hopDraggable = new hop.draggable(params);
 			}
-			if (!self.fullScreen)
-				self.layer.$node.draggable("option", "disabled", false);
+			if (self.fullScreen)
+				self.hopDraggable.setEnabled(false);
 		}
-		else if (self.draggableInitialized())
-			self.layer.$node.draggable("option", "disabled", true);
+		else if (self.hopDraggable)
+			self.hopDraggable.setEnabled(false);
 		self.$head.toggleClass(self.classPrefix+"window-head-draggable", draggable);
 	},
-
-	draggableInitialized: function()
+	
+	onDraggableDragBefore: function(draggable)
 	{
-		return (this.layer && this.layer.$node.is(".ui-draggable"));
+		if (draggable.state.top-draggable.initialState.marginTop < 0)
+			draggable.state.top = draggable.initialState.marginTop;
+		this.trigger("draggableDragBefore", {draggable: draggable});
 	},
 
-	onDraggableDrag: function(event, ui)
+	onDraggableDrag: function(draggable)
 	{
 		this.moved = true;
-		if (ui.position.top < 0)
-			ui.position.top = 0;
-		if (ui.position.left < 0)
-			ui.position.left = 0;
-		this.offset = {
-			top: ui.position.top,
-			left: ui.position.left
-		};
-		this.trigger("draggableDrag", {event: event, ui: ui});
+		this.trigger("draggableDrag", {draggable: draggable});
 	},
 
-	onDraggableStart: function(event, ui)
+	onDraggableStart: function(draggable)
 	{
 		this.dragging = true;
 		this.layer.$node.addClass(this.classPrefix+"window-dragging");
-		this.trigger("draggableStart", {event: event, ui: ui});
+		this.trigger("draggableStart", {draggable: draggable});
 	},
 
-	onDraggableStop: function(event, ui)
+	onDraggableStop: function(draggable)
 	{
 		this.dragging = false;
 		this.layer.$node.removeClass(this.classPrefix+"window-dragging");
-		this.trigger("draggableStop", {event: event, ui: ui});
+		this.trigger("draggableStop", {draggable: draggable});
+	},
+
+	onDraggableCancel: function(draggable)
+	{
+		this.dragging = false;
+		this.layer.$node.removeClass(this.classPrefix+"window-dragging");
+		this.trigger("draggableCancel", {draggable: draggable});
 	},
 
 	setResizable: function(resizable)
@@ -636,7 +647,6 @@ hop.inherit(hop.window, hop.widget, {
 			{
 				params = {
 					node: self.layer.node,
-					enabled: false,
 					onResize: function(resizable)
 					{
 						self.onResizableResize(resizable);
@@ -654,11 +664,10 @@ hop.inherit(hop.window, hop.widget, {
 					$.extend(true, params, self.defaultResizableParams);
 				if (self.resizableParams)
 					$.extend(true, params, self.resizableParams);
-				
 				self.hopResizable = new hop.resizable(params);
 			}
-			if (!self.fullScreen)
-				self.hopResizable.setEnabled(true);
+			if (self.fullScreen)
+				self.hopResizable.setEnabled(false);
 		}
 		else if (self.hopResizable)
 			self.hopResizable.setEnabled(false);

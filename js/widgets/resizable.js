@@ -60,6 +60,7 @@ hop.inherit(hop.resizable, hop.widget, {
 		return [
 			"destroy",
 			"start",
+			"resizeBefre",
 			"resize",
 			"stop",
 			"cancel"
@@ -84,8 +85,8 @@ hop.inherit(hop.resizable, hop.widget, {
 		self.widthChanged = false;
 		self.limiterCache = null;
 		self.generateHtml();
-		self.setHandles(self.handles);
 		self.setEnabled(self.enabled);
+		self.setHandles(self.handles);
 	},
 	
 	setEnabled: function(enabled)
@@ -600,6 +601,7 @@ hop.inherit(hop.resizable, hop.widget, {
 			mouseY: event.pageY,
 			mouseX: event.pageX
 		};
+		self.originalState = $.extend({}, self.state);
 		if (self.helper)
 			self.updateHelper();
 		else
@@ -686,7 +688,8 @@ hop.inherit(hop.resizable, hop.widget, {
 					node = node.parentNode;
 				}
 				self.limiterCache = {
-					isParent: value,
+					parent: value,
+					position: $element.css("position"),
 					overflowY: $element.css("overflow-y"),
 					overflowX: $element.css("overflow-x"),
 					borderTop: parseFloat($element.css("border-top-width")) || 0,
@@ -700,7 +703,8 @@ hop.inherit(hop.resizable, hop.widget, {
 				};
 			}
 			cache = self.limiterCache;
-			if (cache.isParent && (cache.overflowY === "auto" || cache.overflowY === "scroll"))
+			if (cache.parent && cache.position === "static" 
+				&& (cache.overflowY === "auto" || cache.overflowY === "scroll"))
 			{
 				top += cache.borderTop-element.scrollTop;
 				height = element.scrollHeight;
@@ -720,7 +724,8 @@ hop.inherit(hop.resizable, hop.widget, {
 					height -= cache.paddingTop+cache.paddingBottom;
 				}
 			}
-			if (cache.isParent && (cache.overflowX === "auto" || cache.overflowX === "scroll"))
+			if (cache.parent && cache.position === "static" 
+				&& (cache.overflowX === "auto" || cache.overflowX === "scroll"))
 			{
 				left += cache.borderLeft-element.scrollLeft;
 				width = element.scrollWidth;
@@ -761,6 +766,7 @@ hop.inherit(hop.resizable, hop.widget, {
 		if (!self.state)
 			return;
 		
+		self.onResizeBefore();
 		if (self.heightChanged)
 			css.height = s.height-is.heightDiff;
 		if (self.widthChanged)
@@ -792,6 +798,11 @@ hop.inherit(hop.resizable, hop.widget, {
 		self.onResize();
 	},
 	
+	onResizeBefore: function()
+	{
+		this.trigger("resizeBefore");
+	},
+	
 	onResize: function()
 	{
 		this.trigger("resize");
@@ -817,7 +828,7 @@ hop.inherit(hop.resizable, hop.widget, {
 		self.$node.removeClass(self.classPrefix+"resizable-resizing");
 		self.$node.removeClass(self.classPrefix+"resizable-has-helper");
 		$("html").css("cursor", self.htmlCursor);
-		$("body").css("cursor", self.htmlCursor);
+		$("body").css("cursor", self.bodyCursor);
 		if (self.$helper)
 		{
 			self.$helper.remove();

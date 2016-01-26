@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<title>Resizable</title>
+<title>Draggable</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="css/common.css" />
-<link rel="stylesheet" type="text/css" href="../themes/default/css/resizable.css" />
 <script type="text/javascript" src="../external/jquery.js"></script>
 <script type="text/javascript" src="../js/base.js"></script>
 <script type="text/javascript" src="../js/widgets/layer.js"></script>
-<script type="text/javascript" src="../js/widgets/resizable.js"></script>
+<script type="text/javascript" src="../js/widgets/draggable.js"></script>
 <style type="text/css">
 .settings
 {
@@ -65,48 +64,21 @@
 	background: #fcf8e3;
 }
 
-.hop-resizable-handle-n
+.handle
 {
-	top: -3px;
+	border: solid 1px #ccc;
+	background: #eee;
+	padding: 20px;
 }
 
-.hop-resizable-handle-s
+#handle1
 {
-	bottom: -3px;
+	margin-bottom: 20px;
 }
 
-.hop-resizable-handle-w
+#handle2
 {
-	left: -3px;
-}
-
-.hop-resizable-handle-e
-{
-	right: -3px;
-}
-
-.hop-resizable-handle-nw
-{
-	top: -3px;
-	left: -3px;
-}
-
-.hop-resizable-handle-ne
-{
-	top: -3px;
-	right: -3px;
-}
-
-.hop-resizable-handle-se
-{
-	bottom: -3px;
-	right: -3px;
-}
-
-.hop-resizable-handle-sw
-{
-	bottom: -3px;
-	left: -3px;
+	margin-top: 20px;
 }
 </style>
 </head>
@@ -117,7 +89,7 @@
 	<table class="table">
 		<tr>
 			<td>Param</td>
-			<td>Resizable</td>
+			<td>Draggable</td>
 			<td>Container 1</td>
 			<td>Container 2</td>
 			<td>Container 3</td>
@@ -126,6 +98,7 @@
 			<td>Position</td>
 			<td>
 				<select id="container0-position">
+					<option value="static">static</option>
 					<option value="relative">relative</option>
 					<option value="absolute">absolute</option>
 					<option value="fixed">fixed</option>
@@ -315,7 +288,7 @@
 	</table>
 </div>
 <div class="settings">
-	<p>Resizable params</p>
+	<p>Draggable params</p>
 	<table class="table">
 		<tr>
 			<td>Param</td>
@@ -324,72 +297,57 @@
 		<tr>
 			<td>Enabled</td>
 			<td>
-				<input type="checkbox" id="resizable-enabled" checked="checked" />
+				<input type="checkbox" id="draggable-enabled" checked="checked" />
 			</td>
 		</tr>
 		<tr>
 			<td>Handles</td>
 			<td>
-				<select id="resizable-handles">
-					<option value="all">all</option>
-					<option value="s e se">s e se</option>
-					<option value="s">s</option>
-					<option value="e">e</option>
+				<select id="draggable-handles">
+					<option value="">none</option>
+					<option value="#handle1">1</option>
+					<option value="#handle2">2</option>
+					<option value="#handle1, #handle2">1, 2</option>
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>Helper</td>
+			<td>Cancel handles</td>
 			<td>
-				<input type="checkbox" id="resizable-helper" />
+				<select id="draggable-cancel-handles">
+					<option value="">none</option>
+					<option value="#handle1">1</option>
+					<option value="#handle2">2</option>
+					<option value="#handle1, #handle2">1, 2</option>
+				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>Min height</td>
+			<td>Axis</td>
 			<td>
-				<input type="text" id="resizable-min-height" value="0" />
+				<select id="draggable-axis">
+					<option value="">all</option>
+					<option value="y">y</option>
+					<option value="x">x</option>
+				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>Max height</td>
+			<td>Cell height</td>
 			<td>
-				<input type="text" id="resizable-max-height" value="" />
+				<input type="text" id="draggable-cell-height" value="1" />
 			</td>
 		</tr>
 		<tr>
-			<td>Min width</td>
+			<td>Cell width</td>
 			<td>
-				<input type="text" id="resizable-min-width" value="0" />
-			</td>
-		</tr>
-		<tr>
-			<td>Max width</td>
-			<td>
-				<input type="text" id="resizable-max-width" value="" />
-			</td>
-		</tr>
-		<tr>
-			<td>Preserve ratio</td>
-			<td>
-				<input type="checkbox" id="resizable-preserve-ratio" />
-			</td>
-		</tr>
-		<tr>
-			<td>Height increment</td>
-			<td>
-				<input type="text" id="resizable-height-increment" value="1" />
-			</td>
-		</tr>
-		<tr>
-			<td>Width increment</td>
-			<td>
-				<input type="text" id="resizable-width-increment" value="1" />
+				<input type="text" id="draggable-cell-width" value="1" />
 			</td>
 		</tr>
 		<tr>
 			<td>Limiter</td>
 			<td>
-				<select id="resizable-limiter">
+				<select id="draggable-limiter">
 					<option value="">none</option>
 					<option value="window">window</option>
 					<option value="document">document</option>
@@ -400,7 +358,7 @@
 		<tr>
 			<td>Limiter box</td>
 			<td>
-				<select id="resizable-limiter-box">
+				<select id="draggable-limiter-box">
 					<option value="content">content</option>
 					<option value="padding">padding</option>
 					<option value="border">border</option>
@@ -410,12 +368,28 @@
 		<tr>
 			<td>Limiter sides</td>
 			<td>
-				<select id="resizable-limiter-sides">
+				<select id="draggable-limiter-sides">
 					<option value="all">all</option>
 					<option value="top bottom">top bottom</option>
 					<option value="left right">left right</option>
 					<option value="top left">top left</option>
 					<option value="top left right">top left right</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Change cursor</td>
+			<td>
+				<input type="checkbox" id="draggable-change-cursor" checked="checked" />
+			</td>
+		</tr>
+		<tr>
+			<td>Cursor</td>
+			<td>
+				<select id="draggable-cursor">
+					<option value="">auto</option>
+					<option value="default">default</option>
+					<option value="progress">progress</option>
 				</select>
 			</td>
 		</tr>
@@ -428,7 +402,11 @@
 		Container 2
 		<div id="container1">
 			Container 1
-			<div id="container0">Resizable. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+			<div id="container0">
+				<div class="handle" id="handle1">Handle 1</div>
+				Draggable. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+				<div class="handle" id="handle2">Handle 2</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -478,61 +456,52 @@ $(function()
 	};
 	for (i = 0; i < 4; i++)
 		attachEvents(i);
-	$("#resizable-enabled").on("change", function()
+	$("#draggable-enabled").on("change", function()
 	{
-		rs1.setEnabled(this.checked);
+		dr1.setEnabled(this.checked);
 	});
-	$("#resizable-handles").on("change", function()
+	$("#draggable-handles").on("change", function()
 	{
-		rs1.setHandles(this.value);
+		dr1.setHandles(this.value);
 	});
-	$("#resizable-helper").on("change", function()
+	$("#draggable-cancel-handles").on("change", function()
 	{
-		rs1.helper = this.checked;
+		dr1.setCancelHandles(this.value);
 	});
-	$("#resizable-min-height").on("change", function()
+	$("#draggable-axis").on("change", function()
 	{
-		rs1.setMinHeight(this.value);
+		dr1.axis = (this.value === "" ? null : this.value);
 	});
-	$("#resizable-max-height").on("change", function()
+	$("#draggable-cell-height").on("change", function()
 	{
-		rs1.setMaxHeight(this.value);
+		dr1.cellHeight = this.value;
 	});
-	$("#resizable-min-width").on("change", function()
+	$("#draggable-cell-width").on("change", function()
 	{
-		rs1.setMinWidth(this.value);
+		dr1.cellWidth = this.value;
 	});
-	$("#resizable-max-width").on("change", function()
+	$("#draggable-limiter").on("change", function()
 	{
-		rs1.setMaxWidth(this.value);
+		dr1.setLimiter(this.value);
 	});
-	$("#resizable-preserve-ratio").on("change", function()
+	$("#draggable-limiter-box").on("change", function()
 	{
-		rs1.preserveRatio = this.checked;
+		dr1.limiterBox = this.value;
 	});
-	$("#resizable-height-increment").on("change", function()
+	$("#draggable-limiter-sides").on("change", function()
 	{
-		rs1.heightIncrement = this.value;
+		dr1.setLimiterSides(this.value);
 	});
-	$("#resizable-width-increment").on("change", function()
+	$("#draggable-change-cursor").on("change", function()
 	{
-		rs1.widthIncrement = this.value;
+		dr1.changeCursor = this.checked;
 	});
-	$("#resizable-limiter").on("change", function()
+	$("#draggable-cursor").on("change", function()
 	{
-		rs1.setLimiter(this.value);
+		dr1.cursor = (this.value === "" ? null : this.value);
 	});
-	$("#resizable-limiter-box").on("change", function()
-	{
-		rs1.limiterBox = this.value;
-	});
-	$("#resizable-limiter-sides").on("change", function()
-	{
-		rs1.setLimiterSides(this.value);
-	});
-	rs1 = new hopjs.resizable({
-		node: $("#container0")[0],
-		handles: "all"
+	dr1 = new hopjs.draggable({
+		node: $("#container0")[0]
 	});
 });
 </script>
