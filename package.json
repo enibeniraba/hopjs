@@ -1,6 +1,6 @@
 {
 	"name": "hopjs",
-	"version": "0.3.2",
+	"version": "0.4.0",
 	"description": "JavaScript UI library",
 	"main": "",
 	"scripts": {
