@@ -315,10 +315,6 @@ hop.inherit(hop.draggable, hop.widget, {
 	start: function(event)
 	{
 		var self = this, is, cursor,
-			height = self.$node.outerHeight(),
-			width = self.$node.outerWidth(),
-			innerHeight = self.$node.height(),
-			innerWidth = self.$node.width(),
 			offset = self.$node.offset(),
 			marginTop = parseFloat(self.$node.css("margin-top")) || 0,
 			marginBottom = parseFloat(self.$node.css("margin-bottom")) || 0,
@@ -330,13 +326,8 @@ hop.inherit(hop.draggable, hop.widget, {
 		
 		self.handleItemIndex = event.data.index;
 		is = {
-			height: height,
-			width: width,
-			ratio: height/width,
-			innerHeight: innerHeight,
-			innerWidth: innerWidth,
-			heightDiff: height-innerHeight,
-			widthDiff: width-innerWidth,
+			height: self.$node.outerHeight(),
+			width: self.$node.outerWidth(),
 			marginTop: marginTop,
 			marginBottom: marginBottom,
 			marginLeft: marginLeft,
