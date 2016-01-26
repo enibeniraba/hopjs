@@ -328,6 +328,7 @@ hop.inherit(hop.draggable, hop.widget, {
 			parentBorderTop = parseFloat($offsetParent.css("border-top-width")) || 0,
 			parentBorderLeft = parseFloat($offsetParent.css("border-left-width")) || 0;
 		
+		self.handleItemIndex = event.data.index;
 		is = {
 			height: height,
 			width: width,
