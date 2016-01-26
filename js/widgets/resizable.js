@@ -382,8 +382,8 @@ hop.inherit(hop.resizable, hop.widget, {
 			});
 		}
 		self.$node.addClass(self.classPrefix+"resizable-resizing");
-		self.htmlCursor = $("html").css("cursor");
-		self.bodyCursor = $("body").css("cursor");
+		self.htmlCursor = $("html")[0].style.cursor;
+		self.bodyCursor = $("body")[0].style.cursor;
 		$("html").css("cursor", handle+"-resize");
 		$("body").css("cursor", handle+"-resize");
 		self.onStart();
@@ -837,8 +837,8 @@ hop.inherit(hop.resizable, hop.widget, {
 		self.resizing = false;
 		self.$node.removeClass(self.classPrefix+"resizable-resizing");
 		self.$node.removeClass(self.classPrefix+"resizable-has-helper");
-		$("html").css("cursor", self.htmlCursor);
-		$("body").css("cursor", self.bodyCursor);
+		$("html")[0].style.cursor = self.htmlCursor;
+		$("body")[0].style.cursor = self.bodyCursor;
 		if (self.$helper)
 		{
 			self.$helper.remove();

@@ -371,8 +371,8 @@ hop.inherit(hop.draggable, hop.widget, {
 		self.$node.addClass(self.classPrefix+"draggable-dragging");
 		if (self.changeCursor)
 		{
-			self.htmlCursor = $("html").css("cursor");
-			self.bodyCursor = $("body").css("cursor");
+			self.htmlCursor = $("html")[0].style.cursor;
+			self.bodyCursor = $("body")[0].style.cursor;
 			if (self.cursor !== null)
 				cursor = self.cursor;
 			else
@@ -669,8 +669,8 @@ hop.inherit(hop.draggable, hop.widget, {
 		self.$node.removeClass(self.classPrefix+"draggable-dragging");
 		if (self.changeCursor)
 		{
-			$("html").css("cursor", self.htmlCursor);
-			$("body").css("cursor", self.bodyCursor);
+			$("html")[0].style.cursor = self.htmlCursor;
+			$("body")[0].style.cursor = self.bodyCursor;
 		}
 	},
 	
