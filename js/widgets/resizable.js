@@ -60,6 +60,7 @@ hop.inherit(hop.resizable, hop.widget, {
 		return [
 			"destroy",
 			"start",
+			"stateChange",
 			"resizeBefre",
 			"resize",
 			"stop",
@@ -601,7 +602,9 @@ hop.inherit(hop.resizable, hop.widget, {
 			mouseY: event.pageY,
 			mouseX: event.pageX
 		};
-		self.originalState = $.extend({}, self.state);
+		self.onStateChange({
+			originalState: $.extend({}, self.state)
+		});
 		if (self.helper)
 			self.updateHelper();
 		else
@@ -756,6 +759,11 @@ hop.inherit(hop.resizable, hop.widget, {
 		};
 	},
 	
+	onStateChange: function(data)
+	{
+		this.trigger("stateChange", data);
+	},
+	
 	realResize: function()
 	{
 		var self = this, css = {}, value,
@@ -766,7 +774,9 @@ hop.inherit(hop.resizable, hop.widget, {
 		if (!self.state)
 			return;
 		
-		self.onResizeBefore();
+		self.onResizeBefore({
+			originalState: $.extend({}, self.state)
+		});
 		if (self.heightChanged)
 			css.height = s.height-is.heightDiff;
 		if (self.widthChanged)
@@ -798,9 +808,9 @@ hop.inherit(hop.resizable, hop.widget, {
 		self.onResize();
 	},
 	
-	onResizeBefore: function()
+	onResizeBefore: function(data)
 	{
-		this.trigger("resizeBefore");
+		this.trigger("resizeBefore", data);
 	},
 	
 	onResize: function()

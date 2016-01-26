@@ -444,7 +444,6 @@ hop.inherit(hop.draggable, hop.widget, {
 			mouseY: event.pageY,
 			mouseX: event.pageX
 		};
-		self.originalState = $.extend({}, self.state);
 		self.realDrag();
 	},
 	
@@ -604,7 +603,9 @@ hop.inherit(hop.draggable, hop.widget, {
 		if (!self.state)
 			return;
 		
-		self.onDragBefore();
+		self.onDragBefore({
+			originalState: $.extend({}, self.state)
+		});
 		if (is.position === "relative")
 		{
 			if (self.axis !== "x")
@@ -640,9 +641,9 @@ hop.inherit(hop.draggable, hop.widget, {
 		self.onDrag();
 	},
 	
-	onDragBefore: function()
+	onDragBefore: function(data)
 	{
-		this.trigger("dragBefore");
+		this.trigger("dragBefore", data);
 	},
 	
 	onDrag: function()

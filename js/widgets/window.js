@@ -142,7 +142,8 @@ hop.inherit(hop.window, hop.widget, {
 			"draggableCancel",
 			"resizableResize",
 			"resizableStart",
-			"resizableStop"
+			"resizableStop",
+			"resizableCancel"
 		];
 	},
 
@@ -565,6 +566,10 @@ hop.inherit(hop.window, hop.widget, {
 					node: self.layer.node,
 					handles: "."+self.classPrefix+"window-head",
 					cancelHandles: "."+self.classPrefix+"window-head-button",
+					onStart: function(draggable)
+					{
+						self.onDraggableStart(draggable);
+					},
 					onDragBefore: function(draggable)
 					{
 						self.onDraggableDragBefore(draggable);
@@ -572,10 +577,6 @@ hop.inherit(hop.window, hop.widget, {
 					onDrag: function(draggable)
 					{
 						self.onDraggableDrag(draggable);
-					},
-					onStart: function(draggable)
-					{
-						self.onDraggableStart(draggable);
 					},
 					onStop: function(draggable)
 					{
@@ -600,10 +601,20 @@ hop.inherit(hop.window, hop.widget, {
 		self.$head.toggleClass(self.classPrefix+"window-head-draggable", draggable);
 	},
 	
+	onDraggableStart: function(draggable)
+	{
+		this.dragging = true;
+		this.layer.$node.addClass(this.classPrefix+"window-dragging");
+		this.trigger("draggableStart", {draggable: draggable});
+	},
+	
 	onDraggableDragBefore: function(draggable)
 	{
-		if (draggable.state.top-draggable.initialState.marginTop < 0)
-			draggable.state.top = draggable.initialState.marginTop;
+		var top, scroll = 0;
+		if (this.layer.position === "fixed")
+			scroll = $(window).scrollTop();
+		if (draggable.state.top-scroll < 0)
+			draggable.state.top = scroll;
 		this.trigger("draggableDragBefore", {draggable: draggable});
 	},
 
@@ -613,25 +624,22 @@ hop.inherit(hop.window, hop.widget, {
 		this.trigger("draggableDrag", {draggable: draggable});
 	},
 
-	onDraggableStart: function(draggable)
-	{
-		this.dragging = true;
-		this.layer.$node.addClass(this.classPrefix+"window-dragging");
-		this.trigger("draggableStart", {draggable: draggable});
-	},
-
 	onDraggableStop: function(draggable)
 	{
-		this.dragging = false;
-		this.layer.$node.removeClass(this.classPrefix+"window-dragging");
+		this.draggableReset();
 		this.trigger("draggableStop", {draggable: draggable});
 	},
 
 	onDraggableCancel: function(draggable)
 	{
+		this.draggableReset();
+		this.trigger("draggableCancel", {draggable: draggable});
+	},
+	
+	draggableReset: function()
+	{
 		this.dragging = false;
 		this.layer.$node.removeClass(this.classPrefix+"window-dragging");
-		this.trigger("draggableCancel", {draggable: draggable});
 	},
 
 	setResizable: function(resizable)
@@ -647,17 +655,25 @@ hop.inherit(hop.window, hop.widget, {
 			{
 				params = {
 					node: self.layer.node,
+					onStart: function(resizable)
+					{
+						self.onResizableStart(resizable);
+					},
+					onStateChange: function(resizable)
+					{
+						self.onStateChange(resizable);
+					},
 					onResize: function(resizable)
 					{
 						self.onResizableResize(resizable);
 					},
-					onStart: function(resizable)
-					{
-						self.onResizableResizeStart(resizable);
-					},
 					onStop: function(resizable)
 					{
-						self.onResizableResizeStop(resizable);
+						self.onResizableStop(resizable);
+					},
+					onCancel: function(resizable)
+					{
+						self.onResizableCancel(resizable);
 					}
 				};
 				if (self.defaultResizableParams)
@@ -673,14 +689,7 @@ hop.inherit(hop.window, hop.widget, {
 			self.hopResizable.setEnabled(false);
 	},
 
-	onResizableResize: function(resizable)
-	{
-		this.resized = true;
-		this.trigger("resizableResize", {resizable: resizable});
-		this.onResize();
-	},
-
-	onResizableResizeStart: function(resizable)
+	onResizableStart: function(resizable)
 	{
 		var self = this;
 		self.resizing = true;
@@ -693,14 +702,47 @@ hop.inherit(hop.window, hop.widget, {
 		self.layer.$node.addClass(self.classPrefix+"window-resizing");
 		self.trigger("resizableStart", {resizable: resizable});
 	},
-
-	onResizableResizeStop: function(resizable)
+	
+	onStateChange: function(resizable)
 	{
-		var self = this;
-		self.resizing = false;
-		self.layer.$node.removeClass(self.classPrefix+"window-resizing");
-		self.trigger("resizableStop", {resizable: resizable});
-		self.setSize(self.layer.$node.outerHeight(), self.layer.$node.outerWidth());
+		var s = resizable.state, is = resizable.initialState,
+			top, scroll = 0;
+		if (s.upwards)
+		{
+			if (this.layer.position === "fixed")
+				scroll = $(window).scrollTop();
+			top = is.offsetTop-scroll-s.height+is.height;
+			if (top < 0)
+				s.height += top;
+		}
+		this.trigger("resizableStateChange", {resizable: resizable});
+	},
+	
+	onResizableResize: function(resizable)
+	{
+		this.resized = true;
+		this.trigger("resizableResize", {resizable: resizable});
+		this.onResize();
+	},
+
+	onResizableStop: function(resizable)
+	{
+		this.resizableReset();
+		this.trigger("resizableStop", {resizable: resizable});
+		this.setSize(this.layer.$node.outerHeight(), this.layer.$node.outerWidth());
+	},
+	
+	onResizableCancel: function(resizable)
+	{
+		this.resizableReset();
+		this.trigger("resizableCancel", {resizable: resizable});
+		this.setSize(this.layer.$node.outerHeight(), this.layer.$node.outerWidth());
+	},
+	
+	resizableReset: function()
+	{
+		this.resizing = false;
+		this.layer.$node.removeClass(this.classPrefix+"window-resizing");
 	},
 
 	generateHtml: function()
