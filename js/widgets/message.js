@@ -1,5 +1,5 @@
 /*!
- * hop.message
+ * hopjs.message
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -11,6 +11,8 @@
 
 (function($, hop)
 {
+	
+var cp = "hopjs-message-";
 
 hop.message = function(params)
 {
@@ -32,7 +34,7 @@ hop.inherit(hop.message, hop.window, {
 	{
 		var self = this;
 		hop.window.prototype.create.apply(self, arguments);
-		self.layer.$node.addClass(self.classPrefix+"message");
+		self.layer.$node.addClass("hopjs-message");
 		self.setButtonText(self.buttonText);
 		self.setButtonsAlign(self.buttonsAlign);
 	},
@@ -54,18 +56,19 @@ hop.inherit(hop.message, hop.window, {
 		if (!self.$buttons)
 			return;
 
-		self.$buttons.toggleClass(self.classPrefix+"message-buttons-left", align === "left");
-		self.$buttons.toggleClass(self.classPrefix+"message-buttons-center", align === "center");
-		self.$buttons.toggleClass(self.classPrefix+"message-buttons-right", align === "right");
+		self.$buttons.toggleClass(cp+"buttons-left", align === "left");
+		self.$buttons.toggleClass(cp+"buttons-center", align === "center");
+		self.$buttons.toggleClass(cp+"buttons-right", align === "right");
 	},
 
 	generateHtml: function()
 	{
 		var self = this;
 		hop.window.prototype.generateHtml.apply(self);
-		self.$bottom.html('<div class="'+self.classPrefix+'message-buttons"><button></button></div>');
+		self.$bottom.html('<div class="'+cp+'buttons"><button></button></div>');
 		self.$buttons = $("div", self.$bottom);
 		self.$button = $("button", self.$buttons);
+		self.$button.addClass("hopjs-button");
 		self.$button.on("click", function(event)
 		{
 			self.onButtonClick(event);

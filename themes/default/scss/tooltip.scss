@@ -1,0 +1,10 @@
+@import "settings";
+
+.hopjs-tooltip
+{
+	padding: 6px 8px;
+	border: solid 1px $themeBorderColor;
+	background-color: $themeBackgroundColor;
+	line-height: $themeLineHeight;
+	box-shadow: $themeBoxShadow;
+}

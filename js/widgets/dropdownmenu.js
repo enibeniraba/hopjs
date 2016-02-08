@@ -1,5 +1,5 @@
 /*!
- * hop.dropdownMenu
+ * hopjs.dropdownMenu
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -11,6 +11,8 @@
 
 (function(window, document, $, hop)
 {
+	
+var cp = "hopjs-dropdown-menu-";
 
 hop.dropdownMenu = function(params)
 {
@@ -23,7 +25,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 	getDefaults: function()
 	{
 		return {
-			className: "hop-dropdown-menu",
+			extraClass: "",
 			layerParams: null,
 			nodeOffset: null,
 			timeoutShow: 200,
@@ -128,8 +130,10 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 			$.extend(true, layerParams, self.layerParams);
 		layer = new hop.layer(layerParams);
 		self.layer = layer;
-		layer.node.className = self.className;
-		layer.node.innerHTML = '<div class="hop-dropdown-menu-background"></div><div class="hop-dropdown-menu-offset"></div>';
+		layer.node.className = "hopjs-dropdown-menu";
+		if (self.extraClass !== "")
+			layer.node.className += " "+self.extraClass;
+		layer.node.innerHTML = '<div class="'+cp+'background"></div><div class="'+cp+'offset"></div>';
 		layer.hopDropdownMenu = self;
 
 		layer.on("showBefore", function()
@@ -729,7 +733,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		if (self.nodeOffset || self.nodeOffset === null
 			&& topMenu && topMenu !== self && topMenu.submenuNodeOffset)
 		{
-			$offset = $(">.hop-dropdown-menu-offset", self.layer.node);
+			$offset = $(">."+cp+"offset", self.layer.node);
 			offset = parseInt($offset.css("top"));
 			if (!isNaN(offset))
 				layerParams.offsetTop = offset;
@@ -851,7 +855,7 @@ $.extend(hop.dropdownMenuItem.prototype, {
 	{
 		return {
 			parentMenu: null,
-			className: "hop-dropdown-menu-item",
+			extraClass: "",
 			id: null,
 			visible: true
 		};
@@ -880,7 +884,9 @@ $.extend(hop.dropdownMenuItem.prototype, {
 	{
 		var self = this;
 		self.node = document.createElement("div");
-		self.node.className = self.className;
+		self.node.className = cp+"item";
+		if (self.extraClass !== "")
+			self.node.className += " "+self.extraClass;
 		self.$node = $(self.node);
 		self.$node.on("mouseenter", function(event)
 		{
@@ -1006,7 +1012,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 		self.active = !!active;
 		if (self.node)
 		{
-			$(self.$button).toggleClass("hop-dropdown-menu-inactive", !self.active);
+			$(self.$button).toggleClass(cp+"inactive", !self.active);
 			if (self.menu)
 				self.menu.hide({animate: false});
 		}
@@ -1050,7 +1056,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	{
 		this.checkable = !!checkable;
 		if (this.node)
-			$(this.$button).toggleClass("hop-dropdown-menu-checkable", this.checkable);
+			$(this.$button).toggleClass(cp+"checkable", this.checkable);
 	},
 
 	setChecked: function(checked)
@@ -1072,7 +1078,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 						item.setChecked(false);
 				}
 			}
-			$(self.$button).toggleClass("hop-dropdown-menu-checked", self.checked);
+			$(self.$button).toggleClass(cp+"checked", self.checked);
 		}
 		if (self.created)
 			self.onCheck();
@@ -1091,7 +1097,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 
 		self.radioGroup = radioGroup;
 		if (self.node)
-			$(self.$button).toggleClass("hop-dropdown-menu-radio", self.radioGroup !== null);
+			$(self.$button).toggleClass(cp+"radio", self.radioGroup !== null);
 	},
 
 	setMenu: function(menu)
@@ -1114,7 +1120,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	{
 		var self = this, item = self.parentMenu.parentItem, i;
 		value = !!value;
-		self.$button.toggleClass("hop-dropdown-menu-highlighted", value);
+		self.$button.toggleClass(cp+"highlighted", value);
 		if (self.menu)
 		{
 			for (i in self.menu.items)
@@ -1127,7 +1133,7 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 		{
 			while (item)
 			{
-				item.$button.toggleClass("hop-dropdown-menu-highlighted", value);
+				item.$button.toggleClass(cp+"highlighted", value);
 				item = item.parentMenu.parentItem;
 			}
 		}
@@ -1135,14 +1141,14 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 
 	setOpened: function(value)
 	{
-		this.$button.toggleClass("hop-dropdown-menu-opened", !!value);
+		this.$button.toggleClass(cp+"opened", !!value);
 	},
 
 	generateHtml: function()
 	{
 		var self = this;
 		hop.dropdownMenuItem.prototype.generateHtml.apply(self, arguments);
-		self.node.innerHTML = '<a class="hop-dropdown-menu-button"><div class="hop-dropdown-menu-button-text"></div></a>';
+		self.node.innerHTML = '<a class="'+cp+'button"><div class="'+cp+'button-text"></div></a>';
 		self.$button = $("a", self.node);
 		self.buttonNode = self.$button[0];
 		self.$buttonText = $("div", self.buttonNode);
@@ -1215,12 +1221,12 @@ hop.inherit(hop.dropdownMenuItems.button, hop.dropdownMenuItem, {
 	{
 		var menu = this.menu,
 			state = !!(menu && (menu.items.length > 0 || (menu.loader || menu.ajax) && !menu.loaded));
-		this.$button.toggleClass("hop-dropdown-menu-parent", state);
+		this.$button.toggleClass(cp+"parent", state);
 	},
 
 	setLoading: function(loading)
 	{
-		this.$button.toggleClass('hop-dropdown-menu-loading', !!loading);
+		this.$button.toggleClass(cp+"loading", !!loading);
 	}
 });
 
@@ -1243,7 +1249,7 @@ hop.inherit(hop.dropdownMenuItems.group, hop.dropdownMenuItem, {
 	{
 		var self = this;
 		hop.dropdownMenuItem.prototype.create.apply(self, arguments);
-		self.node.className = self.className+" hop-dropdown-menu-group";
+		self.$node.addClass(cp+"group");
 		self.setText(self.text);
 		self.setIcon(self.icon);
 		self.setTitle(self.title);
@@ -1307,7 +1313,7 @@ hop.inherit(hop.dropdownMenuItems.separator, hop.dropdownMenuItem, {
 	create: function(params)
 	{
 		hop.dropdownMenuItem.prototype.create.apply(this, arguments);
-		this.node.className = this.className+" hop-dropdown-menu-separator";
+		this.$node.addClass(cp+"separator");
 		this.node.innerHTML = "<div></div>";
 	}
 });

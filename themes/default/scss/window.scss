@@ -1,0 +1,235 @@
+/* Do not apply vertical margin to .hopjs-window-head-wrapper and .hopjs-window-head */
+
+@import "settings";
+
+$borderWidth: 1px;
+$border: solid $borderWidth $themeBorderColor;
+
+.hopjs-window
+{
+	overflow: hidden;
+	background: $themeBackgroundColor;
+	border: $border;
+	box-shadow: $themeBoxShadow;
+	font: $themeFont;
+	color: $themeColor;
+}
+
+.hopjs-window.hopjs-window-full-screen
+{
+	border: 0;
+}
+
+.hopjs-window-head
+{
+	background: #eee;
+	border-bottom: $border;
+	position: relative;
+}
+
+.hopjs-window-title
+{
+	overflow: hidden;
+	padding: 6px 8px;
+	font-weight: bold;
+	line-height: 16px;
+}
+
+.hopjs-window-title-nowrap
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.hopjs-window-title-icon
+{
+	padding-left: 24px;
+	background-position: 4px 50%;
+	background-repeat: no-repeat;
+}
+
+.hopjs-window-head-buttons
+{
+	position: absolute;
+	top: 50%;
+	right: 0;
+	height: 22px;
+	margin: -13px 2px 0 0;
+	padding: 2px;
+	overflow: hidden;
+	background: #eee;
+}
+
+.hopjs-window-head-button
+{
+	margin-left: 0;
+	height: 22px;
+	width: 22px;
+	display: block;
+	float: left;
+	cursor: pointer;
+}
+
+.hopjs-window-head-button:hover
+{
+	background-color: #fff;
+}
+
+.hopjs-window-head-button-hide
+{
+	background: url(../images/windowhide.png) 3px 3px no-repeat;
+}
+
+.hopjs-window-head-button-full-screen
+{
+	background: url(../images/windowfullscreen.png) 3px 3px no-repeat;
+}
+
+.hopjs-window.hopjs-window-full-screen .hopjs-window-head-button-full-screen
+{
+	background-image: url(../images/windowrestore.png);
+}
+
+.hopjs-window-body-wrapper
+{
+	position: relative;
+	overflow: hidden;
+	border-width: 0;
+	height: 100%;
+}
+
+.hopjs-window-top,
+.hopjs-window-bottom,
+.hopjs-window-middle,
+.hopjs-window-left,
+.hopjs-window-right,
+.hopjs-window-inner-middle,
+.hopjs-window-inner-top,
+.hopjs-window-inner-bottom
+{
+	position: absolute;
+	overflow: hidden;
+	border-width: 0;
+	background: $themeBackgroundColor;
+}
+
+.hopjs-window-top
+{
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hopjs-window-bottom
+{
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hopjs-window-middle
+{
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hopjs-window-left
+{
+	top: 0;
+	left: 0;
+	height: 100%;
+}
+
+.hopjs-window-right
+{
+	top: 0;
+	right: 0;
+	height: 100%;
+}
+
+.hopjs-window-inner-middle
+{
+	top: 0;
+	left: 0;
+	height: 100%;
+}
+
+.hopjs-window-inner-top
+{
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hopjs-window-inner-bottom
+{
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.hopjs-window-body
+{
+	position: absolute;
+	overflow: auto;
+	border-width: 0;
+	margin: 2px;
+}
+
+.hopjs-window-head-draggable
+{
+	cursor: move;
+}
+
+.hopjs-window.hopjs-window-full-screen .hopjs-window-head-draggable
+{
+	cursor: default;
+}
+
+.hopjs-window
+{
+	> .hopjs-resizable-handle-n
+	{
+		top: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-s
+	{
+		bottom: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-w
+	{
+		left: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-e
+	{
+		right: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-nw
+	{
+		top: -$borderWidth;
+		left: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-ne
+	{
+		top: -$borderWidth;
+		right: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-se
+	{
+		bottom: -$borderWidth;
+		right: -$borderWidth;
+	}
+
+	> .hopjs-resizable-handle-sw
+	{
+		bottom: -$borderWidth;
+		left: -$borderWidth;
+	}
+}

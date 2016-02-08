@@ -1,5 +1,5 @@
 /*!
- * hop.layer
+ * hopjs.layer
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -63,8 +63,7 @@ hop.inherit(hop.layer, hop.widget, {
 			collisionElementBox: "border",
 			collisionRegion: null,
 			overlay: false,
-			overlayClass: "hop-layer-overlay",
-			overlayTransparentClass: "hop-layer-overlay-transparent",
+			overlayClassName: null,
 			overlayTransparent: false,
 			moveOnTopOnShow: true,
 			animationShow: null,
@@ -279,7 +278,7 @@ hop.inherit(hop.layer, hop.widget, {
 			if (!self.overlayNode)
 			{
 				node = document.createElement("div");
-				node.className = self.overlayClass;
+				node.className = "hopjs-layer-overlay";
 				self.overlayNode = self.parentNode.insertBefore(node, self.node);
 				self.$overlay = $(self.overlayNode);
 				self.setOverlayTransparent(self.overlayTransparent);
@@ -313,7 +312,7 @@ hop.inherit(hop.layer, hop.widget, {
 		var self = this;
 		self.transparent = !!transparent;
 		if (self.$overlay)
-			self.$overlay.toggleClass(self.overlayTransparentClass, transparent);
+			self.$overlay.toggleClass("hopjs-layer-overlay-transparent", transparent);
 	},
 
 	setParentNode: function(node)

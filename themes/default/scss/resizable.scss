@@ -1,0 +1,94 @@
+$handleSize: 5px;
+
+.hopjs-resizable
+{
+	position: relative;
+}
+
+.hopjs-resizable-handle
+{
+	position: absolute;
+	background: url(#);
+}
+
+.hopjs-resizable.hopjs-resizable-disabled .hopjs-resizable-handle
+{
+	display: none;
+}
+
+.hopjs-resizable-handle-n
+{
+	height: $handleSize;
+	width: 100%;
+	top: 0;
+	left: 0;
+	cursor: n-resize;
+}
+
+.hopjs-resizable-handle-s
+{
+	height: $handleSize;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	cursor: s-resize;
+}
+
+.hopjs-resizable-handle-w
+{
+	height: 100%;
+	width: $handleSize;
+	top: 0;
+	left: 0;
+	cursor: w-resize;
+}
+
+.hopjs-resizable-handle-e
+{
+	height: 100%;
+	width: $handleSize;
+	top: 0;
+	right: 0;
+	cursor: e-resize;
+}
+
+.hopjs-resizable-handle-nw
+{
+	height: $handleSize;
+	width: $handleSize;
+	top: 0;
+	left: 0;
+	cursor: nw-resize;
+}
+
+.hopjs-resizable-handle-ne
+{
+	height: $handleSize;
+	width: $handleSize;
+	top: 0;
+	right: 0;
+	cursor: ne-resize;
+}
+
+.hopjs-resizable-handle-se
+{
+	height: $handleSize;
+	width: $handleSize;
+	bottom: 0;
+	right: 0;
+	cursor: se-resize;
+}
+
+.hopjs-resizable-handle-sw
+{
+	height: $handleSize;
+	width: $handleSize;
+	bottom: 0;
+	left: 0;
+	cursor: sw-resize;
+}
+
+.hopjs-resizable-helper
+{
+	border: dashed 1px #888;
+}

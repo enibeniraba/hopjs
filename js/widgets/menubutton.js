@@ -1,5 +1,5 @@
 /*!
- * hop.menuButton
+ * hopjs.menuButton
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -26,8 +26,8 @@ hop.inherit(hop.menuButton, hop.widget, {
 			node: null,
 			menu: null,
 			menuParams: null,
-			openClass: true,
-			openClassName: "hop-menu-button-open",
+			useOpenClass: true,
+			openClass: "hopjs-menu-button-open",
 			showOnMousedown: false,
 			hideOnMousedown: false,
 			showOnClick: true,
@@ -57,8 +57,9 @@ hop.inherit(hop.menuButton, hop.widget, {
 
 	create: function(params)
 	{
-		this.defaultMenuParams = this.getDefaultMenuParams();
-		hop.widget.prototype.create.apply(this, arguments);
+		var self = this;
+		self.defaultMenuParams = self.getDefaultMenuParams();
+		hop.widget.prototype.create.apply(self, arguments);
 	},
 
 	setNode: function(node)
@@ -74,6 +75,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 			$(self.node).off("click", self.nodeClick);
 			$(self.node).off("mouseenter", self.nodeMouseenter);
 			$(self.node).off("mouseleave", self.nodeMouseleave);
+			$(self.node).removeClass(self.openClass);
 			if (self.menu)
 			{
 				self.menu.layer.configure({
@@ -161,7 +163,7 @@ hop.inherit(hop.menuButton, hop.widget, {
 		if (this.showOnMouseenter)
 			this.menu.showWithDelay();
 		else if (this.stopActionOnMouseenter)
-			this.menu.stopAction();
+			this.menu.stopHiding();
 	},
 
 	onNodeMouseleave: function(event)
@@ -218,14 +220,14 @@ hop.inherit(hop.menuButton, hop.widget, {
 
 	onMenuLayerShow: function()
 	{
-		if (this.node && this.openClass)
-			$(this.node).addClass(this.openClassName);
+		if (this.node && this.useOpenClass)
+			$(this.node).addClass(this.openClass);
 	},
 
 	onMenuLayerHide: function()
 	{
-		if (this.node && this.openClass)
-			$(this.node).removeClass(this.openClassName);
+		if (this.node && this.useOpenClass)
+			$(this.node).removeClass(this.openClass);
 	},
 
 	setMenuParams: function(params, update)

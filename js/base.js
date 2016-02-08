@@ -12,7 +12,7 @@
 (function(window, document, $, undefined)
 {
 
-window.hopjs = {
+hopjs = {
 	version: "@VERSION",
 
 	def: function(value)
@@ -56,9 +56,9 @@ window.hopjs = {
 	}
 };
 
-var hop = window.hopjs, def = hop.def, ifDef = hop.ifDef;
+var def = hopjs.def, ifDef = hopjs.ifDef;
 
-hop.string = {
+hopjs.string = {
 	padLeft: function(str, length, padStr)
 	{
 		str = String(str);
@@ -66,7 +66,7 @@ hop.string = {
 		if (padLength < 1)
 			return str;
 
-		return ((hop.string.repeat(padStr, Math.ceil(padLength/padStr.length))).slice(0, padLength))+str;
+		return ((hopjs.string.repeat(padStr, Math.ceil(padLength/padStr.length))).slice(0, padLength))+str;
 	},
 
 	padRight: function(str, length, padStr)
@@ -76,7 +76,7 @@ hop.string = {
 		if (padLength < 1)
 			return str;
 
-		return str+((hop.string.repeat(padStr, Math.ceil(padLength/padStr.length))).slice(0, padLength));
+		return str+((hopjs.string.repeat(padStr, Math.ceil(padLength/padStr.length))).slice(0, padLength));
 	},
 
 	repeat: function(str, count)
@@ -90,7 +90,7 @@ hop.string = {
 	trim: function(str, chars)
 	{
 		if (def(chars))
-			hop.string.regexQuote(chars);
+			hopjs.string.regexQuote(chars);
 		else
 			chars = " \\s";
 		var re = new RegExp("^["+chars+"]*(.*?)["+chars+"]*$"),
@@ -101,7 +101,7 @@ hop.string = {
 	ltrim: function(str, chars)
 	{
 		if (def(chars))
-			hop.string.regexQuote(chars);
+			hopjs.string.regexQuote(chars);
 		else
 			chars = " \\s";
 		var re = new RegExp("^["+chars+"]*(.*?)$"),
@@ -112,7 +112,7 @@ hop.string = {
 	rtrim: function(str, chars)
 	{
 		if (def(chars))
-			hop.string.regexQuote(chars);
+			hopjs.string.regexQuote(chars);
 		else
 			chars = " \\s";
 		var re = new RegExp("^(.*?)["+chars+"]*$"),
@@ -122,7 +122,7 @@ hop.string = {
 
 	replace: function(from, to, str)
 	{
-		return str.replace(new RegExp(hop.string.regexQuote(from), "g"), to);
+		return str.replace(new RegExp(hopjs.string.regexQuote(from), "g"), to);
 	},
 
 	regexQuote: function(str)
@@ -187,19 +187,19 @@ var monthNames = [
 	reMonthNamesShort = monthNamesShort.join("|"),
 	reDayNames = dayNames.join("|"),
 	reDayNamesShort = monthNamesShort.join("|"),
-	padLeft = hop.string.padLeft;
+	padLeft = hopjs.string.padLeft;
 
-hop.time = {
+hopjs.time = {
 	format: function(date, format)
 	{
 		var year = date.getFullYear(),
 			month = date.getMonth(),
-			weekNumber = hop.time.weekNumber(date),
+			weekNumber = hopjs.time.weekNumber(date),
 			monthDate = date.getDate(),
 			weekDay = date.getDay(),
 			timezoneOffset = -date.getTimezoneOffset(),
 			hours = date.getHours(),
-			hours12 = hop.time.hours12(hours),
+			hours12 = hopjs.time.hours12(hours),
 			result = "", i, chr, prevChr = null, a, b;
 		for (i = 0; i < format.length; i++)
 		{
@@ -224,7 +224,7 @@ hop.time = {
 						result += weekNumber.year;
 						break;
 					case "L":
-						result += (hop.time.yearIsLeap(year) ? "1" : "0");
+						result += (hopjs.time.yearIsLeap(year) ? "1" : "0");
 						break;
 					case "n":
 						result += month+1;
@@ -239,7 +239,7 @@ hop.time = {
 						result += monthNamesShort[month];
 						break;
 					case "t":
-						result += hop.time.yearMonthDays(year, month);
+						result += hopjs.time.yearMonthDays(year, month);
 						break;
 					case "W":
 						result += weekNumber.week;
@@ -260,13 +260,13 @@ hop.time = {
 						result += (weekDay === 0 ? 7 : weekDay);
 						break;
 					case "S":
-						result += hop.time.ordinalSuffix(monthDate);
+						result += hopjs.time.ordinalSuffix(monthDate);
 						break;
 					case "w":
 						result += weekDay;
 						break;
 					case "z":
-						result += hop.time.yearDay(date);
+						result += hopjs.time.yearDay(date);
 						break;
 					case "g":
 						result += hours12;
@@ -287,10 +287,10 @@ hop.time = {
 						result += padLeft(date.getSeconds(), 2, "0");
 						break;
 					case "a":
-						result += (hop.time.am(hours) ? "am" : "pm");
+						result += (hopjs.time.am(hours) ? "am" : "pm");
 						break;
 					case "A":
-						result += (hop.time.am(hours) ? "AM" : "PM");
+						result += (hopjs.time.am(hours) ? "AM" : "PM");
 						break;
 					case "O":
 					case "P":
@@ -308,10 +308,10 @@ hop.time = {
 						result += Math.abs(timezoneOffset)*60;
 						break;
 					case "c":
-						result += hop.time.format(date, "Y-m-d\TH:i:sP");
+						result += hopjs.time.format(date, "Y-m-d\TH:i:sP");
 						break;
 					case "r":
-						result += hop.time.format(date, "D, d M Y H:i:s O");
+						result += hopjs.time.format(date, "D, d M Y H:i:s O");
 						break;
 					default:
 						result += chr;
@@ -479,7 +479,7 @@ hop.time = {
 			return false;
 
 		if (hours === null && hours12 !== null)
-			hours = hop.time.hours24(hours12, pm);
+			hours = hopjs.time.hours24(hours12, pm);
 		result = new Date(year, month, day, hours === null ? 0 : hours, minutes, seconds);
 		if (month !== result.getMonth())
 			return false;
@@ -519,7 +519,7 @@ hop.time = {
 	yearDay: function(date)
 	{
 		var month = date.getMonth(),
-			monthDays = hop.time.monthDaysList(date.getFullYear(), month),
+			monthDays = hopjs.time.monthDaysList(date.getFullYear(), month),
 			result = date.getDate()-1, i;
 		for (i = 0; i < month; i++)
 			result += monthDays[i];
@@ -541,7 +541,7 @@ hop.time = {
 	monthDaysList: function(year)
 	{
 		var result = monthDays.slice();
-		if (hop.time.yearIsLeap(year))
+		if (hopjs.time.yearIsLeap(year))
 			result[1]++;
 		return result;
 	},
@@ -549,14 +549,14 @@ hop.time = {
 	yearMonthDays: function(year, month)
 	{
 		var result = monthDays[month];
-		if (month === 1 && hop.time.yearIsLeap(year))
+		if (month === 1 && hopjs.time.yearIsLeap(year))
 			result++;
 		return result;
 	},
 
 	monthDays: function(year, month)
 	{
-		return hop.time.yearMonthDays(year, month);
+		return hopjs.time.yearMonthDays(year, month);
 	},
 
 	hours12: function(hours24)
@@ -595,14 +595,14 @@ hop.time = {
 	}
 };
 
-hop.html = {
+hopjs.html = {
 	quoteValue: function(value)
 	{
-		return hop.string.replace('"', "&quot;", value);
+		return hopjs.string.replace('"', "&quot;", value);
 	}
 };
 
-hop.css = {
+hopjs.css = {
 	transitionEasings: {
 		linear: "linear",
 		swing: "cubic-bezier(0.02, 0.01, 0.47, 1)",
@@ -634,11 +634,11 @@ hop.css = {
 
 	getTransitionEasing: function(id)
 	{
-		return ifDef(hop.css.transitionEasings[id]);
+		return ifDef(hopjs.css.transitionEasings[id]);
 	}
 };
 
-hop.dom = {
+hopjs.dom = {
 	maxZIndex: function(childNode)
 	{
 		if (!def(childNode))
@@ -662,7 +662,7 @@ hop.dom = {
 			if (!topNode)
 				topNode = document.body;
 		}
-		return hop.dom.maxChildZIndex(topNode);
+		return hopjs.dom.maxChildZIndex(topNode);
 	},
 
 	maxChildZIndex: function(node)
@@ -700,10 +700,10 @@ hop.dom = {
 	}
 };
 
-hop.browser = {
+hopjs.browser = {
 	animationInfo: function()
 	{
-		if (!def(hop.browser.animationInfoCache))
+		if (!def(hopjs.browser.animationInfoCache))
 		{
 			var elem = document.createElement("div"), key,
 				transitions = {
@@ -744,25 +744,25 @@ hop.browser = {
 					break;
 				}
 			}
-			hop.browser.animationInfoCache = result;
+			hopjs.browser.animationInfoCache = result;
 		}
-		return hop.browser.animationInfoCache;
+		return hopjs.browser.animationInfoCache;
 	},
 
 	isOldOpera: function()
 	{
-		if (!def(hop.browser.isOldOperaCache))
-			hop.browser.isOldOperaCache = /^Opera\//.test(navigator.userAgent);
-		return hop.browser.isOldOperaCache;
+		if (!def(hopjs.browser.isOldOperaCache))
+			hopjs.browser.isOldOperaCache = /^Opera\//.test(navigator.userAgent);
+		return hopjs.browser.isOldOperaCache;
 	}
 };
 
-hop.configurable = function(params)
+hopjs.configurable = function(params)
 {
 	this.construct(params);
 };
 
-hop.configurable.prototype = {
+hopjs.configurable.prototype = {
 	construct: function(params)
 	{
 		var self = this;
@@ -799,7 +799,7 @@ hop.configurable.prototype = {
 		{
 			if (def(this.defaults[param]) || $.inArray(param, this.virtualParams) !== -1)
 			{
-				suffix = hop.string.upperCaseFirstChar(param);
+				suffix = hopjs.string.upperCaseFirstChar(param);
 				if (typeof this["configure"+suffix] === "function")
 					this["configure"+suffix](params[param]);
 				else if (typeof this["set"+suffix] === "function")
@@ -811,12 +811,12 @@ hop.configurable.prototype = {
 	}
 };
 
-hop.widget = function(params)
+hopjs.widget = function(params)
 {
 	this.construct(params);
 };
 
-hop.inherit(hop.widget, hop.configurable, {
+hopjs.inherit(hopjs.widget, hopjs.configurable, {
 	version: null,
 
 	construct: function(params)
@@ -868,7 +868,7 @@ hop.inherit(hop.widget, hop.configurable, {
 
 		for (key in self.eventHandlers)
 		{
-			suffix = hop.string.upperCaseFirstChar(key);
+			suffix = hopjs.string.upperCaseFirstChar(key);
 			if (params["on"+suffix])
 				self.on(key, params["on"+suffix], ifDef(params["on"+suffix+"Data"]));
 			if (params["once"+key])

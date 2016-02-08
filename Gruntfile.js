@@ -76,7 +76,7 @@ module.exports = function(grunt)
 			},
 			css: {
 				src: [
-					"themes/default/css/*"
+					buildPath+"/themes/default/css/*"
 				],
 				dest: buildPath+"/themes/default/css/hop.css"
 			}
@@ -89,7 +89,7 @@ module.exports = function(grunt)
 							"demos/**",
 							"external/**",
 							"js/**",
-							"themes/**"
+							"themes/default/images/**"
 						],
 						dest: buildPath,
 						expand: true
@@ -110,6 +110,22 @@ module.exports = function(grunt)
 				"js/Gruntfile.js",
 				"js/**"
 			]
+		},
+		sass: {  
+			dist: {
+				options: {
+					outputStyle: "expanded",
+					indentType: "tab",
+					indentWidth: 1
+				},
+				files: [{
+					expand: true,
+					cwd: "themes/default/scss",
+					src: ["*.scss"],
+					dest: buildPath+"/themes/default/css",
+					ext: '.css'
+				}]
+			}
 		},
 		"string-replace": {
 			info: {
@@ -150,11 +166,13 @@ module.exports = function(grunt)
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks("grunt-sass");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-string-replace");
 	grunt.registerTask("default", [
 		"clean",
 		"copy",
+		"sass",
 		"concat",
 		"string-replace",
 		"uglify"

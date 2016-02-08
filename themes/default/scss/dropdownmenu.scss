@@ -1,0 +1,124 @@
+@import "settings";
+
+.hopjs-dropdown-menu
+{
+	position: relative;
+	padding: 4px 1px;
+	border: solid 1px $themeBorderColor;
+	background: $themeBackgroundColor;
+	box-shadow: $themeBoxShadow;
+	font: $themeFont;
+}
+
+.hopjs-dropdown-menu-offset
+{
+	display: none;
+	position: absolute;
+	top: -5px;
+	bottom: 5px;
+	left: 2px;
+	right: -2px;
+}
+
+.hopjs-dropdown-menu-item
+{
+	position: relative;
+}
+
+.hopjs-dropdown-menu-button
+{
+	display: block;
+	position: relative;
+	padding: 4px 20px 4px 28px;
+	background-repeat: no-repeat;
+	background-position: 5px center;
+	white-space: nowrap;
+	cursor: pointer;
+	z-index: 2;
+	line-height: $themeLineHeight;
+}
+
+.hopjs-dropdown-menu-button,
+.hopjs-dropdown-menu-button:visited,
+.hopjs-dropdown-menu-button:hover
+{
+	color: $themeColor;
+	text-decoration: none;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-highlighted,
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-highlighted:hover/*,
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-opened:hover*/
+{
+	background-color: #d7e4f3;
+}
+
+/*.hopjs-dropdown-menu-button.hopjs-dropdown-menu-opened
+{
+	background-color: #eee;
+}*/
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-parent
+{
+	position: relative;
+}
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-parent:after
+{
+	content: "";
+	display: block;
+	height: 8px;
+	width: 8px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin: -3px 5px 0 0;
+	background: url(../images/dropdownmenusub.png) center center no-repeat;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-inactive
+{
+	color: #a0a0a0;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-inactive:hover
+{
+	background-color: transparent;
+	cursor: default;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-checkable
+{
+	background-image: none !important;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-checked
+{
+	background-image: url(../images/dropdownmenucheck.png) !important;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-checked.hopjs-dropdown-menu-radio
+{
+	background-image: url(../images/dropdownmenuradio.png) !important;
+}
+
+.hopjs-dropdown-menu-button.hopjs-dropdown-menu-loading
+{
+	cursor: progress;
+}
+
+.hopjs-dropdown-menu-group
+{
+	padding: 4px 20px 4px 28px;
+	background-color: #eee;
+	background-repeat: no-repeat;
+	background-position: 5px center;
+	white-space: nowrap;
+	line-height: $themeLineHeight;
+}
+
+.hopjs-dropdown-menu-separator div
+{
+	margin: 4px 0;
+	height: 1px;
+	background-color: #ddd;
+}

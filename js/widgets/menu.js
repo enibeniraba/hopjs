@@ -11,6 +11,8 @@
 
 (function(document, $, hop)
 {
+	
+var cp = "hopjs-menu-";
 
 hop.menu = function(params)
 {
@@ -23,7 +25,7 @@ hop.inherit(hop.menu, hop.widget, {
 	getDefaults: function()
 	{
 		return {
-			className: "hop-menu",
+			extraClass: "",
 			type: "click",
 			dropdownMenuParams: null,
 			parentNode: null
@@ -96,7 +98,9 @@ hop.inherit(hop.menu, hop.widget, {
 	{
 		var self = this;
 		self.node = document.createElement("div");
-		self.node.className = self.className;
+		self.node.className = "hopjs-menu";
+		if (self.extraClass !== "")
+			self.node.className += " ".self.extraClass;
 		self.node.hopMenu = self;
 		self.parentNode.appendChild(self.node);
 
@@ -302,7 +306,7 @@ $.extend(hop.menuItem.prototype, {
 	{
 		return {
 			parentMenu: null,
-			className: "hop-menu-item",
+			extraClass: "",
 			id: null,
 			visible: true
 		};
@@ -331,7 +335,9 @@ $.extend(hop.menuItem.prototype, {
 	{
 		var self = this;
 		self.node = document.createElement("div");
-		self.node.className = self.className;
+		self.node.className = cp+"item";
+		if (self.extraClass !== "")
+			self.node.className += " ".self.extraClass;
 		self.$node = $(self.node);
 		self.$node.on("mouseenter", function(event)
 		{
@@ -477,7 +483,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 	{
 		this.active = active;
 		if (this.node)
-			$(this.$button).toggleClass("hop-menu-inactive", !active);
+			$(this.$button).toggleClass(cp+"inactive", !active);
 	},
 
 	setText: function(text)
@@ -493,7 +499,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		if (this.node)
 		{
 			this.buttonNode.style.backgroundImage = (icon === null ? "none" : "url("+icon+")");
-			this.$button.toggleClass("hop-menu-icon", icon !== null);
+			this.$button.toggleClass(cp+"icon", icon !== null);
 		}
 	},
 
@@ -639,19 +645,19 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 
 	setHighlighted: function(value)
 	{
-		this.$button.toggleClass("hop-menu-highlighted", value);
+		this.$button.toggleClass(cp+"highlighted", value);
 	},
 
 	setOpened: function(value)
 	{
-		this.$button.toggleClass("hop-menu-opened", value);
+		this.$button.toggleClass(cp+"opened", value);
 	},
 
 	generateHtml: function()
 	{
 		var self = this;
 		hop.menuItem.prototype.generateHtml.apply(this);
-		self.node.innerHTML = '<a class="hop-menu-button"><div class="hop-menu-button-text"></div></a>';
+		self.node.innerHTML = '<a class="'+cp+'button"><div class="'+cp+'button-text"></div></a>';
 		self.$button = $("a", self.node);
 		self.buttonNode = self.$button[0];
 		self.$buttonText = $("div", self.buttonNode);
@@ -752,12 +758,12 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 	{
 		var menu = this.menu,
 			state = !!(menu && (menu.items.length > 0 || (menu.loader || menu.ajax) && !menu.loaded));
-		this.$button.toggleClass("hop-menu-parent", state);
+		this.$button.toggleClass(cp+"parent", state);
 	},
 
 	setLoading: function(loading)
 	{
-		this.$button.toggleClass('hop-menu-loading', loading);
+		this.$button.toggleClass(cp+"loading", loading);
 	}
 });
 
@@ -797,7 +803,7 @@ hop.inherit(hop.menuItems.separator, hop.menuItem, {
 	create: function(params)
 	{
 		hop.menuItem.prototype.create.apply(this, arguments);
-		this.node.className = this.className+" hop-menu-separator";
+		this.$node.addClass(cp+"separator");
 		this.node.innerHTML = "<div>&nbsp;</div>";
 	}
 });

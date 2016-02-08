@@ -1,5 +1,5 @@
 /*!
- * hop.tooltip
+ * hopjs.tooltip
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -23,7 +23,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 	getDefaults: function()
 	{
 		return {
-			className: "hop-tooltip",
+			extraClass: "",
 			content: "",
 			width: null,
 			layerParams: null,
@@ -97,15 +97,26 @@ hop.inherit(hop.tooltip, hop.widget, {
 			if (self.target && self.cursorPosition && params.event)
 			{
 				event = $.event.fix(params.event);
-				self.layer.elementRegion = {
-					top: event.pageY,
-					left: event.pageX,
-					height: 0,
-					width: 0
-				};
+				self.setLayerElementRegion(event.pageY, event.pageX);
 			}
 			self.showWithDelay();
 		}
+	},
+	
+	setLayerElementRegion: function(top, left)
+	{
+		var self = this;
+		if (self.layer.elementRegion === null)
+		{
+			self.layer.elementRegion = {
+				top: 0,
+				left: 0,
+				height: 0,
+				width: 0
+			};
+		}
+		self.layer.elementRegion.top = top;
+		self.layer.elementRegion.left = left;
 	},
 
 	setContent: function(value)
@@ -193,10 +204,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 			return;
 
 		if (this.cursorPosition)
-		{
-			this.layer.elementRegion.top = event.pageY;
-			this.layer.elementRegion.left = event.pageX;
-		}
+			this.setLayerElementRegion(event.pageY, event.pageX);
 		this.showWithDelay();
 	},
 
@@ -211,8 +219,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 		var self = this;
 		if (self.layer && self.cursorPosition && (self.followCursor || self.showing || self.layer.animation))
 		{
-			self.layer.elementRegion.top = event.pageY;
-			self.layer.elementRegion.left = event.pageX;
+			self.setLayerElementRegion(event.pageY, event.pageX);
 			if (self.followCursor)
 				self.layer.updatePosition();
 		}
@@ -228,7 +235,9 @@ hop.inherit(hop.tooltip, hop.widget, {
 			$.extend(true, layerParams, self.layerParams);
 		self.layer = new hop.layer(layerParams);
 		self.layer.hopTooltip = self;
-		self.layer.$node.addClass(self.className);
+		self.layer.$node.addClass("hopjs-tooltip");
+		if (self.extraClass !== "")
+			self.layer.$node.addClass(self.extraClass);
 
 		self.layer.on("show", function()
 		{

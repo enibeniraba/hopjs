@@ -1,0 +1,17 @@
+@import "settings";
+
+.hopjs-message-buttons
+{
+	padding: 12px;
+	border-top: solid 1px #ccc;
+}
+
+.hopjs-message-buttons.hopjs-message-buttons-center
+{
+	text-align: center;
+}
+
+.hopjs-message-buttons.hopjs-message-buttons-right
+{
+	text-align: right;
+}

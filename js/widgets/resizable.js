@@ -1,5 +1,5 @@
 /*!
- * hop.resizable
+ * hopjs.resizable
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -13,7 +13,8 @@
 {
 
 var allHandles = ["n", "s", "w", "e", "nw", "ne", "sw", "se"],
-	allLimiterSides = ["top", "bottom", "left", "right"];
+	allLimiterSides = ["top", "bottom", "left", "right"],
+	cp = "hopjs-resizable-";
 
 hop.resizable = function(params)
 {
@@ -27,10 +28,8 @@ hop.inherit(hop.resizable, hop.widget, {
 	{
 		return {
 			node: null,
-			className: null,
-			classPrefix: "hop-",
-			extraClassName: "",
-			helperClassName: null,
+			extraClass: "",
+			helperExtraClass: "",
 			enabled: true,
 			handles: ["s", "e", "se"],
 			minHeight: 10,
@@ -76,10 +75,6 @@ hop.inherit(hop.resizable, hop.widget, {
 			throw new Error("Node is not defiend.");
 		
 		self.$node = $(self.node);
-		if (self.className === null)
-			self.className = self.classPrefix+"resizable";
-		if (self.helperClassName === null)
-			self.helperClassName = self.classPrefix+"resizable-helper";
 		self.activeHandle = null;
 		self.resizing = false;
 		self.heightChanged = false;
@@ -95,7 +90,9 @@ hop.inherit(hop.resizable, hop.widget, {
 		this.enabled = !!enabled;
 		if (this.$node)
 		{
-			this.$node.toggleClass(this.classPrefix+"resizable-disabled", !this.enabled);
+			this.$node.toggleClass(cp+"disabled", !this.enabled);
+			if (this.extraClass !== "")
+				this.$node.toggleClass(this.extraClass, !this.enabled);
 			this.cancel();
 		}
 	},
@@ -209,9 +206,9 @@ hop.inherit(hop.resizable, hop.widget, {
 	{
 		var self = this, i;
 		self.node.hopResizable = self;
-		self.$node.addClass(self.className);
-		if (self.extraClassName !== null)
-			self.$node.addClass(self.extraClassName);
+		self.$node.addClass("hopjs-resizable");
+		if (self.extraClass !== "")
+			self.$node.addClass(self.extraClass);
 
 		self.handleNodes = {};
 		self.$handles = {};
@@ -248,7 +245,7 @@ hop.inherit(hop.resizable, hop.widget, {
 		var self = this,
 			node = document.createElement("div"),
 			$node = $(node);
-		node.className = self.classPrefix+"resizable-handle "+self.classPrefix+"resizable-handle-"+handle;
+		node.className = cp+"handle "+cp+"handle-"+handle;
 		self.handleNodes[handle] = node;
 		self.$handles[handle] = $node;
 		$node.on("mousedown", function(event)
@@ -361,9 +358,11 @@ hop.inherit(hop.resizable, hop.widget, {
 		self.limiterCache = null;
 		if (self.helper)
 		{
-			self.$node.addClass(self.classPrefix+"resizable-has-helper");
+			self.$node.addClass(cp+"has-helper");
 			self.helperNode = document.createElement("div");
-			self.helperNode.className = self.helperClassName;
+			self.helperNode.className = cp+"helper";
+			if (self.helperExtraClass !== "")
+				self.helperNode.className += self.helperExtraClass;
 			self.$helper = $(self.helperNode);
 			self.$node.after(self.$helper);
 			self.$helper.css({
@@ -383,7 +382,7 @@ hop.inherit(hop.resizable, hop.widget, {
 				self.helperNode.style.zIndex = self.node.style.zIndex;
 			});
 		}
-		self.$node.addClass(self.classPrefix+"resizable-resizing");
+		self.$node.addClass(cp+"resizing");
 		self.htmlCursor = $("html")[0].style.cursor;
 		self.bodyCursor = $("body")[0].style.cursor;
 		$("html").css("cursor", handle+"-resize");
@@ -838,8 +837,8 @@ hop.inherit(hop.resizable, hop.widget, {
 		var self = this;
 		self.activeHandle = null;
 		self.resizing = false;
-		self.$node.removeClass(self.classPrefix+"resizable-resizing");
-		self.$node.removeClass(self.classPrefix+"resizable-has-helper");
+		self.$node.removeClass(cp+"resizing");
+		self.$node.removeClass(cp+"has-helper");
 		$("html")[0].style.cursor = self.htmlCursor;
 		$("body")[0].style.cursor = self.bodyCursor;
 		if (self.$helper)
@@ -885,10 +884,10 @@ hop.inherit(hop.resizable, hop.widget, {
 		var self = this;
 		self.cancel();
 		delete self.node.hopResizable;
-		self.$node.removeClass(self.className);
-		if (self.extraClassName)
-			self.$node.removeClass(self.extraClassName);
-		$(">."+self.classPrefix+"handle", self.$node).remove();
+		self.$node.removeClass("hopjs-resizable");
+		if (self.extraClass)
+			self.$node.removeClass(self.extraClass);
+		$(">."+cp+"handle", self.$node).remove();
 		$(window).off("blur", self.windowBlur);
 		$(document).off("mousemove", self.documentMousemove);
 		$(document).off("mouseup", self.documentMouseup);

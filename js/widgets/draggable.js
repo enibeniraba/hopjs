@@ -1,5 +1,5 @@
 /*!
- * hop.draggable
+ * hhopjs.draggable
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -27,9 +27,7 @@ hop.inherit(hop.draggable, hop.widget, {
 	{
 		return {
 			node: null,
-			className: null,
-			classPrefix: "hop-",
-			extraClassName: "",
+			extraClass: "",
 			enabled: true,
 			handles: [],
 			cancelHandles: [],
@@ -72,8 +70,6 @@ hop.inherit(hop.draggable, hop.widget, {
 			throw new Error("Node is not defiend.");
 		
 		self.$node = $(self.node);
-		if (self.className === null)
-			self.className = self.classPrefix+"draggable";
 		self.dragging = false;
 		self.canceled = false;
 		self.limiterCache = null;
@@ -94,7 +90,9 @@ hop.inherit(hop.draggable, hop.widget, {
 		this.enabled = !!enabled;
 		if (this.$node)
 		{
-			this.$node.toggleClass(this.classPrefix+"draggable-disabled", !this.enabled);
+			this.$node.toggleClass("hopjs-draggable-disabled", !this.enabled);
+			if (this.extraClass !== "")
+				this.$node.toggleClass(this.extraClass, !this.enabled);
 			this.cancel();
 		}
 	},
@@ -247,9 +245,9 @@ hop.inherit(hop.draggable, hop.widget, {
 	{
 		var self = this;
 		self.node.hopDraggable = self;
-		self.$node.addClass(self.className);
-		if (self.extraClassName !== null)
-			self.$node.addClass(self.extraClassName);
+		self.$node.addClass("hopjs-draggable");
+		if (self.extraClass !== "")
+			self.$node.addClass(self.extraClass);
 		
 		self.windowBlur = function(event)
 		{
@@ -360,7 +358,7 @@ hop.inherit(hop.draggable, hop.widget, {
 			is.top = 0;
 			is.left = 0;
 		}
-		self.$node.addClass(self.classPrefix+"draggable-dragging");
+		self.$node.addClass("hopjs-draggable-dragging");
 		if (self.changeCursor)
 		{
 			self.htmlCursor = $("html")[0].style.cursor;
@@ -658,7 +656,7 @@ hop.inherit(hop.draggable, hop.widget, {
 		var self = this;
 		self.dragging = false;
 		self.canceled = false;
-		self.$node.removeClass(self.classPrefix+"draggable-dragging");
+		self.$node.removeClass("hopjs-draggable-dragging");
 		if (self.changeCursor)
 		{
 			$("html")[0].style.cursor = self.htmlCursor;
@@ -695,9 +693,9 @@ hop.inherit(hop.draggable, hop.widget, {
 		var self = this, i;
 		self.cancel();
 		delete self.node.hopDraggable;
-		self.$node.removeClass(self.className);
-		if (self.extraClassName)
-			self.$node.removeClass(self.extraClassName);
+		self.$node.removeClass("hopjs-draggable");
+		if (self.extraClass)
+			self.$node.removeClass(self.extraClass);
 		for (i in self.handleItems)
 			$(self.handleItems[i].node).off("mousedown", self.handleMousedown);
 		$(window).off("blur", self.windowBlur);

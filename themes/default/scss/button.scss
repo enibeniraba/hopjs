@@ -1,0 +1,58 @@
+@import "settings";
+
+.hopjs-button
+{
+	display: inline-block;
+	margin: 0;
+	padding: 4px 12px;
+	font: $themeFont;
+	line-height: $themeLineHeight;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	background-image: none;
+	border: solid 1px $themeBorderColor;
+	border-radius: 2px;
+	background-color: $themeBackgroundColor;
+	cursor: pointer;
+}
+
+.hopjs-button::-moz-focus-inner
+{
+	padding: 0 !important;
+	border: 0 !important;
+}
+
+.hopjs-button:focus,
+.hopjs-button:active:focus
+{
+	outline: thin dotted;
+	outline: 5px auto -webkit-focus-ring-color;
+	outline-offset: -2px;
+	text-decoration: none;
+}
+
+.hopjs-button:active
+{
+	background-image: none;
+	outline: 0;
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.hopjs-button:focus
+{
+	background-color: #e6e6e6;
+	border-color: #8c8c8c;
+}
+
+.hopjs-button:hover
+{
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}
+
+.hopjs-button:active
+{
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}

@@ -1,0 +1,30 @@
+@import "settings";
+
+.hopjs-dialog-buttons
+{
+	padding: 12px;
+	border-top: solid 1px #ccc;
+}
+
+.hopjs-dialog-buttons.hopjs-dialog-buttons-center
+{
+	text-align: center;
+}
+
+.hopjs-dialog-buttons.hopjs-dialog-buttons-right
+{
+	text-align: right;
+}
+
+.hopjs-dialog-buttons 
+{
+	.hopjs-dialog-button-no
+	{
+		margin-left: 4px;
+	}
+
+	.hopjs-dialog-button-cancel
+	{
+		margin-left: 4px;
+	}
+}

@@ -1,29 +1,31 @@
-.hop-menu
+@import "settings";
+
+.hopjs-menu
 {
 	min-height: 0;
-	font: normal normal normal 14px/1 Arial;
+	font: $themeFont;
 }
 
-.hop-menu:before,
-.hop-menu:after
+.hopjs-menu:before,
+.hopjs-menu:after
 {
 	border-collapse: collapse;
 	content: "";
 	display: table;
 }
 
-.hop-menu:after
+.hopjs-menu:after
 {
 	clear: both;
 }
 
-.hop-menu .hop-menu-item
+.hopjs-menu-item
 {
 	display: block;
 	float: left;
 }
 
-.hop-menu .hop-menu-button
+.hopjs-menu-button
 {
 	display: block;
 	padding: 4px 8px;
@@ -31,41 +33,41 @@
 	background-position: 5px center;
 	white-space: nowrap;
 	cursor: pointer;
-	line-height: 18px;
+	line-height: $themeLineHeight;
 }
 
-.hop-menu .hop-menu-button.hop-menu-icon
+.hopjs-menu-button.hopjs-menu-icon
 {
 	padding-left: 26px;
 }
 
-.hop-menu .hop-menu-button,
-.hop-menu .hop-menu-button:visited,
-.hop-menu .hop-menu-button:hover
+.hopjs-menu-button,
+.hopjs-menu-button:visited,
+.hopjs-menu-button:hover
 {
 	color: #000;
 	text-decoration: none;
 }
 
-.hop-menu .hop-menu-button.hop-menu-highlighted,
-.hop-menu .hop-menu-button.hop-menu-highlighted:hover
+.hopjs-menu-button.hopjs-menu-highlighted,
+.hopjs-menu-button.hopjs-menu-highlighted:hover
 {
 	background-color: #d7e4f3;
 }
 
-.hop-menu .hop-menu-button.hop-menu-opened,
-.hop-menu .hop-menu-button.hop-menu-opened:hover
+.hopjs-menu-button.hopjs-menu-opened,
+.hopjs-menu-button.hopjs-menu-opened:hover
 {
 	background-color: #eee;
 }
 
-.hop-menu .hop-menu-button.hop-menu-parent
+.hopjs-menu-button.hopjs-menu-parent
 {
 	padding-right: 20px;
 	position: relative;
 }
 
-.hop-menu .hop-menu-button.hop-menu-parent:after
+.hopjs-menu-button.hopjs-menu-parent:after
 {
 	content: "";
 	display: block;
@@ -78,23 +80,23 @@
 	background: url(../images/menusub.png) center center no-repeat;
 }
 
-.hop-menu .hop-menu-button.hop-menu-inactive
+.hopjs-menu-button.hopjs-menu-inactive
 {
 	color: #a0a0a0;
 }
 
-.hop-menu .hop-menu-button.hop-menu-inactive:hover
+.hopjs-menu-button.hopjs-menu-inactive:hover
 {
 	background-color: transparent;
 	cursor: default;
 }
 
-.hop-menu .hop-menu-button.hop-menu-loading
+.hopjs-menu-button.hopjs-menu-loading
 {
 	cursor: progress;
 }
 
-.hop-menu .hop-menu-separator div
+.hopjs-menu-separator div
 {
 	margin: 0 4px;
 	padding: 6px 0;

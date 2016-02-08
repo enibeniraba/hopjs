@@ -1,0 +1,79 @@
+@import "settings";
+
+.hopjs-tabs
+{
+}
+
+.hopjs-tabs-head
+{
+	border-bottom: solid 1px $themeBorderColor;
+	min-height: 0;
+}
+
+.hopjs-tabs-head:before,
+.hopjs-tabs-head:after
+{
+	border-collapse: collapse;
+	content: "";
+	display: table;
+}
+
+.hopjs-tabs-head:after
+{
+	clear: both;
+}
+
+.hopjs-tabs-tab-button
+{
+	float: left;
+}
+
+.hopjs-tabs-tab-button span
+{
+	float: left;
+	padding: 6px 8px;
+	white-space: nowrap;
+	position: relative;
+}
+
+.hopjs-tabs-tab-button,
+.hopjs-tabs-tab-button:visited,
+.hopjs-tabs-tab-button:hover
+{
+	color: $themeColor;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.hopjs-tabs-tab-button:hover
+{
+	background-color: #d7e4f3;
+}
+
+.hopjs-tabs-tab-button.hopjs-tabs-active
+{
+	background-color: #eee;
+}
+
+.hopjs-tabs-tab-button.hopjs-tabs-active:hover span
+{
+	background-color: #eee;
+}
+
+.hopjs-tabs-body
+{
+	overflow: auto;
+}
+
+.hopjs-tabs-body:before,
+.hopjs-tabs-body:after
+{
+	border-collapse: collapse;
+	content: "";
+	display: table;
+}
+
+.hopjs-tabs-body:after
+{
+	clear: both;
+}

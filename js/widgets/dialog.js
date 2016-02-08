@@ -1,5 +1,5 @@
 /*!
- * hop.dialog
+ * hopjs.dialog
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -11,6 +11,9 @@
 
 (function($, hop)
 {
+	
+var cp = "hopjs-dialog-",
+	_cp = "."+cp;
 
 hop.dialog = function(params)
 {
@@ -57,7 +60,7 @@ hop.inherit(hop.dialog, hop.window, {
 	{
 		var self = this;
 		hop.window.prototype.create.apply(self, arguments);
-		self.layer.$node.addClass(self.classPrefix+"dialog");
+		self.layer.$node.addClass("hopjs-dialog");
 		self.setButtonTextYes(self.buttonTextYes);
 		self.setButtonTextNo(self.buttonTextNo);
 		self.setButtonTextCancel(self.buttonTextCancel);
@@ -157,28 +160,26 @@ hop.inherit(hop.dialog, hop.window, {
 		if (!self.$buttons)
 			return;
 
-		self.$buttons.toggleClass(self.classPrefix+"dialog-buttons-left", align === "left");
-		self.$buttons.toggleClass(self.classPrefix+"dialog-buttons-center", align === "center");
-		self.$buttons.toggleClass(self.classPrefix+"dialog-buttons-right", align === "right");
+		self.$buttons.toggleClass(cp+"buttons-left", align === "left");
+		self.$buttons.toggleClass(cp+"buttons-center", align === "center");
+		self.$buttons.toggleClass(cp+"buttons-right", align === "right");
 	},
 
 	generateHtml: function()
 	{
 		hop.window.prototype.generateHtml.apply(this);
-		var self = this, html,
-			classPrefix = self.classPrefix+"dialog-",
-			dotClassPrefix = "."+classPrefix;
+		var self = this, html;
 		html = '\
-<div class="'+classPrefix+'buttons">\
-	<button class="'+classPrefix+'button-yes"></button>\
-	<button class="'+classPrefix+'button-no"></button>\
-	<button class="'+classPrefix+'button-cancel"></button>\
+<div class="'+cp+'buttons">\
+	<button class="hopjs-button '+cp+'button-yes"></button>\
+	<button class="hopjs-button '+cp+'button-no"></button>\
+	<button class="hopjs-button '+cp+'button-cancel"></button>\
 </div>';
 		self.$bottom.html(html);
 		self.$buttons = $("div", self.$bottom);
-		self.$buttonYes = $(dotClassPrefix+"button-yes", self.$buttons);
-		self.$buttonNo = $(dotClassPrefix+"button-no", self.$buttons);
-		self.$buttonCancel = $(dotClassPrefix+"button-cancel", self.$buttons);
+		self.$buttonYes = $(_cp+"button-yes", self.$buttons);
+		self.$buttonNo = $(_cp+"button-no", self.$buttons);
+		self.$buttonCancel = $(_cp+"button-cancel", self.$buttons);
 
 		self.$buttonYes.on("click", function(event)
 		{

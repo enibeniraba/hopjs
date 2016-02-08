@@ -1,5 +1,5 @@
 /*!
- * hop.tabs
+ * hopjs.tabs
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -11,6 +11,8 @@
 
 (function(document, $, hop)
 {
+	
+var cp = "hopjs-tabs-";
 
 hop.tabs = function(params)
 {
@@ -23,8 +25,7 @@ hop.inherit(hop.tabs, hop.widget, {
 	getDefaults: function()
 	{
 		return {
-			className: null,
-			classPrefix: "hop-",
+			extraClass: "",
 			node: null,
 			event: "click",
 			hash_activation: true
@@ -43,8 +44,6 @@ hop.inherit(hop.tabs, hop.widget, {
 		var self = this;
 		self.activeTab = null;
 		hop.widget.prototype.create.apply(self, arguments);
-		if (self.className === null)
-			self.className = self.classPrefix+"tabs";
 		self.generateHtml();
 		if (self.tabs)
 			self.activateOnCreate(params ? params.activeTab : null);
@@ -53,7 +52,6 @@ hop.inherit(hop.tabs, hop.widget, {
 	generateHtml: function()
 	{
 		var self = this,
-			classPrefix = self.classPrefix+"tabs-",
 			tabs = [], i, $children, headNode, bodyNode, event;
 		if (!self.node)
 			throw new Error("Node is not defined");
@@ -75,17 +73,19 @@ hop.inherit(hop.tabs, hop.widget, {
 		if (!$children || $children.length === 0 || $children.length !== tabs.length)
 			throw new Error("Bodies are not found or number of bodies is not equal to number of tabs");
 
-		$(self.node).addClass(self.className);
-		$(headNode).addClass(classPrefix+"head");
-		$(bodyNode).addClass(classPrefix+"body");
-		$(tabs[0].button).addClass(classPrefix+"first");
-		$(tabs[tabs.length-1].button).addClass(classPrefix+"last");
+		$(self.node).addClass("hopjs-tabs");
+		if (self.extraClass !== "")
+			$(self.node).addClass(self.extraClass);
+		$(headNode).addClass(cp+"head");
+		$(bodyNode).addClass(cp+"body");
+		$(tabs[0].button).addClass(cp+"first");
+		$(tabs[tabs.length-1].button).addClass(cp+"last");
 		for (i in tabs)
 		{
 			tabs[i].body = $children[i];
 			tabs[i].body.style.display = "none";
-			$(tabs[i].button).addClass(classPrefix+"tab-button");
-			$(tabs[i].body).addClass(classPrefix+"tab-body");
+			$(tabs[i].button).addClass(cp+"tab-button");
+			$(tabs[i].body).addClass(cp+"tab-body");
 			$(tabs[i].button).on(self.event, {tab: i}, function(event)
 			{
 				if (event.data.tab !== self.activeTab)
@@ -119,7 +119,7 @@ hop.inherit(hop.tabs, hop.widget, {
 
 	activateTab: function(tab)
 	{
-		var self = this, classPrefix = self.classPrefix+"tabs-",
+		var self = this,
 			tabs = self.tabs, prevTab = self.activeTab;
 		tab = parseInt(tab);
 		if (isNaN(tab) || tab < 0 || tab > tabs.length-1)
@@ -128,18 +128,18 @@ hop.inherit(hop.tabs, hop.widget, {
 		if (prevTab !== null)
 		{
 			tabs[prevTab].body.style.display = "none";
-			$(tabs[prevTab].button).removeClass(classPrefix+"active");
+			$(tabs[prevTab].button).removeClass(cp+"active");
 			if (prevTab > 0)
-				$(tabs[prevTab-1].button).removeClass(classPrefix+"before-active");
+				$(tabs[prevTab-1].button).removeClass(cp+"before-active");
 			if (prevTab < tabs.length-1)
-				$(tabs[prevTab+1].button).removeClass(classPrefix+"after-active");
+				$(tabs[prevTab+1].button).removeClass(cp+"after-active");
 		}
 		tabs[tab].body.style.display = "block";
-		$(tabs[tab].button).addClass(classPrefix+"active");
+		$(tabs[tab].button).addClass(cp+"active");
 		if (tab > 0)
-			$(tabs[tab-1].button).addClass(classPrefix+"before-active");
+			$(tabs[tab-1].button).addClass(cp+"before-active");
 		if (tab < tabs.length-1)
-			$(tabs[tab+1].button).addClass(classPrefix+"after-active");
+			$(tabs[tab+1].button).addClass(cp+"after-active");
 		self.activeTab = tab;
 		self.onTabActivation({tab: tab, prevTab: prevTab});
 	},

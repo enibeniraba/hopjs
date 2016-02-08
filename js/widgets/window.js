@@ -1,5 +1,5 @@
 /*!
- * hop.window
+ * hopjs.window
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -12,7 +12,9 @@
 (function(window, document, $, hop)
 {
 
-var def = hop.def;
+var def = hop.def,
+	cp = "hopjs-window-",
+	_cp = "."+cp;
 
 hop.window = function(params)
 {
@@ -45,8 +47,7 @@ hop.inherit(hop.window, hop.widget, {
 	{
 		return {
 			locale: "",
-			className: null,
-			classPrefix: "hop-",
+			extraClass: "",
 			title: "",
 			icon: null,
 			content: "",
@@ -165,8 +166,6 @@ hop.inherit(hop.window, hop.widget, {
 		hop.widget.prototype.create.apply(self, arguments);
 		if (self.locale === "")
 			self.setLocale();
-		if (self.className === null)
-			self.className = self.classPrefix+"window";
 		self.generateHtml();
 		self.setTitle(self.title);
 		self.setWrapTitle(self.wrapTitle);
@@ -218,9 +217,9 @@ hop.inherit(hop.window, hop.widget, {
 
 	updateLocaleHtml: function()
 	{
-		var self = this, dot_class_prefix = "."+self.classPrefix+"window-head-button-";
-		$(dot_class_prefix+"full-screen", self.$head).attr("title", self.fullScreen ? self.i18n.restore : self.i18n.fullScreen);
-		$(dot_class_prefix+"hide", self.$head).attr("title", self.i18n.hide);
+		var self = this;
+		$(_cp+"head-button-full-screen", self.$head).attr("title", self.fullScreen ? self.i18n.restore : self.i18n.fullScreen);
+		$(_cp+"head-button-hide", self.$head).attr("title", self.i18n.hide);
 	},
 
 	setTitle: function(title)
@@ -238,14 +237,14 @@ hop.inherit(hop.window, hop.widget, {
 		this.wrapTitle = !!wrapTitle;
 		if (this.layer)
 		{
-			this.$title.toggleClass(this.classPrefix+"window-title-nowrap", !wrapTitle);
+			this.$title.toggleClass(cp+"title-nowrap", !wrapTitle);
 			this.resizeBody();
 		}
 	},
 
 	setIcon: function(icon)
 	{
-		var self = this, className = self.classPrefix+"window-title-icon";
+		var self = this, className = cp+"title-icon";
 		self.icon = icon;
 		if (!self.layer)
 			return;
@@ -276,7 +275,7 @@ hop.inherit(hop.window, hop.widget, {
 		self.hideButton = !!value;
 		if (self.layer)
 		{
-			$("."+self.classPrefix+"window-head-button-hide", self.$head).css("display", value ? "block" : "none");
+			$(_cp+"head-button-hide", self.$head).css("display", value ? "block" : "none");
 			self.checkButtons();
 			self.updateTitleMargin();
 		}
@@ -288,7 +287,7 @@ hop.inherit(hop.window, hop.widget, {
 		self.fullScreenButton = !!value;
 		if (self.layer)
 		{
-			$("."+self.classPrefix+"window-head-button-full-screen", self.$head).css("display", value ? "block" : "none");
+			$(_cp+"head-button-full-screen", self.$head).css("display", value ? "block" : "none");
 			self.checkButtons();
 			self.updateTitleMargin();
 		}
@@ -296,7 +295,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	checkButtons: function()
 	{
-		$("."+this.classPrefix+"window-head-buttons", this.$head).css("display", this.hasButtons() ? "block" : "none");
+		$(_cp+"head-buttons", this.$head).css("display", this.hasButtons() ? "block" : "none");
 	},
 
 	hasButtons: function()
@@ -306,15 +305,15 @@ hop.inherit(hop.window, hop.widget, {
 
 	setFullScreen: function(fullScreen)
 	{
-		var self = this, classPrefix = self.classPrefix+"window-", $layer;
+		var self = this, $layer;
 		fullScreen = !!fullScreen;
 		self.fullScreen = fullScreen;
 		if (!self.layer)
 			return;
 
 		$layer = self.layer.$node;
-		$layer.toggleClass(classPrefix+"full-screen", fullScreen);
-		$("."+classPrefix+"head-button-full-screen", self.layer.node).attr("title", fullScreen ? self.i18n.restore : self.i18n.fullScreen);
+		$layer.toggleClass(cp+"full-screen", fullScreen);
+		$(_cp+"head-button-full-screen", self.layer.node).attr("title", fullScreen ? self.i18n.restore : self.i18n.fullScreen);
 		if (self.draggable)
 			self.hopDraggable.setEnabled(!fullScreen);
 		if (self.resizable)
@@ -564,8 +563,8 @@ hop.inherit(hop.window, hop.widget, {
 			{
 				params = {
 					node: self.layer.node,
-					handles: "."+self.classPrefix+"window-head",
-					cancelHandles: "."+self.classPrefix+"window-head-button",
+					handles: _cp+"head",
+					cancelHandles: _cp+"head-button",
 					onStart: function(draggable)
 					{
 						self.onDraggableStart(draggable);
@@ -598,13 +597,13 @@ hop.inherit(hop.window, hop.widget, {
 		}
 		else if (self.hopDraggable)
 			self.hopDraggable.setEnabled(false);
-		self.$head.toggleClass(self.classPrefix+"window-head-draggable", draggable);
+		self.$head.toggleClass(cp+"head-draggable", draggable);
 	},
 	
 	onDraggableStart: function(draggable)
 	{
 		this.dragging = true;
-		this.layer.$node.addClass(this.classPrefix+"window-dragging");
+		this.layer.$node.addClass(cp+"dragging");
 		this.trigger("draggableStart", {draggable: draggable});
 	},
 	
@@ -639,7 +638,7 @@ hop.inherit(hop.window, hop.widget, {
 	draggableReset: function()
 	{
 		this.dragging = false;
-		this.layer.$node.removeClass(this.classPrefix+"window-dragging");
+		this.layer.$node.removeClass(cp+"dragging");
 	},
 
 	setResizable: function(resizable)
@@ -699,7 +698,7 @@ hop.inherit(hop.window, hop.widget, {
 			minHeight: self.minHeight,
 			minWidth: self.minWidth
 		});
-		self.layer.$node.addClass(self.classPrefix+"window-resizing");
+		self.layer.$node.addClass(cp+"resizing");
 		self.trigger("resizableStart", {resizable: resizable});
 	},
 	
@@ -742,14 +741,12 @@ hop.inherit(hop.window, hop.widget, {
 	resizableReset: function()
 	{
 		this.resizing = false;
-		this.layer.$node.removeClass(this.classPrefix+"window-resizing");
+		this.layer.$node.removeClass(cp+"resizing");
 	},
 
 	generateHtml: function()
 	{
 		var self = this,
-			classPrefix = self.classPrefix+"window-",
-			dotClassPrefix = "."+classPrefix,
 			node = document.createElement("div"),
 			html, layer, layerParams = {};
 		html = '\
@@ -775,8 +772,10 @@ hop.inherit(hop.window, hop.widget, {
 	</div>\
 	<div class="{c}bottom"></div>\
 </div>';
-		node.innerHTML = hop.string.replace("{c}", classPrefix, html);
-		node.className = self.className;
+		node.innerHTML = hop.string.replace("{c}", cp, html);
+		node.className = "hopjs-window";
+		if (self.extraClass !== "")
+			node.className += " "+self.extraClass;
 		node.style.display = "none";
 		document.body.appendChild(node);
 
@@ -788,31 +787,31 @@ hop.inherit(hop.window, hop.widget, {
 		self.layer = layer;
 		layer.hopWindow = self;
 
-		self.$headWrapper = $(dotClassPrefix+"head-wrapper", layer.node);
+		self.$headWrapper = $(_cp+"head-wrapper", layer.node);
 		self.headWrapperNode = self.$headWrapper[0];
-		self.$head = $(dotClassPrefix+"head", layer.node);
+		self.$head = $(_cp+"head", layer.node);
 		self.headNode = self.$head[0];
-		self.$title = $(dotClassPrefix+"title", layer.node);
+		self.$title = $(_cp+"title", layer.node);
 		self.titleNode = self.$title[0];
-		self.$bodyWrapper = $(dotClassPrefix+"body-wrapper", layer.node);
+		self.$bodyWrapper = $(_cp+"body-wrapper", layer.node);
 		self.bodyWrapperNode = self.$bodyWrapper[0];
-		self.$body = $(dotClassPrefix+"body", layer.node);
+		self.$body = $(_cp+"body", layer.node);
 		self.bodyNode = self.$body[0];
-		self.$top = $(dotClassPrefix+"top", layer.node);
+		self.$top = $(_cp+"top", layer.node);
 		self.topNode = self.$top[0];
-		self.$bottom = $(dotClassPrefix+"bottom", layer.node);
+		self.$bottom = $(_cp+"bottom", layer.node);
 		self.bottomNode = self.$bottom[0];
-		self.$middle = $(dotClassPrefix+"middle", layer.node);
+		self.$middle = $(_cp+"middle", layer.node);
 		self.middleNode = self.$middle[0];
-		self.$left = $(dotClassPrefix+"left", layer.node);
+		self.$left = $(_cp+"left", layer.node);
 		self.leftNode = self.$left[0];
-		self.$right = $(dotClassPrefix+"right", layer.node);
+		self.$right = $(_cp+"right", layer.node);
 		self.rightNode = self.$right[0];
-		self.$innerMiddle = $(dotClassPrefix+"inner-middle", layer.node);
+		self.$innerMiddle = $(_cp+"inner-middle", layer.node);
 		self.innerMiddleNode = self.$innerMiddle[0];
-		self.$innerTop = $(dotClassPrefix+"inner-top", layer.node);
+		self.$innerTop = $(_cp+"inner-top", layer.node);
 		self.innerTopNode = self.$innerTop[0];
-		self.$innerBottom = $(dotClassPrefix+"inner-bottom", layer.node);
+		self.$innerBottom = $(_cp+"inner-bottom", layer.node);
 		self.innerBottomNode = self.$innerBottom[0];
 
 		layer.on("showBefore", function()
@@ -850,12 +849,12 @@ hop.inherit(hop.window, hop.widget, {
 			self.onTitleMousedown(event);
 		});
 
-		$(dotClassPrefix+"head-button-hide", layer.node).on("click", function(event)
+		$(_cp+"head-button-hide", layer.node).on("click", function(event)
 		{
 			self.onHideClick(event);
 		});
 
-		$(dotClassPrefix+"head-button-full-screen", layer.node).on("click", function(event)
+		$(_cp+"head-button-full-screen", layer.node).on("click", function(event)
 		{
 			self.onFullScreenClick(event);
 		});
@@ -874,7 +873,7 @@ hop.inherit(hop.window, hop.widget, {
 	onLayerShowBefore: function()
 	{
 		if (!this.layer.shown)
-			this.$title.css("margin-right", $("."+this.classPrefix+"window-",+"head-buttons", this.layer.node).outerWidth());
+			this.$title.css("margin-right", $(_cp+"",+"head-buttons", this.layer.node).outerWidth());
 		this.resizeBody();
 	},
 
@@ -1035,7 +1034,7 @@ hop.inherit(hop.window, hop.widget, {
 	updateTitleMargin: function()
 	{
 		var self = this, style = self.layer.node.style, display = style.display, margin = 0,
-			$buttons = $("."+self.classPrefix+"window-head-buttons", self.$head);
+			$buttons = $(_cp+"head-buttons", self.$head);
 		style.display = "block";
 		if ($buttons[0].style.display !== "none")
 			margin = $buttons.outerWidth();
