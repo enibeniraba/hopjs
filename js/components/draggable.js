@@ -17,10 +17,10 @@ var def = hop.def,
 
 hop.draggable = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.draggable, hop.widget, {
+hop.inherit(hop.draggable, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -65,7 +65,7 @@ hop.inherit(hop.draggable, hop.widget, {
 	create: function(params)
 	{
 		var self = this;
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		if (!self.node)
 			throw new Error("Node is not defiend.");
 		

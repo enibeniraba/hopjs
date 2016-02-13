@@ -18,12 +18,12 @@ var def = hop.def,
 
 hop.datepicker = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
 hop.datepicker.i18n = {};
 
-hop.inherit(hop.datepicker, hop.widget, {
+hop.inherit(hop.datepicker, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -193,7 +193,7 @@ hop.inherit(hop.datepicker, hop.widget, {
 		self.time12HourFormatCache = null;
 		self.time12HourFormatCacheFormat = "";
 		self.dontUpdateDateHtml = false;
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		if (self.locale === "")
 			self.setLocale();
 		if (self.input)

@@ -16,7 +16,7 @@ var def = hop.def;
 
 hop.layer = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
 hop.layer.current = function(node)
@@ -37,7 +37,7 @@ hop.layer.hide = function(node)
 		layer.hide();
 };
 
-hop.inherit(hop.layer, hop.widget, {
+hop.inherit(hop.layer, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -63,8 +63,8 @@ hop.inherit(hop.layer, hop.widget, {
 			collisionElementBox: "border",
 			collisionRegion: null,
 			overlay: false,
-			overlayClassName: null,
-			overlayTransparent: false,
+			overlayClass: null,
+			overlayTransparent: true,
 			moveOnTopOnShow: true,
 			animationShow: null,
 			animationShowParams: null,
@@ -148,7 +148,7 @@ hop.inherit(hop.layer, hop.widget, {
 		self.resetState();
 		self.queue = false;
 		self.queueParams = {};
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		if (self.parentNode === null)
 			self.parentNode = document.body;
 		if (!params)
@@ -172,7 +172,7 @@ hop.inherit(hop.layer, hop.widget, {
 
 	afterCreate: function(params)
 	{
-		hop.widget.prototype.afterCreate.apply(this, arguments);
+		hop.component.prototype.afterCreate.apply(this, arguments);
 		if (params.show)
 			this.show();
 	},
@@ -183,7 +183,7 @@ hop.inherit(hop.layer, hop.widget, {
 			return;
 
 		var self = this, key;
-		hop.widget.prototype.configure.apply(self, arguments);
+		hop.component.prototype.configure.apply(self, arguments);
 		if (self.shown)
 		{
 			for (key in self.updatePositionParams)

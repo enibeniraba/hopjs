@@ -14,10 +14,10 @@
 
 hop.tooltip = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.tooltip, hop.widget, {
+hop.inherit(hop.tooltip, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -86,7 +86,7 @@ hop.inherit(hop.tooltip, hop.widget, {
 		self.hiding = false;
 		self.timeout = null;
 		self.queue = false;
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		self.setContent(self.content);
 		self.setWidth(self.width);

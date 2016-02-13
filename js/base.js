@@ -811,12 +811,12 @@ hopjs.configurable.prototype = {
 	}
 };
 
-hopjs.widget = function(params)
+hopjs.component = function(params)
 {
 	this.construct(params);
 };
 
-hopjs.inherit(hopjs.widget, hopjs.configurable, {
+hopjs.inherit(hopjs.component, hopjs.configurable, {
 	version: null,
 
 	construct: function(params)

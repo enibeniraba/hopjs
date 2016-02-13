@@ -18,7 +18,7 @@ var def = hop.def,
 
 hop.window = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
 hop.window.i18n = {};
@@ -40,7 +40,7 @@ hop.window.hide = function(node)
 		window.hide();
 };
 
-hop.inherit(hop.window, hop.widget, {
+hop.inherit(hop.window, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -163,7 +163,7 @@ hop.inherit(hop.window, hop.widget, {
 		self.dragging = false;
 		self.resizing = false;
 		self.mousedown = false;
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		if (self.locale === "")
 			self.setLocale();
 		self.generateHtml();
@@ -187,7 +187,7 @@ hop.inherit(hop.window, hop.widget, {
 
 	afterCreate: function(params)
 	{
-		hop.widget.prototype.afterCreate.apply(this, arguments);
+		hop.component.prototype.afterCreate.apply(this, arguments);
 		if (params.show)
 			this.show();
 	},

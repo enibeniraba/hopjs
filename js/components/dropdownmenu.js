@@ -16,10 +16,10 @@ var cp = "hopjs-dropdown-menu-";
 
 hop.dropdownMenu = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.dropdownMenu, hop.widget, {
+hop.inherit(hop.dropdownMenu, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -95,7 +95,7 @@ hop.inherit(hop.dropdownMenu, hop.widget, {
 		self.mousedown = false;
 		self.hideOnParentShow = true;
 		self.items = [];
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (params && params.items)
 			self.addItems(params.items);
@@ -845,10 +845,10 @@ hop.dropdownMenuItems = {};
 
 hop.dropdownMenuItem = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.dropdownMenuItem, hop.widget);
+hop.inherit(hop.dropdownMenuItem, hop.component);
 
 $.extend(hop.dropdownMenuItem.prototype, {
 	getDefaults: function()
@@ -863,7 +863,7 @@ $.extend(hop.dropdownMenuItem.prototype, {
 
 	create: function(params)
 	{
-		hop.widget.prototype.create.apply(this, arguments);
+		hop.component.prototype.create.apply(this, arguments);
 		this.generateHtml();
 		this.setVisible(this.visible);
 	},

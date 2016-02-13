@@ -16,10 +16,10 @@ var cp = "hopjs-menu-";
 
 hop.menu = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.menu, hop.widget, {
+hop.inherit(hop.menu, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -59,7 +59,7 @@ hop.inherit(hop.menu, hop.widget, {
 		self.showMenu = false;
 		self.showingMenu = false;
 		self.items = [];
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (params && params.items)
 			self.addItems(params.items);
@@ -296,10 +296,10 @@ hop.menuItems = {};
 
 hop.menuItem = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.menuItem, hop.widget);
+hop.inherit(hop.menuItem, hop.component);
 
 $.extend(hop.menuItem.prototype, {
 	getDefaults: function()
@@ -314,7 +314,7 @@ $.extend(hop.menuItem.prototype, {
 
 	create: function(params)
 	{
-		hop.widget.prototype.create.apply(this, arguments);
+		hop.component.prototype.create.apply(this, arguments);
 		this.generateHtml();
 		this.setVisible(this.visible);
 	},

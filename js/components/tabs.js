@@ -16,10 +16,10 @@ var cp = "hopjs-tabs-";
 
 hop.tabs = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.tabs, hop.widget, {
+hop.inherit(hop.tabs, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -43,7 +43,7 @@ hop.inherit(hop.tabs, hop.widget, {
 	{
 		var self = this;
 		self.activeTab = null;
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (self.tabs)
 			self.activateOnCreate(params ? params.activeTab : null);

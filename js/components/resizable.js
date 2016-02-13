@@ -18,10 +18,10 @@ var allHandles = ["n", "s", "w", "e", "nw", "ne", "sw", "se"],
 
 hop.resizable = function(params)
 {
-	hop.widget.apply(this, arguments);
+	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.resizable, hop.widget, {
+hop.inherit(hop.resizable, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -70,7 +70,7 @@ hop.inherit(hop.resizable, hop.widget, {
 	create: function(params)
 	{
 		var self = this;
-		hop.widget.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(self, arguments);
 		if (!self.node)
 			throw new Error("Node is not defiend.");
 		
