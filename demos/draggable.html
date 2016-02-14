@@ -6,8 +6,8 @@
 <link rel="stylesheet" type="text/css" href="css/common.css" />
 <script type="text/javascript" src="../external/jquery.js"></script>
 <script type="text/javascript" src="../js/base.js"></script>
-<script type="text/javascript" src="../js/widgets/layer.js"></script>
-<script type="text/javascript" src="../js/widgets/draggable.js"></script>
+<script type="text/javascript" src="../js/components/layer.js"></script>
+<script type="text/javascript" src="../js/components/draggable.js"></script>
 <style type="text/css">
 .settings
 {
@@ -285,6 +285,37 @@
 				</select>
 			</td>
 		</tr>
+		<tr>
+			<td>Box sizing</td>
+			<td>
+				<select id="container0-box-sizing">
+					<option value="content-box">content</option>
+					<option value="padding-box">padding</option>
+					<option value="border-box">border</option>
+				</select>
+			</td>
+			<td>
+				<select id="container1-box-sizing">
+					<option value="content-box">content</option>
+					<option value="padding-box">padding</option>
+					<option value="border-box">border</option>
+				</select>
+			</td>
+			<td>
+				<select id="container2-box-sizing">
+					<option value="content-box">content</option>
+					<option value="padding-box">padding</option>
+					<option value="border-box">border</option>
+				</select>
+			</td>
+			<td>
+				<select id="container3-box-sizing">
+					<option value="content-box">content</option>
+					<option value="padding-box">padding</option>
+					<option value="border-box">border</option>
+				</select>
+			</td>
+		</tr>
 	</table>
 </div>
 <div class="settings">
@@ -452,6 +483,10 @@ $(function()
 		$("#container"+i+"-float").on("change", function()
 		{
 			$("#container"+i).css("float", this.value);
+		});
+		$("#container"+i+"-box-sizing").on("change", function()
+		{
+			$("#container"+i).css("box-sizing", this.value);
 		});
 	};
 	for (i = 0; i < 4; i++)
