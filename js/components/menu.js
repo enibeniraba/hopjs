@@ -205,7 +205,7 @@ hop.inherit(hop.menu, hop.component, {
 
 	removeItem: function(item)
 	{
-		var self = this, items = [], index = null, i, animate;
+		var self = this, items = [], index = null, i;
 		if (typeof item === "number")
 		{
 			index = item;
@@ -227,7 +227,7 @@ hop.inherit(hop.menu, hop.component, {
 		if (index === null)
 			return;
 
-		item.node.parentNode = null;
+		item.node.parentNode.removeChild(item.node);
 		item.parentMenu = null;
 		delete self.items[i];
 		for (i in self.items)

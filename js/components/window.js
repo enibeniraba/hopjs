@@ -158,7 +158,7 @@ hop.inherit(hop.window, hop.component, {
 		self.offset = null;
 		self.updatePosition = true;
 		self.updatePositionOnFsOff = true;
-		self.moved = false;
+		self.dragged = false;
 		self.resized = false;
 		self.dragging = false;
 		self.resizing = false;
@@ -305,7 +305,7 @@ hop.inherit(hop.window, hop.component, {
 
 	setFullScreen: function(fullScreen)
 	{
-		var self = this, $layer;
+		var self = this, $layer, top, left, $window = $(window);
 		fullScreen = !!fullScreen;
 		self.fullScreen = fullScreen;
 		if (!self.layer)
@@ -609,7 +609,7 @@ hop.inherit(hop.window, hop.component, {
 	
 	onDraggableDragBefore: function(draggable)
 	{
-		var top, scroll = 0;
+		var scroll = 0;
 		if (this.layer.position === "fixed")
 			scroll = $(window).scrollTop();
 		if (draggable.state.top-scroll < 0)
@@ -619,14 +619,25 @@ hop.inherit(hop.window, hop.component, {
 
 	onDraggableDrag: function(draggable)
 	{
-		this.moved = true;
+		this.dragged = true;
 		this.trigger("draggableDrag", {draggable: draggable});
 	},
 
 	onDraggableStop: function(draggable)
 	{
 		this.draggableReset();
+		this.saveOffset();
 		this.trigger("draggableStop", {draggable: draggable});
+	},
+	
+	saveOffset: function()
+	{
+		//this.offset = this.layer.$node.offset();
+		this.offset = {
+			top: this.layer.node.offsetTop,
+			left: this.layer.node.offsetLeft
+		};
+		console.log(this.offset);
 	},
 
 	onDraggableCancel: function(draggable)
@@ -728,6 +739,7 @@ hop.inherit(hop.window, hop.component, {
 	{
 		this.resizableReset();
 		this.trigger("resizableStop", {resizable: resizable});
+		this.saveOffset();
 		this.setSize(this.layer.$node.outerHeight(), this.layer.$node.outerWidth());
 	},
 	
@@ -901,9 +913,9 @@ hop.inherit(hop.window, hop.component, {
 	{
 		this.updatePosition = false;
 		this.updatePositionOnFsOff = false;
-		this.moved = false;
+		this.dragged = false;
 		this.resized = false;
-		this.offset = this.layer.$node.offset();
+		this.saveOffset();
 	},
 
 	onLayerMousedown: function(event)
@@ -955,7 +967,7 @@ hop.inherit(hop.window, hop.component, {
 				this.updateFullScreenWidth(event);
 				this.onResize();
 			}
-			else if (this.updatePositionOnWindowResize && !this.moved && !this.resized)
+			else if (this.updatePositionOnWindowResize && !this.dragged && !this.resized)
 			{
 				this.layer.updatePosition(true);
 				this.layer.updatePosition(true);
@@ -1046,7 +1058,7 @@ hop.inherit(hop.window, hop.component, {
 	onResize: function()
 	{
 		var self = this;
-		if (self.updatePositionOnResize && !self.fullScreen && !self.moved && !self.resizing)
+		if (self.updatePositionOnResize && !self.fullScreen && !self.dragged && !self.resizing)
 			self.layer.updatePosition(true);
 		self.resizeBody();
 		self.trigger("resize");

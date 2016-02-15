@@ -389,7 +389,7 @@ hop.inherit(hop.dropdownMenu, hop.component, {
 		if (index === null)
 			return;
 
-		item.node.parentNode = null;
+		item.node.parentNode.removeChild(item.node);
 		item.parentMenu = null;
 		delete self.items[i];
 		for (i in self.items)

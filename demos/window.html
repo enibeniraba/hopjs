@@ -28,7 +28,7 @@
 <p><input type="button" id="button3" value="Open" /></p>
 <p>Initial full screen, hiding confirmation:</p>
 <p><input type="button" id="button4" value="Open" /></p>
-<p>Areas, locale:</p>
+<p>Regions, locale:</p>
 <p>
 	<input type="button" id="button5" value="Open" />
 	<select id="select5">
@@ -55,11 +55,14 @@ $(function()
 
 	w1 = new hop.window({
 		title: "Title",
-		content: $("#content").html()
-	});
-	$("#button1").on("click", function()
-	{
-		w1.toggle();
+		content: $("#content").html(),
+		onCreate: function(self)
+		{
+			$("#button1").on("click", function()
+			{
+				self.toggle();
+			});
+		}
 	});
 
 	w2 = new hop.window({
@@ -87,21 +90,24 @@ $(function()
 		fsAnimationShow: "def",
 		fsAnimationHide: "def",
 		draggable: true,
-		resizable: true
-	});
-	$(".close-button", w2.$bottom).on("click", function(event)
-	{
-		w2.hide();
-	});
-	$("#button2").on("click", function()
-	{
-		w2.toggle();
+		resizable: true,
+		onCreate: function(self)
+		{
+			$(".close-button", self.$bottom).on("click", function(event)
+			{
+				self.hide();
+			});
+			$("#button2").on("click", function()
+			{
+				self.toggle();
+			});
+		}
 	});
 
 	w3 = new hop.window({
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
-		content: 'Content <input type="button" value="Close" onclick="hopjs.window.hide(this);" />',
+		content: '<div style="padding: 10px;"><input type="button" value="Close" onclick="hopjs.window.hide(this);" /></div>',
 		hideButton: false,
 		fullScreenButton: true,
 		fullScreenOnHeadDblclick: true,
@@ -134,11 +140,14 @@ $(function()
 		resizableParams: {
 			handles: "all",
 			limiter: null
+		},
+		onCreate: function(self)
+		{
+			$("#button3").on("click", function()
+			{
+				self.toggle();
+			});
 		}
-	});
-	$("#button3").on("click", function()
-	{
-		w3.toggle();
 	});
 
 	w4 = new hop.window({
@@ -164,15 +173,18 @@ $(function()
 		{
 			if (!confirm("Close?"))
 				eventData.cancel = true;
+		},
+		onCreate: function(self)
+		{
+			$("#button4").on("click", function()
+			{
+				self.toggle();
+			});
+			$("#button4").on("mousedown", function()
+			{
+				self.mousedown = true;
+			});
 		}
-	});
-	$("#button4").on("click", function()
-	{
-		w4.toggle();
-	});
-	$("#button4").on("mousedown", function()
-	{
-		w4.mousedown = true;
 	});
 
 	w5 = new hop.window({
@@ -210,25 +222,28 @@ $(function()
 		resizable: true,
 		resizableParams: {
 			helper: true
+		},
+		onCreate: function(self)
+		{
+			self.$top.html('<div style="padding: 10px; border-bottom: solid 1px #ccc; background: #fff;">Top</div>');
+			self.$bottom.html('<div style="padding: 10px; text-align: right; border-top: solid 1px #ccc; background: #eee;"><input type="button" value="Cancel" class="close-button" /></div>');
+			self.$left.html('<div style="height: 100%; padding: 10px; border-right: solid 1px #ccc; ">Left</div>');
+			self.$right.html('<div style="height: 100%; padding: 10px; border-left: solid 1px #ccc;">Right</div>');
+			self.$innerTop.html('<div style="padding: 10px; border-bottom: solid 1px #ccc; ">Inner top</div>');
+			self.$innerBottom.html('<div style="padding: 10px; border-top: solid 1px #ccc;">Inner bottom</div>');
+			$(".close-button", self.$bottom).on("click", function(event)
+			{
+				self.hide();
+			});
+			$("#button5").on("click", function()
+			{
+				self.toggle();
+			});
+			$("#select5").on("change", function(event)
+			{
+				self.setLocale(this.value);
+			});
 		}
-	});
-	w5.$top.html('<div style="padding: 10px; border-bottom: solid 1px #ccc; background: #fff;">Top</div>');
-	w5.$bottom.html('<div style="padding: 10px; text-align: right; border-top: solid 1px #ccc; background: #eee;"><input type="button" value="Cancel" class="close-button" /></div>');
-	w5.$left.html('<div style="height: 100%; padding: 10px; border-right: solid 1px #ccc; ">Left</div>');
-	w5.$right.html('<div style="height: 100%; padding: 10px; border-left: solid 1px #ccc;">Right</div>');
-	w5.$innerTop.html('<div style="padding: 10px; border-bottom: solid 1px #ccc; ">Inner top</div>');
-	w5.$innerBottom.html('<div style="padding: 10px; border-top: solid 1px #ccc;">Inner bottom</div>');
-	$(".close-button", w5.$bottom).on("click", function(event)
-	{
-		w5.hide();
-	});
-	$("#button5").on("click", function()
-	{
-		w5.toggle();
-	});
-	$("#select5").on("change", function(event)
-	{
-		w5.setLocale(this.value);
 	});
 });
 </script>

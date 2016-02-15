@@ -56,122 +56,6 @@ $(function()
 			}
 		});
 
-	var menu1 = {
-		items: [
-			{
-				text: "Show week number",
-				checkable: true,
-				onCheck: function(item)
-				{
-					dp1.setShowWeekNumber(item.checked);
-				}
-			},
-			{
-				text: "Time",
-				menu: {
-					items: [
-						{
-							text: "Show time",
-							checkable: true,
-							checked: true,
-							onCheck: function(item)
-							{
-								dp1.setShowTime(item.checked);
-							}
-						},
-						{
-							text: "Short time format",
-							checkable: true,
-							checked: false,
-							onCheck: function(item)
-							{
-								dp1.setShortTimeFormat(item.checked);
-							}
-						},
-						{
-							text: "12 hour format",
-							menu: {
-								items: [
-									{
-										text: "Default",
-										checkable: true,
-										checked: true,
-										radioGroup: "timeFormat",
-										onCheck: function(item)
-										{
-											dp1.setTime12HourFormat(null);
-										}
-									},
-									{
-										text: "12 hour",
-										checkable: true,
-										radioGroup: "timeFormat",
-										onCheck: function(item)
-										{
-											dp1.setTime12HourFormat(true);
-										}
-									},
-									{
-										text: "24 hour",
-										checkable: true,
-										radioGroup: "timeFormat",
-										onCheck: function(item)
-										{
-											dp1.setTime12HourFormat(false);
-										}
-									}
-								]
-							}
-						}
-					]
-				}
-			},
-			{
-				text: "Open window",
-				checkable: true,
-				onCheck: function(item)
-				{
-					if (!hop.def(item.w1))
-					{
-						item.w1 = new hop.window({
-							title: "Title",
-							content: "Content",
-							height: 240,
-							width: 320,
-							layerParams: {
-								element: w1.layer.node,
-								elementAlignX: "right"
-							},
-							animationShow: "def",
-							animationShowParams: {
-								transfer: "distance",
-								distance: 50
-							},
-							animationHide: "def",
-							animationHideParams: {
-								transfer: "distance",
-								distance: 50,
-								angle: 270
-							},
-							onShow: function(window)
-							{
-								item.setChecked(true);
-							},
-							onHide: function(window)
-							{
-								item.setChecked(false);
-							}
-						});
-					}
-					if (item.checked)
-						item.w1.show();
-					else
-						item.w1.hide();
-				}
-			}
-		]
-	};
-
 	w1 = new hop.window({
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
@@ -198,17 +82,19 @@ $(function()
 		fsAnimationShow: "def",
 		fsAnimationHide: "def",
 		draggable: true,
-		resizable: true
+		resizable: true,
+		onCreate: function(self)
+		{
+			$("#content").remove();
+
+			$("#button1").on("click", function()
+			{
+				self.toggle();
+			});
+		}
 	});
 
-	$("#content").remove();
-
-	$("#button1").on("click", function()
-	{
-		w1.toggle();
-	});
-
-	menu2 = new hop.menu({
+	menu1 = new hop.menu({
 		parentNode: w1.topNode,
 		showDropdownMenuOnMousedown: false,
 		dropdownMenuParams: {
@@ -226,7 +112,7 @@ $(function()
 				{
 					new hop.message({
 						title: "Title",
-						content: data,
+						content: '<div style="padding: 10px;">'+data+'</div>',
 						height: 240,
 						width: 320,
 						modal: true,
@@ -434,10 +320,126 @@ $(function()
 			animationShow: "def"
 		}
 	});
+	
+	var menu2 = {
+		items: [
+			{
+				text: "Show week number",
+				checkable: true,
+				onCheck: function(item)
+				{
+					dp1.setShowWeekNumber(item.checked);
+				}
+			},
+			{
+				text: "Time",
+				menu: {
+					items: [
+						{
+							text: "Show time",
+							checkable: true,
+							checked: true,
+							onCheck: function(item)
+							{
+								dp1.setShowTime(item.checked);
+							}
+						},
+						{
+							text: "Short time format",
+							checkable: true,
+							checked: false,
+							onCheck: function(item)
+							{
+								dp1.setShortTimeFormat(item.checked);
+							}
+						},
+						{
+							text: "12 hour format",
+							menu: {
+								items: [
+									{
+										text: "Default",
+										checkable: true,
+										checked: true,
+										radioGroup: "timeFormat",
+										onCheck: function(item)
+										{
+											dp1.setTime12HourFormat(null);
+										}
+									},
+									{
+										text: "12 hour",
+										checkable: true,
+										radioGroup: "timeFormat",
+										onCheck: function(item)
+										{
+											dp1.setTime12HourFormat(true);
+										}
+									},
+									{
+										text: "24 hour",
+										checkable: true,
+										radioGroup: "timeFormat",
+										onCheck: function(item)
+										{
+											dp1.setTime12HourFormat(false);
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				text: "Open window",
+				checkable: true,
+				onCheck: function(item)
+				{
+					if (!hop.def(item.w1))
+					{
+						item.w1 = new hop.window({
+							title: "Title",
+							content: "Content",
+							height: 240,
+							width: 320,
+							layerParams: {
+								element: w1.layer.node,
+								elementAlignX: "right"
+							},
+							animationShow: "def",
+							animationShowParams: {
+								transfer: "distance",
+								distance: 50
+							},
+							animationHide: "def",
+							animationHideParams: {
+								transfer: "distance",
+								distance: 50,
+								angle: 270
+							},
+							onShow: function(window)
+							{
+								item.setChecked(true);
+							},
+							onHide: function(window)
+							{
+								item.setChecked(false);
+							}
+						});
+					}
+					if (item.checked)
+						item.w1.show();
+					else
+						item.w1.hide();
+				}
+			}
+		]
+	};
 
 	mb1 = new hop.menuButton({
 		node: $("#button2")[0],
-		menu: menu1,
+		menu: menu2,
 		menuParams: {
 			layerParams: {
 				animationShow: "def"

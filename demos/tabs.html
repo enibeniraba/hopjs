@@ -28,11 +28,9 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
-	tabs = new hop.tabs({
+	tabs1 = new hopjs.tabs({
 		node: $("#tabs1")[0],
-		onTabActivation: function(tabs, eventData, data)
+		onTabActivation: function(self, eventData, data)
 		{
 			if (eventData.tab === 3)
 				alert(eventData.prevTab+" -> "+eventData.tab);

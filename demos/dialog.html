@@ -76,6 +76,17 @@ $(function()
 		layerParams: {
 			overlayAnimationShow: "def"
 		},
+		onCreate: function(self)
+		{
+			$("#button2").on("click", function()
+			{
+				self.toggle();
+			});
+			$("#select2").on("change", function(event)
+			{
+				self.setLocale(this.value);
+			});
+		},
 		onYes: function()
 		{
 			alert("Yes");
@@ -88,14 +99,6 @@ $(function()
 		{
 			alert("Cancel");
 		}
-	});
-	$("#button2").on("click", function()
-	{
-		d2.toggle();
-	});
-	$("#select2").on("change", function(event)
-	{
-		d2.setLocale(this.value);
 	});
 });
 </script>

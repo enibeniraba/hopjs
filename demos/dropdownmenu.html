@@ -321,22 +321,24 @@ $(function()
 				menu: menu2
 			},
 			item1
-		]
-	});
+		],
+		onCreate: function(self)
+		{
+			$("#button1").on("click", function()
+			{
+				self.toggle();
+			});
 
-	$("#button1").on("click", function()
-	{
-		menu1.toggle();
-	});
+			$("#button1").on("mousedown", function()
+			{
+				self.mousedown = true;
+			});
 
-	$("#button1").on("mousedown", function()
-	{
-		menu1.mousedown = true;
-	});
-
-	$("#hide-on-mouseleave").on("change", function()
-	{
-		menu1.hideOnMouseleave = this.checked;
+			$("#hide-on-mouseleave").on("change", function()
+			{
+				self.hideOnMouseleave = this.checked;
+			});
+		}
 	});
 });
 </script>

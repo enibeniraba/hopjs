@@ -370,16 +370,14 @@ hop.inherit(hop.resizable, hop.component, {
 				top: -10000,
 				left: -10000,
 				height: 100,
-				width: 100,
-				zIndex: "10000"
+				width: 100
 			});
-			self.$helper[0].style.zIndex = "100";
 			is.helperHeightDiff = self.$helper.outerHeight(true)-self.$helper.height();
 			is.helperWidthDiff = self.$helper.outerWidth(true)-self.$helper.width();
 			self.updateHelper();
 			self.$node.one("mousedown", function()
 			{
-				self.helperNode.style.zIndex = self.node.style.zIndex;
+				self.helperNode.style.zIndex = 1000000;
 			});
 		}
 		self.$node.addClass(cp+"resizing");
@@ -411,8 +409,7 @@ hop.inherit(hop.resizable, hop.component, {
 			top: top,
 			left: left,
 			height: height-is.helperHeightDiff,
-			width: width-is.helperWidthDiff,
-			zIndex: "10000"
+			width: width-is.helperWidthDiff
 		});
 	},
 	
