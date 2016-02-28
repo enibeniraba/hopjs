@@ -286,6 +286,7 @@ hop.inherit(hop.layer, hop.component, {
 			self.setOverlayParams();
 			if (self.visible && !self.isAnimation())
 				self.overlayNode.style.display = "block";
+			self.overlayNode.style.zIndex = self.node.style.zIndex;
 		}
 		else if (self.overlayNode)
 		{
