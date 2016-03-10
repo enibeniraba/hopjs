@@ -632,12 +632,10 @@ hop.inherit(hop.window, hop.component, {
 	
 	saveOffset: function()
 	{
-		//this.offset = this.layer.$node.offset();
 		this.offset = {
 			top: this.layer.node.offsetTop,
 			left: this.layer.node.offsetLeft
 		};
-		console.log(this.offset);
 	},
 
 	onDraggableCancel: function(draggable)
@@ -965,7 +963,7 @@ hop.inherit(hop.window, hop.component, {
 			if (this.fullScreen)
 			{
 				this.updateFullScreenWidth(event);
-				this.onResize();
+				this.onResize(false);
 			}
 			else if (this.updatePositionOnWindowResize && !this.dragged && !this.resized)
 			{
@@ -1055,13 +1053,17 @@ hop.inherit(hop.window, hop.component, {
 		self.resizeBody();
 	},
 
-	onResize: function()
+	onResize: function(triggerWindowResize)
 	{
 		var self = this;
 		if (self.updatePositionOnResize && !self.fullScreen && !self.dragged && !self.resizing)
 			self.layer.updatePosition(true);
 		self.resizeBody();
 		self.trigger("resize");
+		if (!def(triggerWindowResize))
+			triggerWindowResize = true;
+		if (triggerWindowResize)
+			$(window).trigger("resize");
 	},
 
 	resizeBody: function()

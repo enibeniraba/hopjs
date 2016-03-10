@@ -100,6 +100,26 @@ hop.inherit(hop.dropdownMenu, hop.component, {
 		if (params && params.items)
 			self.addItems(params.items);
 	},
+	
+	setExtraClass: function(value)
+	{
+		var self = this;
+		if (self.layer && self.extraClass !== value)
+		{
+			self.layer.$node.removeClass(self.extraClass);
+			self.layer.$node.addClass(value);
+			self.updateLayerParams();
+		}
+		self.extraClass = value;
+	},
+	
+	setNodeOffset: function(value)
+	{
+		var nodeOffset = this.nodeOffset;
+		this.nodeOffset = value;
+		if (this.layer && this.nodeOffset !== nodeOffset)
+			this.updateLayerParams();
+	},
 
 	setLayerParams: function(params, update)
 	{
@@ -135,6 +155,7 @@ hop.inherit(hop.dropdownMenu, hop.component, {
 			layer.node.className += " "+self.extraClass;
 		layer.node.innerHTML = '<div class="'+cp+'background"></div><div class="'+cp+'offset"></div>';
 		layer.hopDropdownMenu = self;
+		self.updateLayerParams();
 
 		layer.on("showBefore", function()
 		{
@@ -391,10 +412,7 @@ hop.inherit(hop.dropdownMenu, hop.component, {
 
 		item.node.parentNode.removeChild(item.node);
 		item.parentMenu = null;
-		delete self.items[i];
-		for (i in self.items)
-			items.push(self.items[i]);
-		self.items = items;
+		self.items.splice(index, 1);
 		if (items.length === 0)
 		{
 			animate = self.layer.animate;
@@ -874,7 +892,10 @@ $.extend(hop.dropdownMenuItem.prototype, {
 		self.visible = !!visible;
 		if (self.node)
 		{
-			self.node.style.display = (self.visible ? "block" : "none");
+			if (self.visible)
+				delete self.node.style.display;
+			else
+				self.node.style.display = "none";
 			if (self.parentMenu)
 				self.parentMenu.onItemsChange();
 		}
@@ -888,6 +909,7 @@ $.extend(hop.dropdownMenuItem.prototype, {
 		if (self.extraClass !== "")
 			self.node.className += " "+self.extraClass;
 		self.$node = $(self.node);
+		self.node.hopDropdownMenuItem = self;
 		self.$node.on("mouseenter", function(event)
 		{
 			self.onMouseenter(event);

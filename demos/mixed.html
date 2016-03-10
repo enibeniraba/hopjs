@@ -105,22 +105,8 @@ $(function()
 				animationShow: "def"
 			}
 		},
+		useExtraMenu: true,
 		items: [
-			{
-				text: "On click",
-				onClick: function(item, event_data, data)
-				{
-					new hop.message({
-						title: "Title",
-						content: '<div style="padding: 10px;">'+data+'</div>',
-						height: 240,
-						width: 320,
-						modal: true,
-						show: true
-					});
-				},
-				onClickData: "Action"
-			},
 			{
 				text: "Menu",
 				icon: "../themes/default/images/datepickerdone.png",
@@ -262,6 +248,10 @@ $(function()
 						}
 					]
 				}
+			},
+			{
+				text: "URL",
+				url: "http://example.com"
 			},
 			{
 				text: "Loader",

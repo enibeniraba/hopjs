@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function(document, $, hop)
+(function(window, document, $, hop)
 {
 	
 var cp = "hopjs-menu-";
@@ -28,6 +28,9 @@ hop.inherit(hop.menu, hop.component, {
 			extraClass: "",
 			type: "click",
 			dropdownMenuParams: null,
+			useExtraMenu: false,
+			extraMenuParams: null,
+			extraMenuDropdownMenuParams: null,
 			parentNode: null
 		};
 	},
@@ -46,7 +49,34 @@ hop.inherit(hop.menu, hop.component, {
 			layerParams: {
 				elementAlignY: "bottom",
 				collisionX: "fit",
-				collisionY: "flip"
+				collisionY: "flipfit"
+			}
+		};
+	},
+	
+	getDefaultExtraMenuParams: function()
+	{
+		return {
+			layerParams: {
+				elementAlignX: "right",
+				alignX: "right"
+			},
+			submenuLayerParams: {
+				elementAlignY: "top",
+				elementAlignX: "right",
+				alignY: "top",
+				alignX: "left"
+			}
+		};
+	},
+	
+	getDefaultExtraMenuDropdownMenuParams: function()
+	{
+		return {
+			layerParams: {
+				elementAlignY: "top",
+				collisionX: "flipfit",
+				collisionY: "flipfit"
 			}
 		};
 	},
@@ -55,12 +85,17 @@ hop.inherit(hop.menu, hop.component, {
 	{
 		var self = this;
 		self.defaultDropdownMenuParams = self.getDefaultDropdownMenuParams();
+		self.defaultExtraMenuParams = self.getDefaultExtraMenuParams();
+		self.defaultExtraMenuDropdownMenuParams = self.getDefaultExtraMenuDropdownMenuParams();
 		self.mousedown = false;
 		self.showMenu = false;
 		self.showingMenu = false;
+		self.setExtraMenuButtonHighlightedOnMenuHide = true;
+		self.setShowMenu = true;
 		self.items = [];
 		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
+		self.setUseExtraMenu(self.useExtraMenu);
 		if (params && params.items)
 			self.addItems(params.items);
 	},
@@ -82,32 +117,275 @@ hop.inherit(hop.menu, hop.component, {
 			this.dropdownMenuParams = params;
 		this.updateDropdownMenuParams();
 	},
+	
+	setUseExtraMenu: function(value)
+	{
+		this.useExtraMenu = !!value;
+		if (this.extraMenu)
+		{
+			this.extraMenu.hide({animate: false});
+			this.extraMenuButtonNode.style.display = (value ? "block" : "none");
+			this.updateSize();
+		}
+	},
+	
+	setExtraMenuParams: function(params, update)
+	{
+		var self = this;
+		if (params && update && self.extraMenuParams)
+			$.extend(true, self.extraMenuParams, params);
+		else
+			self.extraMenuParams = params;
+		if (self.extraMenu)
+			self.extraMenu.configure(self.calcExtraMenuParams());
+	},
+	
+	calcExtraMenuParams: function()
+	{
+		var result = {};
+		$.extend(true, result, this.defaultDropdownMenuParams, this.dropdownMenuParams, this.defaultExtraMenuParams, this.extraMenuParams);
+		return result;
+	},
+	
+	setExtraMenuDropdownMenuParams: function(params, update)
+	{
+		if (params && update && this.extraMenuDropdownMenuParams)
+			$.extend(true, this.extraMenuDropdownMenuParams, params);
+		else
+			this.extraMenuDropdownMenuParams = params;
+		this.updateDropdownMenuParams();
+	},
 
 	updateDropdownMenuParams: function()
 	{
-		var i, item;
-		for (i in this.items)
+		for (var i in this.items)
 		{
-			item = this.items[i];
-			if (item.menu)
-				item.updateMenuParams();
+			if (this.items[i].menu)
+				this.items[i].updateMenuParams();
 		}
 	},
 
 	generateHtml: function()
 	{
-		var self = this;
+		var self = this, params = self.calcExtraMenuParams();
 		self.node = document.createElement("div");
 		self.node.className = "hopjs-menu";
 		if (self.extraClass !== "")
 			self.node.className += " ".self.extraClass;
 		self.node.hopMenu = self;
 		self.parentNode.appendChild(self.node);
+		self.extraMenuButtonNode = document.createElement("div");
+		self.extraMenuButtonNode.innerHTML = "&nbsp;";
+		self.extraMenuButtonNode.className = "hopjs-menu-extra-menu-button";
+		self.extraMenuButtonNode.style.display = "none";
+		self.node.appendChild(self.extraMenuButtonNode);
+		self.$extraMenuButton = $(self.extraMenuButtonNode);
+		
+		$.extend(true, params, {
+			layerParams: {
+				element: self.extraMenuButtonNode
+			}
+		});
+		self.extraMenu = new hop.dropdownMenu(params);
+		
+		self.$extraMenuButton.on("mouseenter", function(event)
+		{
+			self.onExtraMenuButtonMouseenter(event);
+		});
+
+		self.$extraMenuButton.on("mouseleave", function(event)
+		{
+			self.onExtraMenuButtonMouseleave(event);
+		});
+		
+		self.$extraMenuButton.on("mousedown", function(event)
+		{
+			self.onExtraMenuButtonMousedown(event);
+		});
+		
+		self.extraMenu.layer.$node.on("mouseenter", function(event)
+		{
+			self.onExtraMenuMouseenter(event);
+		});
+
+		self.extraMenu.layer.$node.on("mousedown", function(event)
+		{
+			self.onExtraMenuMousedown(event);
+		});
+
+		self.extraMenu.layer.on("showBefore", function()
+		{
+			self.onExtraMenuShowBefore();
+		});
+
+		self.extraMenu.layer.on("hideBefore", function()
+		{
+			self.onExtraMenuHideBefore();
+		});
+
+		$(window).on("resize", function(event)
+		{
+			self.onWindowResize(event);
+		});
 
 		$(document).on("mousedown", function(event)
 		{
 			self.onDocumentMousedown(event);
 		});
+	},
+	
+	onExtraMenuButtonMouseenter: function(event)
+	{
+		var self = this, i;
+		for (i in self.items)
+			self.items[i].onExtraMenuButtonMouseenter(event);
+		self.setExtraMenuButtonHighlighted(true);
+		self.setExtraMenuButtonHighlightedOnMenuHide = false;
+		if (self.type === "hover")
+			self.extraMenu.showWithDelay();
+		else if (self.showMenu)
+		{
+			self.extraMenu.layer.finishAnimation();
+			self.extraMenu.show({animate: false});
+		}
+	},
+	
+	onExtraMenuButtonMouseleave: function(event)
+	{
+		if (this.type === "hover")
+			this.extraMenu.hideWithDelay();
+		this.setExtraMenuButtonHighlighted(false);
+		this.setExtraMenuButtonHighlightedOnMenuHide = true;
+	},
+	
+	onExtraMenuButtonMousedown: function(event)
+	{
+		if (event.which === 1)
+		{
+			this.extraMenu.mousedown = true;
+			this.extraMenu.toggle();
+			this.showingMenu = true;
+		}
+	},
+	
+	onExtraMenuMouseenter: function(event)
+	{
+		this.setExtraMenuButtonHighlighted(true);
+	},
+	
+	onExtraMenuMousedown: function(event)
+	{
+		this.mousedown = true;
+	},
+
+	onExtraMenuShowBefore: function()
+	{
+		var i, item;
+		for (i in this.items)
+		{
+			item = this.items[i];
+			if (item.menu)
+			{
+				item.setParentMenuShowMenu = false;
+				item.menu.layer.finishAnimation();
+				item.menu.hide({animate: false});
+				item.setParentMenuShowMenu = true;
+			}
+		}
+		this.setExtraMenuButtonOpened(true);
+		this.showMenu = true;
+	},
+
+	onExtraMenuHideBefore: function()
+	{
+		if (this.setExtraMenuButtonHighlightedOnMenuHide)
+			this.setExtraMenuButtonHighlighted(false);
+		this.setExtraMenuButtonOpened(false);
+		if (this.setShowMenu)
+			this.showMenu = false;
+	},
+	
+	onWindowResize: function(event)
+	{
+		if (this.useExtraMenu)
+			this.updateSize();
+	},
+	
+	updateSize: function()
+	{
+		var self = this, i, item, top = null, hideFrom = null, hideFrom2 = null;
+		if (!self.items)
+			return;
+		
+		self.extraMenuButtonNode.style.display = "none";
+		for (i in self.items)
+		{
+			item = self.items[i];
+			if (item.extraMenuItem)
+			{
+				item.extraMenuItem = null;
+				if (item.menu)
+					item.menu.parentItem = null;
+			}
+			if (item.visible)
+			{
+				item.node.style.display = "block";
+				if (top === null)
+					top = $(item.node).offset().top;
+			}
+		}
+		if (self.useExtraMenu)
+		{
+			for (i in self.items)
+			{
+				item = self.items[i];
+				if (hideFrom !== null || $(item.node).offset().top > top)
+				{
+					if (item.menu)
+						item.menu.hide({animate: false});
+					 item.node.style.display = "none";
+					 if (hideFrom === null)
+						hideFrom = i;
+				}
+			}
+			if (hideFrom !== null)
+			{
+				self.extraMenuButtonNode.style.display = "block";
+				for (i = 0; i < hideFrom; i++)
+				{
+					item = self.items[i];
+					if (hideFrom2 !== null || $(item.node).offset().top > top)
+					{
+						if (item.menu)
+							item.menu.hide({animate: false});
+						 item.node.style.display = "none";
+						 if (hideFrom2 === null)
+							hideFrom2 = i;
+					}
+				}
+				if (hideFrom2 !== null)
+					hideFrom = hideFrom2;
+
+				self.extraMenu.removeItems();
+				for (i = hideFrom; i < self.items.length; i++)
+				{
+					item = self.items[i];
+					item.extraMenuItem = self.extraMenu.addItem({
+						active: item.active,
+						visible: item.visible,
+						text: item.text,
+						icon: item.icon,
+						title: item.title,
+						url: item.url,
+						menu: item.menu
+					});
+				}
+			}
+			else
+				self.extraMenu.hide({animate: false});
+		}
+		for (i in self.items)
+			self.items[i].updateMenuParams();
 	},
 
 	onDocumentMousedown: function(event)
@@ -144,23 +422,15 @@ hop.inherit(hop.menu, hop.component, {
 		}
 		if (typeof item === "string")
 		{
-			if (item === "-")
-				item = {type: "separator"};
-			else
-			{
-				item = {
-					type: "html",
-					html: item
-				};
-			}
+			item = {
+				text: item
+			};
 		}
-		if (!item.type)
-			item.type = "button";
 		if (item.parentMenu)
 			item.parentMenu.removeItem(item);
 		item.parentMenu = self;
-		if (!(item instanceof hop.menuItems[item.type]))
-			item = new hop.menuItems[item.type](item);
+		if (!(item instanceof hop.menuItem))
+			item = new hop.menuItem(item);
 		if (self.items.length === 0 || before === null || before >= self.items.length)
 		{
 			self.node.appendChild(item.node);
@@ -194,6 +464,8 @@ hop.inherit(hop.menu, hop.component, {
 
 	onItemAdd: function(data)
 	{
+		if (this.useExtraMenu)
+			this.updateSize();
 		this.trigger("itemAdd", data);
 	},
 
@@ -229,10 +501,7 @@ hop.inherit(hop.menu, hop.component, {
 
 		item.node.parentNode.removeChild(item.node);
 		item.parentMenu = null;
-		delete self.items[i];
-		for (i in self.items)
-			items.push(self.items[i]);
-		self.items = items;
+		self.items.splice(index, 1);
 		self.onItemsChange();
 		item.afterDetach(self, index);
 		self.onItemRemove({
@@ -244,6 +513,8 @@ hop.inherit(hop.menu, hop.component, {
 
 	onItemRemove: function(data)
 	{
+		if (this.useExtraMenu)
+			this.updateSize();
 		this.trigger("itemRemove", data);
 	},
 
@@ -289,10 +560,41 @@ hop.inherit(hop.menu, hop.component, {
 		if (this.dropdownMenuParams)
 			$.extend(true, result, this.dropdownMenuParams);
 		return result;
+	},
+
+	calcExtraMenuDropdownMenuParams: function()
+	{
+		var result = {};
+		$.extend(true, result, this.defaultExtraMenuDropdownMenuParams);
+		if (this.extraMenuDropdownMenuParams)
+			$.extend(true, result, this.extraMenuDropdownMenuParams);
+		return result;
+	},
+	
+	onItemMouseenter: function(item, event)
+	{
+		var self = this;
+		self.setExtraMenuButtonHighlighted(false);
+		if (self.type === "hover")
+			self.extraMenu.hideWithDelay();
+		else
+		{
+			self.setShowMenu = false;
+			self.extraMenu.hide({animate: false});
+			self.setShowMenu = true;
+		}
+	},
+	
+	setExtraMenuButtonHighlighted: function(value)
+	{
+		this.$extraMenuButton.toggleClass(cp+"highlighted", value);
+	},
+
+	setExtraMenuButtonOpened: function(value)
+	{
+		this.$extraMenuButton.toggleClass(cp+"opened", value);
 	}
 });
-
-hop.menuItems = {};
 
 hop.menuItem = function(params)
 {
@@ -308,99 +610,27 @@ $.extend(hop.menuItem.prototype, {
 			parentMenu: null,
 			extraClass: "",
 			id: null,
-			visible: true
-		};
-	},
-
-	create: function(params)
-	{
-		hop.component.prototype.create.apply(this, arguments);
-		this.generateHtml();
-		this.setVisible(this.visible);
-	},
-
-	setVisible: function(visible)
-	{
-		var self = this;
-		self.visible = !!visible;
-		if (self.node)
-		{
-			self.node.style.display = (self.visible ? "block" : "none");
-			if (self.parentMenu)
-				self.parentMenu.onItemsChange();
-		}
-	},
-
-	generateHtml: function()
-	{
-		var self = this;
-		self.node = document.createElement("div");
-		self.node.className = cp+"item";
-		if (self.extraClass !== "")
-			self.node.className += " ".self.extraClass;
-		self.$node = $(self.node);
-		self.$node.on("mouseenter", function(event)
-		{
-			self.onMouseenter(event);
-		});
-	},
-
-	onMouseenter: function(event)
-	{
-		var i, item;
-		for (i in this.parentMenu.items)
-		{
-			item = this.parentMenu.items[i];
-			if (item !== this)
-				item.onOtherItemMouseenter(this, event);
-		}
-	},
-
-	onOtherItemMouseenter: function(item, event)
-	{
-	},
-
-	afterAttach: function()
-	{
-	},
-
-	afterDetach: function(menu, i)
-	{
-	}
-});
-
-hop.menuItems.button = function(params)
-{
-	hop.menuItem.apply(this, arguments);
-};
-
-hop.inherit(hop.menuItems.button, hop.menuItem, {
-	getDefaults: function()
-	{
-		return $.extend(hop.menuItem.prototype.getDefaults.apply(this), {
+			visible: true,
 			active: true,
 			text: "",
 			icon: null,
 			title: "",
 			url: null,
-			menuParams: null
-		});
+			menuParams: null,
+			extraMenuParams: null,
+			extraMenuItem: null
+		};
 	},
-
-	getEvents: function()
-	{
-		return hop.menuItem.prototype.getEvents.apply(this).concat([
-			"click"
-		]);
-	},
-
+	
 	create: function(params)
 	{
 		var self = this;
 		self.setHighlightedOnMenuHide = true;
 		self.setParentMenuShowMenu = true;
 		self.menu = null;
-		hop.menuItem.prototype.create.apply(self, arguments);
+		hop.component.prototype.create.apply(this, arguments);
+		self.generateHtml();
+		self.setVisible(self.visible);
 		self.setActive(self.active);
 		self.setText(self.text);
 		self.setIcon(self.icon);
@@ -410,87 +640,41 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 			self.setMenu(params.menu);
 	},
 
-	onOtherItemMouseenter: function(item, event)
-	{
-		var self = this;
-		self.setHighlighted(false);
-		if (self.menu)
-		{
-			if (self.parentMenu.type === "hover")
-				self.menu.hideWithDelay();
-			else if (!self.isMouseenterBug(event, self, item))
-			{
-				self.setParentMenuShowMenu = false;
-				self.menu.hide({animate: false});
-				self.setParentMenuShowMenu = true;
-			}
-		}
-	},
-
-	isMouseenterBug: function(event, source, target)
-	{
-		var layer, mouseY, mouseX, offset,
-			layerTop, layerBottom, layerLeft, layerRight,
-			sourceTop, sourceBottom, sourceLeft, sourceRight;
-
-		layer = source.menu.layer;
-		mouseY = event.pageY+$(document).scrollTop();
-		mouseX = event.pageX+$(document).scrollLeft();
-		offset = source.menu.layer.$node.offset();
-		layerTop = offset.top;
-		layerBottom = layerTop+layer.$node.outerHeight();
-		layerLeft = offset.left;
-		layerRight = layerLeft+layer.$node.outerWidth();
-		offset = source.$node.offset();
-		sourceTop = offset.top;
-		sourceBottom = sourceTop+source.$node.outerHeight();
-		sourceLeft = offset.left;
-		sourceRight = sourceLeft+source.$node.outerWidth();
-		if ((layer.visible || layer.isAnimation())
-			&& (
-				(layerTop === mouseY+1 && mouseY < sourceBottom && sourceBottom < layerTop
-					&& sourceLeft <= mouseX && mouseX <= sourceRight)
-				|| (layerBottom === mouseY-1 && mouseY > sourceTop && sourceTop > layerBottom
-					&& sourceLeft <= mouseX && mouseX <= sourceRight)
-				|| (layerLeft === mouseX+1 && mouseX < sourceRight && sourceRight < layerLeft
-					&& sourceTop <= mouseY && mouseY <= sourceBottom)
-				|| (layerBottom === mouseX-1 && mouseX > sourceLeft && sourceLeft > layerRight
-					&& sourceTop <= mouseY && mouseY <= sourceBottom)
-			))
-		{
-			return true;
-		}
-		return false;
-	},
-
-	afterAttach: function()
-	{
-		if (this.menu)
-			this.updateMenuParams();
-	},
-
 	setVisible: function(visible)
 	{
-		hop.menuItem.prototype.setVisible.apply(this, arguments);
-		if (this.node)
+		var self = this;
+		self.visible = !!visible;
+		if (self.node)
 		{
-			if (this.menu)
-				this.menu.hide({animate: false});
+			if (self.visible)
+				delete self.node.style.display;
+			else
+				self.node.style.display = "none";
+			if (self.parentMenu)
+				self.parentMenu.onItemsChange();
+			if (self.menu)
+				self.menu.hide({animate: false});
 		}
+		if (self.extraMenuItem)
+			self.extraMenuItem.setVisible(visible);
 	},
 
 	setActive: function(active)
 	{
 		this.active = active;
 		if (this.node)
-			$(this.$button).toggleClass(cp+"inactive", !active);
+			this.$node.toggleClass(cp+"inactive", !active);
+		if (this.extraMenuItem)
+			this.extraMenuItem.setActive(active);
 	},
 
 	setText: function(text)
 	{
 		this.text = text;
 		if (this.node)
-			this.buttonTextNode.innerHTML = text;
+			this.node.innerHTML = text;
+		if (this.extraMenuItem)
+			this.extraMenuItem.setText(text);
 	},
 
 	setIcon: function(icon)
@@ -498,16 +682,20 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		this.icon = icon;
 		if (this.node)
 		{
-			this.buttonNode.style.backgroundImage = (icon === null ? "none" : "url("+icon+")");
-			this.$button.toggleClass(cp+"icon", icon !== null);
+			this.node.style.backgroundImage = (icon === null ? "none" : "url("+icon+")");
+			this.$node.toggleClass(cp+"icon", icon !== null);
 		}
+		if (this.extraMenuItem)
+			this.extraMenuItem.setIcon(icon);
 	},
 
 	setTitle: function(title)
 	{
 		this.title = title;
 		if (this.node)
-			this.buttonNode.title = title;
+			this.node.title = title;
+		if (this.extraMenuItem)
+			this.extraMenuItem.setTitle(title);
 	},
 
 	setUrl: function(url)
@@ -516,10 +704,12 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		if (this.node)
 		{
 			if (url === null)
-				this.buttonNode.removeAttribute("href");
+				this.node.removeAttribute("href");
 			else
-				this.buttonNode.href = url;
+				this.node.href = url;
 		}
+		if (this.extraMenuItem)
+			this.extraMenuItem.setUrl(url);
 	},
 
 	setMenuParams: function(params, update)
@@ -528,6 +718,16 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 			$.extend(true, this.menuParams, params);
 		else
 			this.menuParams = params;
+		if (this.menu)
+			this.updateMenuParams();
+	},
+	
+	setExtraMenuParams: function(params, update)
+	{
+		if (params && update && this.menuParams)
+			$.extend(true, this.extraMenuParams, params);
+		else
+			this.extraMenuParams = params;
 		if (this.menu)
 			this.updateMenuParams();
 	},
@@ -540,6 +740,9 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		self.menu = menu;
 		if (menu)
 		{
+			if (self.extraMenuItem)
+				self.extraMenuItem.setMenu(menu);
+				
 			menu.layer.$node.on("mouseenter", function(event)
 			{
 				self.onMenuMouseenter(event);
@@ -586,22 +789,22 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		}
 	},
 
+	onMenuMouseenter: function(event)
+	{
+		this.setHighlighted(true);
+	},
+	
 	onMenuMousedown: function(event)
 	{
 		this.parentMenu.mousedown = true;
 	},
 
-	onMenuMouseenter: function(event)
-	{
-		this.setHighlighted(true);
-	},
-
 	onMenuShowBefore: function()
 	{
-		var i, item;
-		for (i in this.parentMenu.items)
+		var i, item, parentMenu = this.parentMenu;
+		for (i in parentMenu.items)
 		{
-			item = this.parentMenu.items[i];
+			item = parentMenu.items[i];
 			if (item.menu && item !== this)
 			{
 				item.setParentMenuShowMenu = false;
@@ -610,8 +813,15 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 				item.setParentMenuShowMenu = true;
 			}
 		}
+		if (!this.extraMenuItem)
+		{
+			parentMenu.setShowMenu = false;
+			parentMenu.extraMenu.layer.finishAnimation();
+			parentMenu.extraMenu.hide({animate: false});
+			parentMenu.setShowMenu = true;
+			parentMenu.showMenu = true;
+		}
 		this.setOpened(true);
-		this.parentMenu.showMenu = true;
 	},
 
 	onMenuHideBefore: function()
@@ -619,7 +829,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		if (this.setHighlightedOnMenuHide)
 			this.setHighlighted(false);
 		this.setOpened(false);
-		if (this.setParentMenuShowMenu)
+		if (this.setParentMenuShowMenu && !this.extraMenuItem)
 			this.parentMenu.showMenu = false;
 	},
 
@@ -643,56 +853,42 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		this.updateParentMark();
 	},
 
-	setHighlighted: function(value)
-	{
-		this.$button.toggleClass(cp+"highlighted", value);
-	},
-
-	setOpened: function(value)
-	{
-		this.$button.toggleClass(cp+"opened", value);
-	},
-
 	generateHtml: function()
 	{
 		var self = this;
-		hop.menuItem.prototype.generateHtml.apply(this);
-		self.node.innerHTML = '<a class="'+cp+'button"><div class="'+cp+'button-text"></div></a>';
-		self.$button = $("a", self.node);
-		self.buttonNode = self.$button[0];
-		self.$buttonText = $("div", self.buttonNode);
-		self.buttonTextNode = self.$buttonText[0];
-
-		self.$button.on("mouseenter", function(event)
+		self.node = document.createElement("a");
+		self.node.className = cp+"item";
+		if (self.extraClass !== "")
+			self.node.className += " ".self.extraClass;
+		self.$node = $(self.node);
+		self.node.hopMenuItem = self;
+		
+		self.$node.on("mouseenter", function(event)
 		{
-			self.onButtonMouseenter(event);
+			self.onMouseenter(event);
 		});
 
-		self.$button.on("mouseleave", function(event)
+		self.$node.on("mouseleave", function(event)
 		{
-			self.onButtonMouseleave(event);
+			self.onMouseleave(event);
 		});
 
-		self.$button.on("mousedown", function(event)
+		self.$node.on("mousedown", function(event)
 		{
-			self.onButtonMousedown(event);
-		});
-
-		self.$button.on("click", function(event)
-		{
-			self.onButtonClick(event);
+			self.onMousedown(event);
 		});
 	},
 
-	onButtonMouseenter: function(event)
+	onMouseenter: function(event)
 	{
 		var self = this, i, item;
-		for (i in this.parentMenu.items)
+		for (i in self.parentMenu.items)
 		{
-			item = this.parentMenu.items[i];
-			if (item.menu && item !== this && item.isMouseenterBug(event, item, self))
-				return;
+			item = self.parentMenu.items[i];
+			if (item !== self)
+				item.onOtherItemMouseenter(self, event);
 		}
+		self.parentMenu.onItemMouseenter(self, event);
 		self.setHighlighted(true);
 		self.setHighlightedOnMenuHide = false;
 		if (self.menu && self.active)
@@ -707,7 +903,24 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		}
 	},
 
-	onButtonMouseleave: function(event)
+	onOtherItemMouseenter: function(item, event)
+	{
+		var self = this;
+		self.setHighlighted(false);
+		if (self.menu)
+		{
+			if (self.parentMenu.type === "hover")
+				self.menu.hideWithDelay();
+			else
+			{
+				self.setParentMenuShowMenu = false;
+				self.menu.hide({animate: false});
+				self.setParentMenuShowMenu = true;
+			}
+		}
+	},
+
+	onMouseleave: function(event)
 	{
 		if (this.menu && this.parentMenu.type === "hover")
 			this.menu.hideWithDelay();
@@ -715,7 +928,7 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		this.setHighlightedOnMenuHide = true;
 	},
 
-	onButtonMousedown: function(event)
+	onMousedown: function(event)
 	{
 		if (event.which === 1 && this.active && this.menu)
 		{
@@ -725,31 +938,51 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 		}
 	},
 
-	onButtonClick: function(event)
+	afterAttach: function()
 	{
-		if (!this.active)
-			return;
-
-		this.trigger("click");
+		if (this.menu)
+			this.updateMenuParams();
 	},
 
+	afterDetach: function(menu, i)
+	{
+		if (this.menu)
+			this.menu.hide({animate: false});
+	},
+	
 	updateMenuParams: function()
 	{
 		var self = this, params = {}, parentMenu = self.parentMenu;
 		if (self.menu)
 		{
-			if (parentMenu)
+			if (self.extraMenuItem)
 			{
-				params.hideOnMouseleave = (parentMenu.type === "hover");
-				$.extend(true, params, parentMenu.calcDropdownMenuParams());
+				if (parentMenu)
+					$.extend(true, params, parentMenu.calcExtraMenuDropdownMenuParams());
+				$.extend(true, params, {
+					layerParams: {
+						element: self.extraMenuItem.node
+					}
+				});
+				if (self.extraMenuParams)
+					$.extend(true, params, self.extraMenuParams);
 			}
-			$.extend(true, params, {
-				layerParams: {
-					element: self.node
+			else
+			{
+				if (parentMenu)
+				{
+					params.hideOnMouseleave = (parentMenu.type === "hover");
+					$.extend(true, params, parentMenu.calcDropdownMenuParams());
 				}
-			});
-			if (self.menuParams)
-				$.extend(true, params, self.menuParams);
+				$.extend(true, params, {
+					layerParams: {
+						element: self.node,
+						parentNode: document.body
+					}
+				});
+				if (self.menuParams)
+					$.extend(true, params, self.menuParams);
+			}
 			self.menu.configure(params);
 		}
 	},
@@ -758,54 +991,40 @@ hop.inherit(hop.menuItems.button, hop.menuItem, {
 	{
 		var menu = this.menu,
 			state = !!(menu && (menu.items.length > 0 || (menu.loader || menu.ajax) && !menu.loaded));
-		this.$button.toggleClass(cp+"parent", state);
+		this.$node.toggleClass(cp+"parent", state);
+	},
+	
+	setHighlighted: function(value)
+	{
+		this.$node.toggleClass(cp+"highlighted", value);
 	},
 
+	setOpened: function(value)
+	{
+		this.$node.toggleClass(cp+"opened", value);
+	},
+	
 	setLoading: function(loading)
 	{
-		this.$button.toggleClass(cp+"loading", loading);
-	}
-});
-
-hop.menuItems.html = function(params)
-{
-	hop.menuItem.apply(this, arguments);
-};
-
-hop.inherit(hop.menuItems.html, hop.menuItem, {
-	getDefaults: function()
-	{
-		return $.extend(hop.menuItem.prototype.getDefaults.apply(this), {
-			html: ""
-		});
+		this.$node.toggleClass(cp+"loading", loading);
 	},
-
-	create: function(params)
+	
+	onExtraMenuButtonMouseenter: function(event)
 	{
-		hop.menuItem.prototype.create.apply(this, arguments);
-		this.setHtml(this.html);
+		var self = this;
+		self.setHighlighted(false);
+		if (self.menu)
+		{
+			if (self.parentMenu.type === "hover")
+				self.menu.hideWithDelay();
+			else
+			{
+				self.setParentMenuShowMenu = false;
+				self.menu.hide({animate: false});
+				self.setParentMenuShowMenu = true;
+			}
+		}
 	},
-
-	setHtml: function(html)
-	{
-		this.html = html;
-		if (this.node)
-			this.node.innerHTML = html;
-	}
 });
 
-hop.menuItems.separator = function(params)
-{
-	hop.menuItem.apply(this, arguments);
-};
-
-hop.inherit(hop.menuItems.separator, hop.menuItem, {
-	create: function(params)
-	{
-		hop.menuItem.prototype.create.apply(this, arguments);
-		this.$node.addClass(cp+"separator");
-		this.node.innerHTML = "<div>&nbsp;</div>";
-	}
-});
-
-})(document, jQuery, hopjs);
+})(window, document, jQuery, hopjs);

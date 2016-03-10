@@ -731,14 +731,14 @@ hop.inherit(hop.layer, hop.component, {
 			self.node.style.left = rawLeft+"px";
 			layerOffset = self.$node.offset();
 			if (layerOffset.top !== top)
-				self.node.style.top = Math.round(rawTop-(layerOffset.top-top))+"px";
+				self.node.style.top = rawTop-(layerOffset.top-top)+"px";
 			if (layerOffset.left !== left)
-				self.node.style.left = Math.round(rawLeft-(layerOffset.left-left))+"px";
+				self.node.style.left = rawLeft-(layerOffset.left-left)+"px";
 		}
 		else
 		{
-			self.node.style.top = Math.round(top)+"px";
-			self.node.style.left = Math.round(left)+"px";
+			self.node.style.top = top+"px";
+			self.node.style.left = left+"px";
 		}
 
 		self.state.top = top;

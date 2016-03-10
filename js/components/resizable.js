@@ -814,6 +814,7 @@ hop.inherit(hop.resizable, hop.component, {
 	
 	onResize: function()
 	{
+		$(window).trigger("resize");
 		this.trigger("resize");
 	},
 	

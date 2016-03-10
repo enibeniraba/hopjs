@@ -6,11 +6,52 @@
 <link rel="stylesheet" type="text/css" href="css/common.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/dropdownmenu.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/menu.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/resizable.css" />
 <script type="text/javascript" src="../external/jquery.js"></script>
 <script type="text/javascript" src="../js/base.js"></script>
 <script type="text/javascript" src="../js/components/layer.js"></script>
 <script type="text/javascript" src="../js/components/dropdownmenu.js"></script>
 <script type="text/javascript" src="../js/components/menu.js"></script>
+<script type="text/javascript" src="../js/components/resizable.js"></script>
+<style type="text/css">
+.settings
+{
+	float: left;
+	margin: 0 20px 20px 0;
+}
+
+.table
+{
+	border-collapse: collapse;
+	background: #f8f8f8;
+}
+
+.table td
+{
+	padding: 8px;
+	border: solid 1px #ccc;
+}
+
+.table input[type="text"]
+{
+	width: 100px;
+}
+
+.hopjs-dropdown-menu.extra-class > .hopjs-dropdown-menu-offset
+{
+	top: -1px;
+	left: -2px;
+	right: 2px;
+	bottom: 1px;
+}
+
+#menu3
+{
+	border: solid 1px #ccc;
+	padding: 1px;
+	width: 240px;
+}
+</style>
 </head>
 <body>
 <h1>Menu</h1>
@@ -18,36 +59,39 @@
 <p id="menu1"></p>
 <p>Hover:</p>
 <p id="menu2"></p>
+<p>Custom:</p>
+<p id="menu3"></p>
+<br />
+<div class="settings">
+	<p>Menu params</p>
+	<table class="table">
+		<tr>
+			<td>Param</td>
+			<td>Value</td>
+		</tr>
+		<tr>
+			<td>Type</td>
+			<td>
+				<select id="menu-type">
+					<option value="click">Click</option>
+					<option value="hover">Hover</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Extra menu</td>
+			<td>
+				<input type="checkbox" id="menu-extra-menu" checked="checked" />
+			</td>
+		</tr>
+	</table>
+</div>
 <script type="text/javascript">
 $(function()
 {
 	var hop = hopjs;
 
 	var items = [
-		{
-			text: "Text"
-		},
-		{
-			text: "Icon",
-			icon: "../themes/default/images/datepickercurrenttime.png"
-		},
-		{
-			text: "Title",
-			title: "Title"
-		},
-		{
-			text: "URL",
-			url: "http://example.com"
-		},
-		"-",
-		{
-			text: "On click",
-			onClick: function(item, event_data, data)
-			{
-				alert(data);
-			},
-			onClickData: "Action"
-		},
 		{
 			text: "Menu",
 			icon: "../themes/default/images/datepickerdone.png",
@@ -194,7 +238,12 @@ $(function()
 			}
 		},
 		{
+			text: "URL",
+			url: "http://example.com"
+		},
+		{
 			text: "Loader",
+			icon: "../themes/default/images/datepickercurrenttime.png",
 			menu: {
 				loader: function(params)
 				{
@@ -234,7 +283,7 @@ $(function()
 		}
 	];
 
-	menu1 = new hop.menu({
+	m1 = new hop.menu({
 		parentNode: $("#menu1")[0],
 		dropdownMenuParams: {
 			layerParams: {
@@ -247,7 +296,7 @@ $(function()
 		items: items
 	});
 
-	menu2 = new hop.menu({
+	m2 = new hop.menu({
 		parentNode: $("#menu2")[0],
 		type: "hover",
 		dropdownMenuParams: {
@@ -259,6 +308,35 @@ $(function()
 			}
 		},
 		items: items
+	});
+	
+	m3 = new hop.menu({
+		parentNode: $("#menu3")[0],
+		dropdownMenuParams: {
+			extraClass: "extra-class",
+			nodeOffset: true
+		},
+		useExtraMenu: true,
+		extraMenuDropdownMenuParams: {
+			extraClass: ""
+		},
+		items: items
+	});
+	
+	rs3 = new hop.resizable({
+		node: $("#menu3")[0],
+		handles: "e",
+		minWidth: 32,
+		limiter: "parent"
+	});
+	
+	$("#menu-type").on("change", function()
+	{
+		m3.setType(this.value);
+	});
+	$("#menu-extra-menu").on("change", function()
+	{
+		m3.setUseExtraMenu(this.checked);
 	});
 });
 </script>

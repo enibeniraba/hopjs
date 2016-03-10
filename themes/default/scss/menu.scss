@@ -19,15 +19,32 @@
 	clear: both;
 }
 
+.hopjs-menu-extra-menu-button
+{
+	padding: 4px 8px;
+	float: right;
+	width: 12px;
+	line-height: $themeLineHeight;
+	background: url(../images/menu.png) center center no-repeat;
+	cursor: pointer;
+}
+
+.hopjs-menu-extra-menu-button.hopjs-menu-highlighted,
+.hopjs-menu-extra-menu-button.hopjs-menu-highlighted:hover
+{
+	background-color: #d7e4f3;
+}
+
+.hopjs-menu-extra-menu-button.hopjs-menu-opened,
+.hopjs-menu-extra-menu-button.hopjs-menu-opened:hover
+{
+	background-color: #eee;
+}
+
 .hopjs-menu-item
 {
 	display: block;
 	float: left;
-}
-
-.hopjs-menu-button
-{
-	display: block;
 	padding: 4px 8px;
 	background-repeat: no-repeat;
 	background-position: 5px center;
@@ -36,38 +53,38 @@
 	line-height: $themeLineHeight;
 }
 
-.hopjs-menu-button.hopjs-menu-icon
+.hopjs-menu-item.hopjs-menu-icon
 {
 	padding-left: 26px;
 }
 
-.hopjs-menu-button,
-.hopjs-menu-button:visited,
-.hopjs-menu-button:hover
+.hopjs-menu-item,
+.hopjs-menu-item:visited,
+.hopjs-menu-item:hover
 {
 	color: #000;
 	text-decoration: none;
 }
 
-.hopjs-menu-button.hopjs-menu-highlighted,
-.hopjs-menu-button.hopjs-menu-highlighted:hover
+.hopjs-menu-item.hopjs-menu-highlighted,
+.hopjs-menu-item.hopjs-menu-highlighted:hover
 {
 	background-color: #d7e4f3;
 }
 
-.hopjs-menu-button.hopjs-menu-opened,
-.hopjs-menu-button.hopjs-menu-opened:hover
+.hopjs-menu-item.hopjs-menu-opened,
+.hopjs-menu-item.hopjs-menu-opened:hover
 {
 	background-color: #eee;
 }
 
-.hopjs-menu-button.hopjs-menu-parent
+.hopjs-menu-item.hopjs-menu-parent
 {
 	padding-right: 20px;
 	position: relative;
 }
 
-.hopjs-menu-button.hopjs-menu-parent:after
+.hopjs-menu-item.hopjs-menu-parent:after
 {
 	content: "";
 	display: block;
@@ -80,26 +97,18 @@
 	background: url(../images/menusub.png) center center no-repeat;
 }
 
-.hopjs-menu-button.hopjs-menu-inactive
+.hopjs-menu-item.hopjs-menu-inactive
 {
 	color: #a0a0a0;
 }
 
-.hopjs-menu-button.hopjs-menu-inactive:hover
+.hopjs-menu-item.hopjs-menu-inactive:hover
 {
 	background-color: transparent;
 	cursor: default;
 }
 
-.hopjs-menu-button.hopjs-menu-loading
+.hopjs-menu-item.hopjs-menu-loading
 {
 	cursor: progress;
-}
-
-.hopjs-menu-separator div
-{
-	margin: 0 4px;
-	padding: 6px 0;
-	width: 1px;
-	background-color: #ccc;
 }
