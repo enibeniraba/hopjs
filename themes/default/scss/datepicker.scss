@@ -223,14 +223,21 @@ $border: solid 1px $themeBorderColor;
 	width: 54px;
 }
 
-.hopjs-datepicker-time-picker-inner
+.hopjs-datepicker-time-picker
 {
-	margin: 51px 0 0 66px;
+	position: relative;
 }
 
-.hopjs-datepicker-time-picker-short .hopjs-datepicker-time-picker-inner
+.hopjs-datepicker-time-picker-time
 {
-	margin-left: 83px;
+	position: absolute;
+	top: 51px;
+	left: 66px;
+}
+
+.hopjs-datepicker-time-picker-short .hopjs-datepicker-time-picker-time
+{
+	left: 83px;
 }
 
 .hopjs-datepicker-time-picker-hours,
@@ -295,6 +302,29 @@ $border: solid 1px $themeBorderColor;
 	height: 16px;
 	line-height: 1;
 	padding: 6px 4px 2px 4px;
+}
+
+.hopjs-datepicker-time-picker-buttons
+{
+	position: absolute;
+	top: 160px;
+	right: 0;
+}
+
+.hopjs-datepicker-time-picker-buttons .hopjs-datepicker-button
+{
+	float: left;
+	margin-left: 4px;
+}
+
+.hopjs-datepicker-time-picker-close
+{
+	background-image: url(../images/datepickerclose.png);
+}
+
+.hopjs-datepicker-time-picker-done
+{
+	background-image: url(../images/datepickerdone.png);
 }
 
 .hopjs-datepicker-time-wrapper
@@ -398,11 +428,13 @@ $border: solid 1px $themeBorderColor;
 .hopjs-datepicker-days-body > div:before,
 .hopjs-datepicker-months > div:before,
 .hopjs-datepicker-years > div:before,
+.hopjs-datepicker-time-picker-buttons:before,
 .hopjs-datepicker-buttons:after,
 .hopjs-datepicker-days-head:after,
 .hopjs-datepicker-days-body > div:after,
 .hopjs-datepicker-months > div:after,
-.hopjs-datepicker-years > div:after
+.hopjs-datepicker-years > div:after,
+.hopjs-datepicker-time-picker-buttons:after
 {
 	border-collapse: collapse;
 	content: "";
@@ -413,7 +445,8 @@ $border: solid 1px $themeBorderColor;
 .hopjs-datepicker-days-head:after,
 .hopjs-datepicker-days-body > div:after,
 .hopjs-datepicker-months > div:after,
-.hopjs-datepicker-years > div:after
+.hopjs-datepicker-years > div:after,
+.hopjs-datepicker-time-picker-buttons:after
 {
 	clear: both;
 }
@@ -464,13 +497,13 @@ $border: solid 1px $themeBorderColor;
 		width: 64px;
 	}
 
-	.hopjs-datepicker-time-picker-inner
+	.hopjs-datepicker-time-picker-time
 	{
-		margin: 51px 0 0 86px;
+		left: 86px;
 	}
 
-	.hopjs-datepicker-time-picker-short .hopjs-datepicker-time-picker-inner
+	.hopjs-datepicker-time-picker-short .hopjs-datepicker-time-picker-time
 	{
-		margin-left: 103px;
+		left: 103px;
 	}
 }

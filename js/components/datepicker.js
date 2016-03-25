@@ -49,6 +49,7 @@ hop.inherit(hop.datepicker, hop.component, {
 			time12HourFormat: null,
 			timePickerTimeout: 400,
 			timePickerInterval: 50,
+			timePickerCloseOnDone: true,
 			todayButton: false,
 			doneButton: false,
 			cleanButton: false,
@@ -78,6 +79,7 @@ hop.inherit(hop.datepicker, hop.component, {
 			updatePositionOnWindowResize: true,
 			resetOnHidePickedOnly: false,
 			doneOnDayPick: true,
+			doneOnToday: true,
 			hideOnCleanClick: true
 		};
 	},
@@ -1104,6 +1106,8 @@ hop.inherit(hop.datepicker, hop.component, {
 	{
 		var date = new Date();
 		this.setDay(date.getFullYear(), date.getMonth(), date.getDate(), true);
+		if (this.doneOnToday)
+			this.hide();
 	},
 
 	setTime: function(hours, minutes, seconds)
@@ -1960,6 +1964,8 @@ hop.inherit(hop.datepicker, hop.component, {
 		titleNode = self.createTitleInstance();
 		self.setDayPickerTitleDate(titleNode, self.dayPickerYear, self.dayPickerMonth);
 		pickerNode = self.createTimePicker();
+		if (!self.timePickerDate)
+			self.timePickerDate = new Date();
 		self.setTimePickerDate(pickerNode, self.date);
 		self.titleNode = titleNode;
 		self.pickerNode = pickerNode;
@@ -1973,14 +1979,15 @@ hop.inherit(hop.datepicker, hop.component, {
 		node.className = cp+"time-picker";
 		if (self.shortTimeFormat)
 			node.className += " "+cp+"time-picker-short";
-		html = '<div class="{c}inner">';
+		html = '<div class="{c}time">';
 		html += '<div class="{c}hours"><div class="{c}button {c}plus" tabindex="-1"></div><div class="{c}value"><input type="text" maxlength="2" /></div><div class="{c}button {c}minus"></div></div>';
 		html += '<div class="{c}minutes"><div class="{c}button {c}plus"></div><div class="{c}value"><input type="text" maxlength="2" /><div class="{c}colon">:</div></div><div class="{c}button {c}minus"></div></div>';
 		if (!self.shortTimeFormat)
 			html += '<div class="{c}seconds"><div class="{c}button {c}plus"></div><div class="{c}value"><input type="text" maxlength="2" /><div class="{c}colon">:</div></div><div class="{c}button {c}minus"></div></div>';
 		if (self.getTime12HourFormat())
 			html += '<div class="{c}ampm"><div class="{c}button"></div></div>';
-		html += '</div>';
+		html += '</div><div class="{c}buttons"><div class="'+cp+'button {c}close"></div>';
+		html += '<div class="'+cp+'button {c}done"></div></div>';
 		node.innerHTML = hop.string.replace("{c}", cp+"time-picker-", html);
 		self.$body.append(node);
 
@@ -2063,6 +2070,16 @@ hop.inherit(hop.datepicker, hop.component, {
 				self.onTimePickerAmPmClick(event);
 			});
 		}
+		
+		$(_cp+"time-picker-close", node).on("click", function(event)
+		{
+			self.onTimePickerCloseClick(event);
+		});
+		
+		$(_cp+"time-picker-done", node).on("click", function(event)
+		{
+			self.onTimePickerDoneClick(event);
+		});
 
 		return node;
 	},
@@ -2070,6 +2087,7 @@ hop.inherit(hop.datepicker, hop.component, {
 	setTimePickerDate: function(node, date)
 	{
 		var self = this, value;
+		self.timePickerDate.setTime(date.getTime());
 		value = (self.getTime12HourFormat() ? hop.time.hours12(date.getHours()) : date.getHours());
 		$(_cp+"time-picker-hours "+_cp+"time-picker-value input", node).val(value);
 		value = hop.string.padLeft(date.getMinutes(), 2, "0");
@@ -2091,7 +2109,7 @@ hop.inherit(hop.datepicker, hop.component, {
 		titleNode = self.createTitleInstance();
 		self.setDayPickerTitleDate(titleNode, self.dayPickerYear, self.dayPickerMonth);
 		pickerNode = self.createTimePicker();
-		self.setTimePickerDate(pickerNode, self.date);
+		self.setTimePickerDate(pickerNode, self.timePickerDate);
 		self.titleNode = titleNode;
 		self.pickerNode = pickerNode;
 		self.picker = "time";
@@ -2100,7 +2118,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	updateTimePicker: function()
 	{
-		this.setTimePickerDate(this.pickerNode, this.date);
+		this.setTimePickerDate(this.pickerNode, this.timePickerDate);
 	},
 
 	onTimePickerHoursPlusMousedown: function(event)
@@ -2119,7 +2137,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerHoursPlus: function()
 	{
-		var hours = this.date.getHours();
+		var hours = this.timePickerDate.getHours();
 		hours++;
 		if (hours > 23)
 			hours = 0;
@@ -2129,20 +2147,18 @@ hop.inherit(hop.datepicker, hop.component, {
 	setTimePickerHours: function(hours)
 	{
 		var self = this;
-		self.date.setHours(hours);
+		self.timePickerDate.setHours(hours);
 		if (self.getTime12HourFormat())
 		{
-			hours = hop.time.hours12(self.date.getHours());
+			hours = hop.time.hours12(self.timePickerDate.getHours());
 			self.timePickerUpdateAmPm();
 		}
 		$(_cp+"time-picker-hours input", self.pickerNode).val(hours);
-		self.dateChange();
-		self.updateTimeHtml(false);
 	},
 
 	timePickerUpdateAmPm: function()
 	{
-		$(_cp+"time-picker-ampm div", this.pickerNode).html(hop.time.am(this.date.getHours()) ? "am" : "pm");
+		$(_cp+"time-picker-ampm div", this.pickerNode).html(hop.time.am(this.timePickerDate.getHours()) ? "am" : "pm");
 	},
 
 	onTimePickerHoursMinusMousedown: function(event)
@@ -2161,7 +2177,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerHoursMinus: function()
 	{
-		var hours = this.date.getHours();
+		var hours = this.timePickerDate.getHours();
 		hours--;
 		if (hours < 0)
 			hours = 23;
@@ -2179,7 +2195,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	onTimePickerHoursBlur: function(event)
 	{
-		var self = this, hours = self.date.getHours();
+		var self = this, hours = self.timePickerDate.getHours();
 		if (self.getTime12HourFormat())
 			hours = hop.time.hours12(hours);
 		$(_cp+"time-picker-hours input", self.pickerNode).val(hours);
@@ -2202,14 +2218,12 @@ hop.inherit(hop.datepicker, hop.component, {
 			else
 			{
 				if (self.getTime12HourFormat())
-					value = hop.time.hours24(value, hop.time.pm(self.date.getHours()));
-				self.date.setHours(value);
-				self.dateChange();
-				self.updateTimeHtml(false);
+					value = hop.time.hours24(value, hop.time.pm(self.timePickerDate.getHours()));
+				self.timePickerDate.setHours(value);
 			}
 		}
 		if (error)
-			$elem.val(self.getTime12HourFormat() ? hop.time.hours12(self.date.getHours()) : self.date.getHours());
+			$elem.val(self.getTime12HourFormat() ? hop.time.hours12(self.timePickerDate.getHours()) : self.timePickerDate.getHours());
 	},
 
 	onTimePickerMinutesPlusMousedown: function(event)
@@ -2228,7 +2242,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerMinutesPlus: function()
 	{
-		var minutes = this.date.getMinutes();
+		var minutes = this.timePickerDate.getMinutes();
 		minutes++;
 		if (minutes > 59)
 			minutes = 0;
@@ -2238,10 +2252,8 @@ hop.inherit(hop.datepicker, hop.component, {
 	setTimePickerMinutes: function(minutes)
 	{
 		var self = this;
-		self.date.setMinutes(minutes);
+		self.timePickerDate.setMinutes(minutes);
 		$(_cp+"time-picker-minutes input", self.pickerNode).val(hop.string.padLeft(minutes, 2, "0"));
-		self.dateChange();
-		self.updateTimeHtml(false);
 	},
 
 	onTimePickerMinutesMinusMousedown: function(event)
@@ -2260,7 +2272,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerMinutesMinus: function()
 	{
-		var minutes = this.date.getMinutes();
+		var minutes = this.timePickerDate.getMinutes();
 		minutes--;
 		if (minutes < 0)
 			minutes = 59;
@@ -2278,7 +2290,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	onTimePickerMinutesBlur: function(event)
 	{
-		$(_cp+"time-picker-minutes input", this.pickerNode).val(hop.string.padLeft(this.date.getMinutes(), 2, "0"));
+		$(_cp+"time-picker-minutes input", this.pickerNode).val(hop.string.padLeft(this.timePickerDate.getMinutes(), 2, "0"));
 	},
 
 	onTimePickerMinutesKeyup: function(event)
@@ -2296,14 +2308,10 @@ hop.inherit(hop.datepicker, hop.component, {
 			if (value < 0 || value > 59)
 				error = true;
 			else
-			{
-				self.date.setMinutes(value);
-				self.dateChange();
-				self.updateTimeHtml(false);
-			}
+				self.timePickerDate.setMinutes(value);
 		}
 		if (error)
-			$elem.val(self.date.getMinutes());
+			$elem.val(self.timePickerDate.getMinutes());
 	},
 
 	onTimePickerSecondsPlusMousedown: function(event)
@@ -2322,7 +2330,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerSecondsPlus: function()
 	{
-		var seconds = this.date.getSeconds();
+		var seconds = this.timePickerDate.getSeconds();
 		seconds++;
 		if (seconds > 59)
 			seconds = 0;
@@ -2332,10 +2340,8 @@ hop.inherit(hop.datepicker, hop.component, {
 	setTimePickerSeconds: function(seconds)
 	{
 		var self = this;
-		self.date.setSeconds(seconds);
+		self.timePickerDate.setSeconds(seconds);
 		$(_cp+"time-picker-seconds input", self.pickerNode).val(hop.string.padLeft(seconds, 2, "0"));
-		self.dateChange();
-		self.updateTimeHtml(false);
 	},
 
 	onTimePickerSecondsMinusMousedown: function(event)
@@ -2354,7 +2360,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerSecondsMinus: function()
 	{
-		var seconds = this.date.getSeconds();
+		var seconds = this.timePickerDate.getSeconds();
 		seconds--;
 		if (seconds < 0)
 			seconds = 59;
@@ -2372,7 +2378,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	onTimePickerSecondsBlur: function(event)
 	{
-		$(_cp+"time-picker-seconds input", this.pickerNode).val(hop.string.padLeft(this.date.getSeconds(), 2, "0"));
+		$(_cp+"time-picker-seconds input", this.pickerNode).val(hop.string.padLeft(this.timePickerDate.getSeconds(), 2, "0"));
 	},
 
 	onTimePickerSecondsKeyup: function(event)
@@ -2390,20 +2396,29 @@ hop.inherit(hop.datepicker, hop.component, {
 			if (value < 0 || value > 59)
 				error = true;
 			else
-			{
-				self.date.setSeconds(value);
-				self.dateChange();
-				self.updateTimeHtml(false);
-			}
+				self.timePickerDate.setSeconds(value);
 		}
 		if (error)
-			$elem.val(self.date.getSeconds());
+			$elem.val(self.timePickerDate.getSeconds());
 	},
 
 	onTimePickerAmPmClick: function(event)
 	{
-		var hours = this.date.getHours();
+		var hours = this.timePickerDate.getHours();
 		this.setTimePickerHours(hours+(hop.time.am(hours) ? 12 : -12));
+	},
+	
+	onTimePickerCloseClick: function(event)
+	{
+		this.showDayPicker();
+	},
+	
+	onTimePickerDoneClick: function(event)
+	{
+		var self = this, date = self.timePickerDate;
+		self.setTime(date.getHours(), date.getMinutes(), date.getSeconds());
+		if (self.timePickerCloseOnDone)
+			self.showDayPicker();
 	},
 
 	animate: function(animationId, prevTitleNode, prevPickerNode)
