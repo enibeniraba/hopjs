@@ -49,6 +49,7 @@ hop.inherit(hop.datepicker, hop.component, {
 			time12HourFormat: null,
 			timePickerTimeout: 400,
 			timePickerInterval: 50,
+			timePickerConsistent: true,
 			timePickerCloseOnDone: true,
 			todayButton: false,
 			doneButton: false,
@@ -1966,7 +1967,8 @@ hop.inherit(hop.datepicker, hop.component, {
 		pickerNode = self.createTimePicker();
 		if (!self.timePickerDate)
 			self.timePickerDate = new Date();
-		self.setTimePickerDate(pickerNode, self.date);
+		self.timePickerDate.setTime(self.date.getTime());
+		self.setTimePickerDate(pickerNode, self.timePickerDate);
 		self.titleNode = titleNode;
 		self.pickerNode = pickerNode;
 		self.picker = "time";
@@ -2087,7 +2089,6 @@ hop.inherit(hop.datepicker, hop.component, {
 	setTimePickerDate: function(node, date)
 	{
 		var self = this, value;
-		self.timePickerDate.setTime(date.getTime());
 		value = (self.getTime12HourFormat() ? hop.time.hours12(date.getHours()) : date.getHours());
 		$(_cp+"time-picker-hours "+_cp+"time-picker-value input", node).val(value);
 		value = hop.string.padLeft(date.getMinutes(), 2, "0");
@@ -2137,28 +2138,18 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerHoursPlus: function()
 	{
-		var hours = this.timePickerDate.getHours();
-		hours++;
-		if (hours > 23)
-			hours = 0;
-		this.setTimePickerHours(hours);
+		this.setTimePickerHours(this.timePickerDate.getHours()+1);
 	},
 
 	setTimePickerHours: function(hours)
 	{
-		var self = this;
-		self.timePickerDate.setHours(hours);
-		if (self.getTime12HourFormat())
-		{
-			hours = hop.time.hours12(self.timePickerDate.getHours());
-			self.timePickerUpdateAmPm();
-		}
-		$(_cp+"time-picker-hours input", self.pickerNode).val(hours);
-	},
-
-	timePickerUpdateAmPm: function()
-	{
-		$(_cp+"time-picker-ampm div", this.pickerNode).html(hop.time.am(this.timePickerDate.getHours()) ? "am" : "pm");
+		if (hours < 0)
+			hours = 23;
+		else if (hours > 23)
+			hours = 0;
+		this.timePickerDate.setFullYear(2000);
+		this.timePickerDate.setHours(hours);
+		this.updateTimePicker();
 	},
 
 	onTimePickerHoursMinusMousedown: function(event)
@@ -2177,11 +2168,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerHoursMinus: function()
 	{
-		var hours = this.timePickerDate.getHours();
-		hours--;
-		if (hours < 0)
-			hours = 23;
-		this.setTimePickerHours(hours);
+		this.setTimePickerHours(this.timePickerDate.getHours()-1);
 	},
 
 	onTimePickerHoursFocus: function(event)
@@ -2242,18 +2229,17 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerMinutesPlus: function()
 	{
-		var minutes = this.timePickerDate.getMinutes();
-		minutes++;
-		if (minutes > 59)
-			minutes = 0;
-		this.setTimePickerMinutes(minutes);
+		this.setTimePickerMinutes(this.timePickerDate.getMinutes()+1);
 	},
 
 	setTimePickerMinutes: function(minutes)
 	{
-		var self = this;
+		var self = this, hours = self.timePickerDate.getHours();
+		self.timePickerDate.setFullYear(2000);
 		self.timePickerDate.setMinutes(minutes);
-		$(_cp+"time-picker-minutes input", self.pickerNode).val(hop.string.padLeft(minutes, 2, "0"));
+		if (!self.timePickerConsistent)
+			self.timePickerDate.setHours(hours);
+		self.updateTimePicker();
 	},
 
 	onTimePickerMinutesMinusMousedown: function(event)
@@ -2272,11 +2258,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerMinutesMinus: function()
 	{
-		var minutes = this.timePickerDate.getMinutes();
-		minutes--;
-		if (minutes < 0)
-			minutes = 59;
-		this.setTimePickerMinutes(minutes);
+		this.setTimePickerMinutes(this.timePickerDate.getMinutes()-1);
 	},
 
 	onTimePickerMinutesFocus: function(event)
@@ -2330,18 +2312,21 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerSecondsPlus: function()
 	{
-		var seconds = this.timePickerDate.getSeconds();
-		seconds++;
-		if (seconds > 59)
-			seconds = 0;
-		this.setTimePickerSeconds(seconds);
+		this.setTimePickerSeconds(this.timePickerDate.getSeconds()+1);
 	},
 
 	setTimePickerSeconds: function(seconds)
 	{
-		var self = this;
+		var self = this, hours = self.timePickerDate.getHours(),
+			minutes = self.timePickerDate.getMinutes();
+		self.timePickerDate.setFullYear(2000);
 		self.timePickerDate.setSeconds(seconds);
-		$(_cp+"time-picker-seconds input", self.pickerNode).val(hop.string.padLeft(seconds, 2, "0"));
+		if (!self.timePickerConsistent)
+		{
+			self.timePickerDate.setHours(hours);
+			self.timePickerDate.setMinutes(minutes);
+		}
+		self.updateTimePicker();
 	},
 
 	onTimePickerSecondsMinusMousedown: function(event)
@@ -2360,11 +2345,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	timePickerSecondsMinus: function()
 	{
-		var seconds = this.timePickerDate.getSeconds();
-		seconds--;
-		if (seconds < 0)
-			seconds = 59;
-		this.setTimePickerSeconds(seconds);
+		this.setTimePickerSeconds(this.timePickerDate.getSeconds()-1);
 	},
 
 	onTimePickerSecondsFocus: function(event)
