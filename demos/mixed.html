@@ -24,16 +24,16 @@
 <p><button id="button2">Options</button></p>
 <br />
 <div id="tabs1">
-	<div>
-		<a><span>One</span></a>
-		<a><span>Two</span></a>
-		<a><span>Three</span></a>
-	</div>
-	<div>
-		<div><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
-		<div><br /><p>Fusce non pulvinar dui, eu ornare sapien.</p></div>
-		<div><br /><p>Duis tellus nunc, rhoncus ac nisl eget, adipiscing iaculis dolor.</p></div>
-	</div>
+	<span data-id="one">One</span>
+	<div><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
+	<span data-id="two" data-icon="../themes/default/images/datepickerdone.png">Two</span>
+	<div><p>Fusce non pulvinar dui, eu ornare sapien.</p></div>
+	<span data-id="three" data-title="Title">Three</span>
+	<div><p>Duis tellus nunc, rhoncus ac nisl eget, adipiscing iaculis dolor.</p></div>
+	<span data-id="four" data-enabled="0">Four</span>
+	<div><p>Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus.</p></div>
+	<span data-id="five" data-icon="../themes/default/images/datepickercurrenttime.png"></span>
+	<div><p>Sed in nisi ante.</p></div>
 </div>
 <br />
 <p><b id="tt1">Lorem</b> ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.
@@ -449,9 +449,12 @@ $(function()
 		}
 	});
 
-	tabs1 = new hop.tabs({
-		node: $("#tabs1")[0]
-	});
+	tabs1 = hop.tabs.fromLayout({
+			nodeSelector: "#tabs1"
+		}, {
+			beforeNode: $("#tabs1")[0]
+		}
+	);
 });
 </script>
 </body>

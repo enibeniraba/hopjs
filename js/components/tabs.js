@@ -12,7 +12,8 @@
 (function(document, $, hop)
 {
 	
-var cp = "hopjs-tabs-";
+var cp = "hopjs-tabs-",
+	_cp = "."+cp;
 
 hop.tabs = function(params)
 {
@@ -26,128 +27,692 @@ hop.inherit(hop.tabs, hop.component, {
 	{
 		return {
 			extraClass: "",
-			node: null,
 			event: "click",
-			hash_activation: true
+			hashActivation: true
 		};
 	},
 
 	getEvents: function()
 	{
 		return [
-			"tabActivation"
+			"itemAdd",
+			"itemRemove",
+			"itemActivateBefore",
+			"itemActivate",
+			"itemDeactivateBefore",
+			"itemDeactivate"
 		];
 	},
 
 	create: function(params)
 	{
 		var self = this;
-		self.activeTab = null;
+		self.items = [];
+		self.activeItem = null;
 		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
-		if (self.tabs)
-			self.activateOnCreate(params ? params.activeTab : null);
+		if (params.parentNode)
+			params.parentNode.appendChild(self.node);
+		else if (params.beforeNode)
+			params.beforeNode.parentNode.insertBefore(self.node, params.beforeNode);
+		else if (params.afterNode)
+			hop.dom.insertAfter(self.node, params.afterNode);
+		if (params && params.items)
+			self.addItems(params.items);
+		if (self.items)
+			self.activateItemOnCreate(params && params.activeItem);
+	},
+
+	setExtraClass: function(value)
+	{
+		var self = this;
+		if (self.node && self.extraClass !== value)
+		{
+			self.$node.removeClass(self.extraClass);
+			self.$node.addClass(value);
+		}
+		self.extraClass = value;
+	},
+
+	setItems: function(items)
+	{
+		this.removeItems();
+		this.addItems(items);
+	},
+
+	addItems: function(items)
+	{
+		for (var i in items)
+			this.addItem(items[i]);
+	},
+
+	addItem: function(item, before)
+	{
+		var self = this, items = [], i;
+		before = hop.ifDef(before);
+		if (before !== null)
+		{
+			before = parseInt(before);
+			if (isNaN(before))
+				before = null;
+			else if (before < 0)
+				before = 0;
+		}
+		if (!(item instanceof hop.tabsItem))
+			item = new hop.tabsItem(item);
+		if (item.tabs)
+			item.tabs.removeItem(item);
+		item.tabs = self;
+		if (self.items.length === 0 || before === null || before >= self.items.length)
+		{
+			self.headNode.appendChild(item.headNode);
+			self.bodyNode.appendChild(item.bodyNode);
+			self.items.push(item);
+		}
+		else
+		{
+			for (i in self.items)
+			{
+				if (i === before)
+				{
+					self.headNode.insertBefore(item.headNode, self.items[i].headNode);
+					self.bodyNode.insertBefore(item.bodyNode, self.items[i].bodyNode);
+					items.push(item);
+				}
+				items.push(self.items[i]);
+			}
+			self.items = items;
+		}
+		item.afterAttach();
+		self.onItemAdd({
+			item: item
+		});
+		if (self.created && self.activeItem === null && item && item.canBeActivated())
+			item.activate();
+		return item;
+	},
+
+	onItemAdd: function(data)
+	{
+		this.trigger("itemAdd", data);
+	},
+
+	removeItems: function()
+	{
+		while (this.items.length > 0)
+			this.removeItem(0);
+	},
+
+	removeItem: function(item)
+	{
+		var self = this, items = [], index = null, i, animate;
+		if (item instanceof hop.tabsItem)
+		{
+			index = self.getItemIndex(item);
+			if (index === null)
+				return;
+		}
+		else
+		{
+			index = parseInt(item);
+			if (isNaN(index) || index < 0 || index > self.items.length-1)
+				return;
+			
+			item = self.items[index];
+			if (!item)
+				return;
+		}
+		self.headNode.removeChild(item.headNode);
+		self.bodyNode.removeChild(item.bodyNode);
+		item.tabs = null;
+		self.items.splice(index, 1);
+		item.afterDetach({
+			tabs: self,
+			index: index
+		});
+		self.onItemRemove({
+			item: item,
+			index: index
+		});
+		if (item === self.activeItem)
+			self.activateFirstSuitableItem();
+		return item;
+	},
+
+	onItemRemove: function(data)
+	{
+		this.trigger("itemRemove", data);
 	},
 
 	generateHtml: function()
 	{
-		var self = this,
-			tabs = [], i, $children, headNode, bodyNode, event;
-		if (!self.node)
-			throw new Error("Node is not defined");
-
-		$children = $(self.node).children("div");
-		if (!$children || $children.length < 2)
-			throw new Error("Node must have 2 child div nodes");
-
-		headNode = $children[0];
-		bodyNode = $children[1];
-		$children = $(headNode).children("a");
-		if (!$children || $children.length === 0)
-			throw new Error("Buttons are not found");
-
-		for (i = 0; i < $children.length; i++)
-			tabs.push({button: $children[i]});
-
-		$children = $(bodyNode).children("div");
-		if (!$children || $children.length === 0 || $children.length !== tabs.length)
-			throw new Error("Bodies are not found or number of bodies is not equal to number of tabs");
-
-		$(self.node).addClass("hopjs-tabs");
+		var self = this;
+		self.node = document.createElement("div");
+		self.node.className = "hopjs-tabs";
 		if (self.extraClass !== "")
-			$(self.node).addClass(self.extraClass);
-		$(headNode).addClass(cp+"head");
-		$(bodyNode).addClass(cp+"body");
-		$(tabs[0].button).addClass(cp+"first");
-		$(tabs[tabs.length-1].button).addClass(cp+"last");
-		for (i in tabs)
-		{
-			tabs[i].body = $children[i];
-			tabs[i].body.style.display = "none";
-			$(tabs[i].button).addClass(cp+"tab-button");
-			$(tabs[i].body).addClass(cp+"tab-body");
-			$(tabs[i].button).on(self.event, {tab: i}, function(event)
-			{
-				if (event.data.tab !== self.activeTab)
-					self.activateTab(event.data.tab);
-			});
-		}
-		self.tabs = tabs;
+			self.node.className += " "+self.extraClass;
+		self.$node = $(self.node);
+		self.$node.html('<div class="'+cp+'head"></div><div class="'+cp+'body"></div>');
+		self.$head = $(_cp+"head", self.node);
+		self.headNode = self.$head[0];
+		self.$body = $(_cp+"body", self.node);
+		self.bodyNode = self.$body[0];
 		self.node.hopTabs = self;
 	},
 
-	activateOnCreate: function(defaultActiveTab)
+	activateItem: function(item)
 	{
-		var self = this, activeTab = 0, key;
-		if (hop.def(defaultActiveTab))
-			activeTab = defaultActiveTab;
-		else if (self.hash_activation && document.location.hash.length > 1)
+		var self = this, itemIndex, items = self.items,
+			prevItem = self.activeItem, prevItemIndex, data;
+		
+		if (item instanceof hop.tabsItem)
 		{
-			for (key in self.tabs)
+			itemIndex = self.getItemIndex(item);
+			if (itemIndex === null)
+				return;
+		}
+		else if (item !== null)
+		{
+			itemIndex = parseInt(item);
+			if (isNaN(itemIndex) || itemIndex < 0 || itemIndex > items.length-1)
+				return;
+			
+			item = items[itemIndex];
+		}
+		if (self.activeItem === item)
+			return;
+		
+		if (prevItem !== null)
+		{
+			data = {};
+			prevItem.beforeDeactivate(data);
+			if (data.cancel)
+				return;
+			
+			data = {
+				item: prevItem, 
+				itemIndex: prevItemIndex,
+				nextItem: item,
+				nextItemIndex: item
+			};
+			self.onItemDeactivateBefore(data);
+			if (data.cancel)
+				return;
+		}
+		if (item !== null)
+		{
+			data = {};
+			item.beforeActivate(data);
+			if (data.cancel)
+				return;
+		}	
+		data = {
+			item: item, 
+			itemIndex: itemIndex,
+			prevItem: prevItem,
+			prevItemIndex: prevItemIndex
+		};
+		self.onItemActivateBefore(data);
+		if (data.cancel)
+			return;
+			
+		if (prevItem)
+		{
+			prevItem.bodyNode.style.display = "none";
+			prevItem.$head.removeClass(cp+"active");
+			prevItemIndex = self.getItemIndex(prevItem);
+			if (prevItemIndex !== null)
 			{
-				if (self.tabs[key].button.hash === document.location.hash)
+				if (prevItemIndex > 0)
+					items[prevItemIndex-1].$head.removeClass(cp+"before-active");
+				if (prevItemIndex < items.length-1)
+					items[prevItemIndex+1].$head.removeClass(cp+"after-active");
+			}
+		}
+		if (item !== null)
+		{
+			item.bodyNode.style.display = "block";
+			item.$head.addClass(cp+"active");
+			if (itemIndex > 0)
+				items[itemIndex-1].$head.addClass(cp+"before-active");
+			if (itemIndex < items.length-1)
+				items[itemIndex+1].$head.addClass(cp+"after-active");
+		}
+		self.activeItem = item;
+		
+		if (prevItem)
+		{
+			prevItem.afterDeactivate();
+			self.onItemDeactivate({
+				item: prevItem, 
+				itemIndex: prevItemIndex,
+				nextItem: item,
+				nextItemIndex: item
+			});
+		}
+		if (item !== null)
+			item.afterActivate();
+		self.onItemActivate({
+			item: item, 
+			itemIndex: itemIndex,
+			prevItem: prevItem,
+			prevItemIndex: prevItemIndex
+		});
+	},
+
+	getItemIndex: function(item)
+	{
+		for (var i in this.items)
+		{
+			if (item === this.items[i])
+				return parseInt(i);
+		}
+		return null;
+	},
+
+	getItemById: function(id)
+	{
+		var index = this.getItemIndexById(id);
+		return (index === null ? null : this.items[index]);
+	},
+
+	getItemIndexById: function(id)
+	{
+		for (var i in this.items)
+		{
+			if (id === this.items[i].id)
+				return parseInt(i);
+		}
+		return null;
+	},
+
+	onItemActivateBefore: function(data)
+	{
+		this.trigger("itemActivateBefore", data);
+	},
+
+	onItemActivate: function(data)
+	{
+		this.trigger("itemActivate", data);
+	},
+
+	onItemDeactivateBefore: function(data)
+	{
+		this.trigger("itemDeactivateBefore", data);
+	},
+
+	onItemDeactivate: function(data)
+	{
+		this.trigger("itemDeactivate", data);
+	},
+	
+	activateItemOnCreate: function(defaultActiveItem)
+	{
+		var self = this, activeItem = null, i;
+		if (hop.def(defaultActiveItem))
+		{
+			if (defaultActiveItem instanceof hop.tabsItem)
+				activeItem = self.getItemIndex(defaultActiveItem);
+			else
+			{
+				i = parseInt(defaultActiveItem);
+				if (!isNaN(i) && hop.def(self.items[i]))
+					activeItem = i;
+			}
+			if (activeItem !== null && !self.items[activeItem].enabled)
+				activeItem = null;
+		}
+		if (activeItem === null && self.hashActivation && document.location.hash.length > 1)
+		{
+			for (i in self.items)
+			{
+				if ("#"+self.items[i].hash === document.location.hash && self.items[i].enabled)
 				{
-					activeTab = key;
+					activeItem = i;
 					break;
 				}
 			}
 		}
-		if (activeTab < 0 || activeTab >= self.tabs.length)
-			activeTab = 0;
-		self.activateTab(activeTab);
+		self.activateItem(activeItem === null ? 0: activeItem);
 	},
-
-	activateTab: function(tab)
+	
+	activateFirstSuitableItem: function()
 	{
-		var self = this,
-			tabs = self.tabs, prevTab = self.activeTab;
-		tab = parseInt(tab);
-		if (isNaN(tab) || tab < 0 || tab > tabs.length-1)
-			return;
-
-		if (prevTab !== null)
+		for (var i = 0; i < this.items.length; i++)
 		{
-			tabs[prevTab].body.style.display = "none";
-			$(tabs[prevTab].button).removeClass(cp+"active");
-			if (prevTab > 0)
-				$(tabs[prevTab-1].button).removeClass(cp+"before-active");
-			if (prevTab < tabs.length-1)
-				$(tabs[prevTab+1].button).removeClass(cp+"after-active");
+			if (this.items[i].canBeActivated())
+			{
+				this.items[i].activate();
+				break;
+			}
 		}
-		tabs[tab].body.style.display = "block";
-		$(tabs[tab].button).addClass(cp+"active");
-		if (tab > 0)
-			$(tabs[tab-1].button).addClass(cp+"before-active");
-		if (tab < tabs.length-1)
-			$(tabs[tab+1].button).addClass(cp+"after-active");
-		self.activeTab = tab;
-		self.onTabActivation({tab: tab, prevTab: prevTab});
-	},
-
-	onTabActivation: function(data)
-	{
-		this.trigger("tabActivation", data);
 	}
 });
+
+hop.tabsItem = function(params)
+{
+	hop.component.apply(this, arguments);
+};
+
+hop.inherit(hop.tabsItem, hop.component, {
+	getDefaults: function()
+	{
+		return {
+			tabs: null,
+			enabled: true,
+			id: "",
+			caption: "",
+			icon: "",
+			title: "",
+			hash: "",
+			closable: false,
+			extraHeadClass: "",
+			extraBodyClass: ""
+		};
+	},
+
+	getEvents: function()
+	{
+		return [
+			"attach",
+			"detach",
+			"activateBefore",
+			"activate",
+			"deactivateBefore",
+			"deactivate",
+			"closeBefore",
+			"close"
+		];
+	},
+
+	create: function(params)
+	{
+		var self = this;
+		hop.component.prototype.create.apply(self, arguments);
+		self.active = false;
+		self.closeAction = false;
+		self.generateHtml();
+		self.setEnabled(self.enabled);
+		self.setCaption(self.caption);
+		self.setIcon(self.icon);
+		self.setTitle(self.title);
+		self.setClosable(self.closable);
+		if (params && hop.def(params.content))
+		{
+			if (typeof params.content === "string")
+				self.$body.html(params.content);
+			else
+				self.bodyNode.appendChild(params.content);
+		}
+	},
+
+	setEnabled: function(value)
+	{
+		this.enabled = !!value;
+		if (this.$head)
+		{
+			this.$head.toggleClass(cp+"disabled", !this.enabled);
+			if (this.tabs)
+				this.tabs.activateFirstSuitableItem();
+		}
+	},
+
+	setCaption: function(value)
+	{
+		this.caption = String(value);
+		if (this.$caption)
+		{
+			this.$caption.html(this.caption === "" ? "&nbsp;" : this.caption);
+			this.$head.toggleClass(cp+"caption", this.caption !== "");
+		}
+	},
+	
+	setIcon: function(icon)
+	{
+		this.icon = String(icon);
+		if (this.$head)
+		{
+			$("> div", this.headNode)[0].style.backgroundImage = (this.icon === "" ? "none" : "url("+icon+")");
+			this.$head.toggleClass(cp+"icon", this.icon !== "");
+		}
+	},
+	
+	setTitle: function(value)
+	{
+		this.title = String(value);
+		if (this.$caption)
+			this.$caption.attr("title", this.title);
+	},
+	
+	setClosable: function(value)
+	{
+		this.closable = !!value;
+		if (this.$head)
+			this.$head.toggleClass(cp+"closable", this.closable);
+	},
+
+	generateHtml: function()
+	{
+		var self = this;
+		self.headNode = document.createElement("div");
+		self.headNode.className = cp+"item-head";
+		if (self.extraHeadClass !== "")
+			self.headNode.className += " "+self.extraHeadClass;
+		self.$head = $(self.headNode);
+		self.$head.html('<div><div class="'+cp+'caption"><div></div></div><div class="'+cp+'close"><div></div></div></div>');
+		self.$caption = $(_cp+"caption div", self.headNode);
+		self.captionNode = self.$caption[0];
+		self.bodyNode = document.createElement("div");
+		self.bodyNode.className = cp+"item-body";
+		if (self.extraBodyClass !== "")
+			self.bodyNode.className += " "+self.extraBodyClass;
+		self.$body = $(self.bodyNode);
+		self.headNode.hopTabsItem = self;
+		self.bodyNode.hopTabsItem = self;
+		
+		self.$head.on("mouseenter", function(event)
+		{
+			self.onHeadMouseenter(event);
+		});
+		
+		self.$head.on("mousedown", function(event)
+		{
+			self.onHeadMousedown(event);
+		});
+		
+		self.$head.on("click", function(event)
+		{
+			self.onHeadClick(event);
+		});
+		
+		$(_cp+"close", self.headNode).on("mousedown", function(event)
+		{
+			self.onCloseMousedown(event);
+		});
+		
+		$(_cp+"close", self.headNode).on("click", function(event)
+		{
+			self.onCloseClick(event);
+		});
+	},
+
+	onHeadMouseenter: function(event)
+	{
+		if (this.enabled && event.which === 1 && this.tabs && this.tabs.event === "mouseenter")
+			this.activate();
+	},
+
+	onHeadMousedown: function(event)
+	{
+		if (this.closeAction)
+		{
+			this.closeAction = false;
+			return;
+		}
+		if (this.enabled && event.which === 1 && this.tabs && this.tabs.event === "mousedown")
+			this.activate();
+	},
+
+	onHeadClick: function(event)
+	{
+		if (this.closeAction)
+		{
+			this.closeAction = false;
+			return;
+		}
+		if (this.enabled && event.which === 1 && this.tabs && this.tabs.event === "click")
+			this.activate();
+	},
+	
+	onCloseMousedown: function(event)
+	{
+		this.closeAction = true;
+	},
+	
+	onCloseClick: function(event)
+	{
+		if (event.which === 1 && this.tabs)
+			this.close();
+		this.closeAction = true;
+	},
+	
+	attach: function(tabs, before)
+	{
+		tabs.attach(this, before);
+	},
+
+	afterAttach: function()
+	{
+		this.trigger("attach");
+	},
+
+	detach: function()
+	{
+		if (this.tabs)
+			this.tabs.removeItem(this);
+	},
+
+	afterDetach: function(data)
+	{
+		this.active = false;
+		this.trigger("detach", data);
+	},
+	
+	activate: function()
+	{
+		if (this.tabs)
+			this.tabs.activateItem(this);
+	},
+	
+	canBeActivated: function()
+	{
+		return this.enabled;
+	},
+
+	beforeActivate: function(data)
+	{
+		this.trigger("activateBefore", data);
+	},
+
+	afterActivate: function()
+	{
+		this.active = true;
+		if (this.hash !== "")
+			document.location.hash = this.hash;
+		this.trigger("activate");
+	},
+
+	beforeDeactivate: function(data)
+	{
+		this.trigger("deactivateBefore", data);
+	},
+
+	afterDeactivate: function()
+	{
+		this.active = false;
+		this.trigger("deactivate");
+	},
+	
+	close: function()
+	{
+		var data = {};
+		this.onCloseBefore(data);
+		if (data.cancel)
+			return;
+
+		this.detach();
+		this.onClose();
+	},
+	
+	onCloseBefore: function(data)
+	{
+		this.trigger("closeBefore", data);
+	},
+
+	onClose: function()
+	{
+		this.trigger("close");
+	}
+});
+
+var itemParamAttributeMap = {
+	enabled: "enabled",
+	id: "id",
+	caption: "caption",
+	icon: "icon",
+	title: "title",
+	hash: "hash",
+	extraHeadClass: "extra-head-class",
+	extraBodyClass: "extra-body-class"
+};
+
+hop.tabs.fromLayout = function(params, tabsParams)
+{
+	var node = null, headSelector = "> span", bodySelector = "> div",
+		$head, $body, items = [], i, headNode, item, param, value, result;
+	tabsParams = tabsParams || {};
+	params = params || {};
+	
+	if (params.node)
+		node = params.node;
+	else if (params.$node)
+		node = params.$node[0];
+	else if (typeof params.nodeSelector === "string")
+		node = $(params.nodeSelector)[0];
+	
+	if (typeof params.headSelector === "string")
+		headSelector = params.headSelector;
+	
+	if (typeof params.bodySelector === "string")
+		bodySelector = params.bodySelector;
+	
+	$head = $(headSelector, node);
+	$body = $(bodySelector, node);
+	
+	for (i = 0; i < $head.length; i++)
+	{
+		headNode = $head[i];
+		item = {
+			caption: headNode.innerHTML
+		};
+		for (param in itemParamAttributeMap)
+		{
+			value = headNode.getAttribute("data-"+itemParamAttributeMap[param]);
+			if (value !== null)
+			{
+				if (param === "enabled")
+					value = (value === "1");
+				item[param] = value;
+			}
+		}
+		if ($body[i])
+			item.content = $body[i];
+		items.push(item);
+	}
+	tabsParams.items = items;
+	result = new hop.tabs(tabsParams);
+	node.parentNode.removeChild(node);
+	return result;
+};
 
 })(document, jQuery, hopjs);

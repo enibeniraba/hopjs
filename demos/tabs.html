@@ -8,32 +8,136 @@
 <script type="text/javascript" src="../external/jquery.js"></script>
 <script type="text/javascript" src="../js/base.js"></script>
 <script type="text/javascript" src="../js/components/tabs.js"></script>
+<style type="text/css">
+.hopjs-tabs-item-body
+{
+	padding: 8px;
+}
+</style>
 </head>
 <body>
 <h1>Tabs</h1>
-<div id="tabs1">
-	<div>
-		<a href="#one"><span>One</span></a>
-		<a href="#two"><span>Two</span></a>
-		<a href="#three"><span>Three</span></a>
-		<a href="#event"><span>Event</span></a>
-	</div>
-	<div>
-		<div><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse pretium metus lacus. Ut ut rutrum nisi. Donec eget libero quis quam ultricies adipiscing in et risus. Sed in velit magna. Vestibulum varius lobortis ante at commodo. Vestibulum porttitor leo at est luctus egestas. Integer pulvinar lacus sit amet nunc bibendum sagittis. Sed in ipsum quis nisl sodales sodales id eget nulla. Mauris non varius felis. Nam faucibus semper libero a congue. Ut tristique ipsum eros, vitae pretium tortor venenatis nec.</p></div>
-		<div><br /><p>Fusce non pulvinar dui, eu ornare sapien. Sed sollicitudin at diam lacinia bibendum. Integer laoreet lobortis nisl at consectetur. Nulla a est felis. Duis feugiat ultrices nulla, congue dignissim metus scelerisque id. In posuere mi ut viverra bibendum. Curabitur vel aliquam odio.</p></div>
-		<div><br /><p>Duis tellus nunc, rhoncus ac nisl eget, adipiscing iaculis dolor. Nam nec sodales ipsum. Integer feugiat tortor eu mi pretium, ultrices laoreet augue feugiat. In ut placerat eros. Nulla accumsan egestas feugiat. Phasellus ultrices, elit eget adipiscing adipiscing, tortor erat tempor arcu, quis dapibus quam nulla ut nisl. Vestibulum vehicula laoreet leo non facilisis. In hac habitasse platea dictumst. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras ac ullamcorper ligula. Donec bibendum pretium tellus et condimentum.</p></div>
-		<div><br /><p>Fusce non pulvinar dui, eu ornare sapien. Sed sollicitudin at diam lacinia bibendum. Integer laoreet lobortis nisl at consectetur. Nulla a est felis. Duis feugiat ultrices nulla, congue dignissim metus scelerisque id. In posuere mi ut viverra bibendum. Curabitur vel aliquam odio.</p></div>
-	</div>
+<div id="tabs-container"></div>
+<div style="display: none;">
+<div id="tab-content-1"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse pretium metus lacus. Ut ut rutrum nisi. Donec eget libero quis quam ultricies adipiscing in et risus. Sed in velit magna. Vestibulum varius lobortis ante at commodo. Vestibulum porttitor leo at est luctus egestas. Integer pulvinar lacus sit amet nunc bibendum sagittis. Sed in ipsum quis nisl sodales sodales id eget nulla. Mauris non varius felis. Nam faucibus semper libero a congue. Ut tristique ipsum eros, vitae pretium tortor venenatis nec.</p></div>
+<div id="tab-content-2"><p>Fusce non pulvinar dui, eu ornare sapien. Sed sollicitudin at diam lacinia bibendum. Integer laoreet lobortis nisl at consectetur. Nulla a est felis. Duis feugiat ultrices nulla, congue dignissim metus scelerisque id. In posuere mi ut viverra bibendum. Curabitur vel aliquam odio.</p></div>
+<div id="tab-content-3"><p>Duis tellus nunc, rhoncus ac nisl eget, adipiscing iaculis dolor. Nam nec sodales ipsum. Integer feugiat tortor eu mi pretium, ultrices laoreet augue feugiat. In ut placerat eros. Nulla accumsan egestas feugiat. Phasellus ultrices, elit eget adipiscing adipiscing, tortor erat tempor arcu, quis dapibus quam nulla ut nisl. Vestibulum vehicula laoreet leo non facilisis. In hac habitasse platea dictumst. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras ac ullamcorper ligula. Donec bibendum pretium tellus et condimentum.</p></div>
 </div>
 <script type="text/javascript">
 $(function()
 {
 	tabs1 = new hopjs.tabs({
-		node: $("#tabs1")[0],
-		onTabActivation: function(self, eventData, data)
+		parentNode: $("#tabs-container")[0],
+		items: [
+			{
+				id: "default",
+				caption: "Default",
+				content: $("#tab-content-1")[0]
+			},
+			{
+				id: "caption_icon",
+				caption: "Icon",
+				icon: "../themes/default/images/datepickerdone.png",
+				content: $("#tab-content-2")[0]
+			},
+			{
+				id: "icon",
+				icon: "../themes/default/images/datepickercurrenttime.png",
+				title: "Icon",
+				content: $("#tab-content-3")[0]
+			},
+			{
+				id: "disabled",
+				caption: "Disabled",
+				enabled: false,
+				content: "<p>Sed sollicitudin at diam lacinia bibendum. Integer laoreet lobortis nisl at consectetur. Nulla a est felis. Duis feugiat ultrices nulla, congue dignissim metus scelerisque id. In posuere mi ut viverra bibendum. Curabitur vel aliquam odio.</p>"
+			},
+			{
+				id: "closable",
+				caption: "Closable",
+				closable: true,
+				content: '<p><label><input type="checkbox" checked="checked" class="enabled" /> Enabled</label></p><p><label><input type="checkbox" checked="checked" class="caption" /> Caption</label></p><p><label><input type="checkbox" class="icon" /> Icon</label></p>',
+				onCreate: function(self)
+				{
+					$(".enabled", self.bodyNode).on("change", function()
+					{
+						self.setEnabled(this.checked);
+					});
+					
+					$(".caption", self.bodyNode).on("change", function()
+					{
+						self.setCaption(this.checked ? "Closable" : "");
+					});
+					
+					$(".icon", self.bodyNode).on("change", function()
+					{
+						self.setIcon(this.checked ? "../themes/default/images/datepickertoday.png" : "");
+					});
+				},
+				onCloseBefore: function(self, eventData, data)
+				{
+					if (!confirm("Close item?"))
+						eventData.cancel = true;
+				},
+				onClose: function(self, eventData, data)
+				{
+					alert("Item closed");
+				}
+			},
+			{
+				id: "events",
+				caption: "Events",
+				content: "<p>Sed sollicitudin at diam lacinia bibendum. Integer laoreet lobortis nisl at consectetur. Nulla a est felis. Duis feugiat ultrices nulla, congue dignissim metus scelerisque id. In posuere mi ut viverra bibendum. Curabitur vel aliquam odio.</p>"
+			},
+			{
+				id: "item_events",
+				caption: "Item events",
+				content: "<br /><p>Sed sollicitudin at diam lacinia bibendum. Integer laoreet lobortis nisl at consectetur. Nulla a est felis. Duis feugiat ultrices nulla, congue dignissim metus scelerisque id. In posuere mi ut viverra bibendum. Curabitur vel aliquam odio.</p>",
+				onActivateBefore: function(self, eventData, data)
+				{
+					if (!confirm("Activate item?"))
+						eventData.cancel = true;
+				},
+				onActivate: function(self, eventData, data)
+				{
+					alert("Item activated");
+				},
+				onDeactivateBefore: function(self, eventData, data)
+				{
+					if (!confirm("Deactivate item?"))
+						eventData.cancel = true;
+				},
+				onDeactivate: function(self, eventData, data)
+				{
+					alert("Item deactivated");
+				}
+			}
+		],
+		onItemActivateBefore: function(self, eventData, data)
 		{
-			if (eventData.tab === 3)
-				alert(eventData.prevTab+" -> "+eventData.tab);
+			if (eventData.item && eventData.item.id === "events")
+			{
+				if (!confirm("Activate item?"))
+					eventData.cancel = true;
+			}
+		},
+		onItemActivate: function(self, eventData, data)
+		{
+			if (eventData.item && eventData.item.id === "events")
+				alert("Item activated");
+		},
+		onItemDeactivateBefore: function(self, eventData, data)
+		{
+			if (eventData.item && eventData.item.id === "events")
+			{
+				if (!confirm("Deactivate item?"))
+					eventData.cancel = true;
+			}
+		},
+		onItemDeactivate: function(self, eventData, data)
+		{
+			if (eventData.item && eventData.item.id === "events")
+				alert("Item deactivated");
 		}
 	});
 });

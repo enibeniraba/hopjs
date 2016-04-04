@@ -639,6 +639,16 @@ hopjs.css = {
 };
 
 hopjs.dom = {
+	insertAfter: function(node, targetNode)
+	{
+		var parentNode = targetNode.parentNode,
+			nextNode = targetNode.nextSibling;
+		if (nextNode)
+			return parentNode.insertBefore(node, nextNode);
+		
+		return parentNode.appendChild(node);
+	},
+	
 	maxZIndex: function(childNode)
 	{
 		if (!def(childNode))

@@ -23,41 +23,80 @@
 	clear: both;
 }
 
-.hopjs-tabs-tab-button
+.hopjs-tabs-item-head
 {
 	float: left;
-}
-
-.hopjs-tabs-tab-button span
-{
-	float: left;
-	padding: 8px;
-	white-space: nowrap;
-	position: relative;
-}
-
-.hopjs-tabs-tab-button,
-.hopjs-tabs-tab-button:visited,
-.hopjs-tabs-tab-button:hover
-{
 	color: $themeColor;
-	text-decoration: none;
 	cursor: pointer;
 }
 
-.hopjs-tabs-tab-button:hover
+.hopjs-tabs-item-head > div
+{
+	padding: 8px;
+	white-space: nowrap;
+	background-repeat: no-repeat;
+	background-position: 8px center;
+	position: relative;
+}
+
+.hopjs-tabs-item-head:hover > div
 {
 	background-color: #d7e4f3;
 }
 
-.hopjs-tabs-tab-button.hopjs-tabs-active
+.hopjs-tabs-item-head.hopjs-tabs-active > div,
+.hopjs-tabs-item-head.hopjs-tabs-active:hover > div
 {
 	background-color: #eee;
 }
 
-.hopjs-tabs-tab-button.hopjs-tabs-active:hover span
+.hopjs-tabs-item-head.hopjs-tabs-disabled > div,
+.hopjs-tabs-item-head.hopjs-tabs-disabled:hover > div
 {
-	background-color: #eee;
+	background-color: transparent;
+	color: #888;
+	cursor: default;
+}
+
+.hopjs-tabs-item-head.hopjs-tabs-icon > div
+{
+	padding-left: 8px;
+	width: 16px;
+}
+
+.hopjs-tabs-item-head.hopjs-tabs-caption.hopjs-tabs-icon > div
+{
+	padding-left: 28px;
+	width: auto;
+}
+
+.hopjs-tabs-item-head .hopjs-tabs-close
+{
+	display: none;
+	position: absolute;
+	top: 7px;
+	right: 4px;
+	height: 16px;
+	width: 16px;
+	background: url(../images/tabsclose.png) center center no-repeat;
+	cursor: pointer;
+}
+
+.hopjs-tabs-item-head .hopjs-tabs-close:hover
+{
+	height: 14px;
+	width: 14px;
+	border: solid 1px $themeBorderColor;
+}
+
+.hopjs-tabs-item-head.hopjs-tabs-closable > div
+{
+	padding-right: 24px;
+}
+
+.hopjs-tabs-item-head.hopjs-tabs-closable .hopjs-tabs-close
+{
+	display: block;
 }
 
 .hopjs-tabs-body
@@ -76,4 +115,9 @@
 .hopjs-tabs-body:after
 {
 	clear: both;
+}
+
+.hopjs-tabs-item-body
+{
+	display: none;
 }
