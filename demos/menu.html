@@ -84,6 +84,12 @@
 				<input type="checkbox" id="menu-extra-menu" checked="checked" />
 			</td>
 		</tr>
+		<tr>
+			<td>Smart mouse</td>
+			<td>
+				<input type="checkbox" id="menu-smart-mouse" checked="checked" />
+			</td>
+		</tr>
 	</table>
 </div>
 <script type="text/javascript">
@@ -337,6 +343,10 @@ $(function()
 	$("#menu-extra-menu").on("change", function()
 	{
 		m3.setUseExtraMenu(this.checked);
+	});
+	$("#menu-smart-mouse").on("change", function()
+	{
+		m3.smartMouse = this.checked;
 	});
 });
 </script>

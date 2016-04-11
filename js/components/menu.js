@@ -14,6 +14,14 @@
 	
 var cp = "hopjs-menu-";
 
+var pointInsideTriangle = function(x, y, x1, y1, x2, y2, x3, y3)
+{
+	var a = (x1-x)*(y2-y1)-(x2-x1)*(y1-y),
+		b = (x2-x)*(y3-y2)-(x3-x2)*(y2-y),
+		c = (x3-x)*(y1-y3)-(x1-x3)*(y3-y);
+	return (a >= 0 && b >= 0 && c >= 0 || a <= 0 && b <= 0 && c <= 0);
+};
+
 hop.menu = function(params)
 {
 	hop.component.apply(this, arguments);
@@ -28,6 +36,10 @@ hop.inherit(hop.menu, hop.component, {
 			extraClass: "",
 			type: "click",
 			dropdownMenuParams: null,
+			smartMouse: true,
+			smartMouseTimeout: 500,
+			smartMouseTolerance: 50,
+			smartMouseTrackSize: 3,
 			useExtraMenu: false,
 			extraMenuParams: null,
 			extraMenuDropdownMenuParams: null,
@@ -91,8 +103,10 @@ hop.inherit(hop.menu, hop.component, {
 		self.showMenu = false;
 		self.showingMenu = false;
 		self.setExtraMenuButtonHighlightedOnMenuHide = true;
-		self.setShowMenu = true;
 		self.items = [];
+		self.openedMenu = null;
+		self.smartMouseTrack = [];
+		self.extraMenuButtonSmartMouseTimeout = null;
 		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		self.setUseExtraMenu(self.useExtraMenu);
@@ -173,6 +187,7 @@ hop.inherit(hop.menu, hop.component, {
 		if (self.extraClass !== "")
 			self.node.className += " ".self.extraClass;
 		self.node.hopMenu = self;
+		self.$node = $(self.node);
 		self.parentNode.appendChild(self.node);
 		self.extraMenuButtonNode = document.createElement("div");
 		self.extraMenuButtonNode.innerHTML = "&nbsp;";
@@ -180,6 +195,11 @@ hop.inherit(hop.menu, hop.component, {
 		self.extraMenuButtonNode.style.display = "none";
 		self.node.appendChild(self.extraMenuButtonNode);
 		self.$extraMenuButton = $(self.extraMenuButtonNode);
+		
+		self.$node.on("mousemove", function(event)
+		{
+			self.onMousemove(event);
+		});
 		
 		$.extend(true, params, {
 			layerParams: {
@@ -191,6 +211,11 @@ hop.inherit(hop.menu, hop.component, {
 		self.$extraMenuButton.on("mouseenter", function(event)
 		{
 			self.onExtraMenuButtonMouseenter(event);
+		});
+
+		self.$extraMenuButton.on("mousemove", function(event)
+		{
+			self.onExtraMenuButtonMousemove(event);
 		});
 
 		self.$extraMenuButton.on("mouseleave", function(event)
@@ -218,9 +243,9 @@ hop.inherit(hop.menu, hop.component, {
 			self.onExtraMenuShowBefore();
 		});
 
-		self.extraMenu.layer.on("hideBefore", function()
+		self.extraMenu.layer.on("hideBefore", function(layer, params)
 		{
-			self.onExtraMenuHideBefore();
+			self.onExtraMenuHideBefore(params);
 		});
 
 		$(window).on("resize", function(event)
@@ -234,6 +259,16 @@ hop.inherit(hop.menu, hop.component, {
 		});
 	},
 	
+	onMousemove: function(event)
+	{
+		this.smartMouseTrack.push({
+			y: event.pageY,
+			x: event.pageX
+		});
+		if (this.smartMouseTrack.length > this.smartMouseTrackSize)
+			this.smartMouseTrack.shift();
+	},
+	
 	onExtraMenuButtonMouseenter: function(event)
 	{
 		var self = this, i;
@@ -245,17 +280,65 @@ hop.inherit(hop.menu, hop.component, {
 			self.extraMenu.showWithDelay();
 		else if (self.showMenu)
 		{
+			if (self.smartMouse && self.openedMenu && self.openedMenu !== self.extraMenu)
+			{
+				self.extraMenuButtonSmartMouseTimeout = setTimeout(function()
+				{
+					self.extraMenuButtonSmartMouseTimeoutHandler();
+				}, self.smartMouseTimeout);
+			}
+			else if (self.menu && self.active)
+			{
+				self.extraMenu.layer.finishAnimation();
+				self.extraMenu.show({animate: false});
+			}
+		}
+	},
+	
+	extraMenuButtonSmartMouseTimeoutHandler: function()
+	{
+		var self = this, i;
+		for (i in self.items)
+			self.items[i].onExtraMenuButtonSmartMouseTimeoutHandler();
+		if (self.extraMenu)
+		{
 			self.extraMenu.layer.finishAnimation();
 			self.extraMenu.show({animate: false});
+		}
+		clearTimeout(self.extraMenuButtonSmartMouseTimeout);
+		self.extraMenuButtonSmartMouseTimeout = null;
+	},
+	
+	onExtraMenuButtonMousemove: function(event)
+	{
+		var self = this, $node, offset, height, width, x0, y0, x1, y1, x2, y2;
+		if (self.extraMenuButtonSmartMouseTimeout !== null && self.smartMouseTrack.length > 0)
+		{
+			$node = self.openedMenu.layer.$node;
+			offset = $node.offset();
+			height = $node.outerHeight();
+			width = $node.outerWidth();
+			x0 = self.smartMouseTrack[0].x;
+			y0 = self.smartMouseTrack[0].y;
+			x1 = Math.round(offset.left)-self.smartMouseTolerance;
+			y1 = Math.round(offset.top);
+			x2 = x1+width+self.smartMouseTolerance;
+			y2 = y1;
+			if (!pointInsideTriangle(event.pageX, event.pageY, x0, y0, x1, y1, x2, y2))
+				self.extraMenuButtonSmartMouseTimeoutHandler();
 		}
 	},
 	
 	onExtraMenuButtonMouseleave: function(event)
 	{
-		if (this.type === "hover")
-			this.extraMenu.hideWithDelay();
-		this.setExtraMenuButtonHighlighted(false);
-		this.setExtraMenuButtonHighlightedOnMenuHide = true;
+		var self = this;
+		if (self.type === "hover")
+			self.extraMenu.hideWithDelay();
+		self.setExtraMenuButtonHighlighted(false);
+		self.setExtraMenuButtonHighlightedOnMenuHide = true;
+		if (self.extraMenuButtonSmartMouseTimeout)
+			clearTimeout(self.extraMenuButtonSmartMouseTimeout);
+		self.extraMenuButtonSmartMouseTimeout = null;
 	},
 	
 	onExtraMenuButtonMousedown: function(event)
@@ -286,23 +369,24 @@ hop.inherit(hop.menu, hop.component, {
 			item = this.items[i];
 			if (item.menu)
 			{
-				item.setParentMenuShowMenu = false;
 				item.menu.layer.finishAnimation();
 				item.menu.hide({animate: false});
-				item.setParentMenuShowMenu = true;
 			}
 		}
 		this.setExtraMenuButtonOpened(true);
 		this.showMenu = true;
+		this.openedMenu = this.extraMenu;
 	},
 
-	onExtraMenuHideBefore: function()
+	onExtraMenuHideBefore: function(params)
 	{
 		if (this.setExtraMenuButtonHighlightedOnMenuHide)
 			this.setExtraMenuButtonHighlighted(false);
 		this.setExtraMenuButtonOpened(false);
-		if (this.setShowMenu)
+		if (params.setShowMenu)
 			this.showMenu = false;
+		if (this.openedMenu === this.extraMenu)
+			this.openedMenu = null;
 	},
 	
 	onWindowResize: function(event)
@@ -577,11 +661,23 @@ hop.inherit(hop.menu, hop.component, {
 		self.setExtraMenuButtonHighlighted(false);
 		if (self.type === "hover")
 			self.extraMenu.hideWithDelay();
-		else
+		else if (!self.smartMouse)
 		{
-			self.setShowMenu = false;
-			self.extraMenu.hide({animate: false});
-			self.setShowMenu = true;
+			self.extraMenu.hide({
+				animate: false,
+				setShowMenu: false
+			});
+		}
+	},
+	
+	onItemSmartMouseTimeoutHandler: function(item)
+	{
+		if (this.extraMenu)
+		{
+			this.extraMenu.hide({
+				animate: false,
+				setShowMenu: false
+			});
 		}
 	},
 	
@@ -626,8 +722,8 @@ $.extend(hop.menuItem.prototype, {
 	{
 		var self = this;
 		self.setHighlightedOnMenuHide = true;
-		self.setParentMenuShowMenu = true;
 		self.menu = null;
+		self.smartMouseTimeout = null;
 		hop.component.prototype.create.apply(this, arguments);
 		self.generateHtml();
 		self.setVisible(self.visible);
@@ -742,7 +838,7 @@ $.extend(hop.menuItem.prototype, {
 		{
 			if (self.extraMenuItem)
 				self.extraMenuItem.setMenu(menu);
-				
+
 			menu.layer.$node.on("mouseenter", function(event)
 			{
 				self.onMenuMouseenter(event);
@@ -758,9 +854,9 @@ $.extend(hop.menuItem.prototype, {
 				self.onMenuShowBefore();
 			});
 
-			menu.layer.on("hideBefore", function()
+			menu.layer.on("hideBefore", function(layer, params)
 			{
-				self.onMenuHideBefore();
+				self.onMenuHideBefore(params);
 			});
 
 			menu.on("loadStart", function()
@@ -801,36 +897,39 @@ $.extend(hop.menuItem.prototype, {
 
 	onMenuShowBefore: function()
 	{
-		var i, item, parentMenu = this.parentMenu;
+		var self = this, i, item, parentMenu = self.parentMenu;
 		for (i in parentMenu.items)
 		{
 			item = parentMenu.items[i];
-			if (item.menu && item !== this)
+			if (item.menu && item !== self)
 			{
-				item.setParentMenuShowMenu = false;
 				item.menu.layer.finishAnimation();
-				item.menu.hide({animate: false});
-				item.setParentMenuShowMenu = true;
+				item.menu.hide({
+					animate: false,
+					setParentMenuShowMenu: false
+				});
 			}
 		}
-		if (!this.extraMenuItem)
+		if (!self.extraMenuItem)
 		{
-			parentMenu.setShowMenu = false;
 			parentMenu.extraMenu.layer.finishAnimation();
 			parentMenu.extraMenu.hide({animate: false});
-			parentMenu.setShowMenu = true;
 			parentMenu.showMenu = true;
 		}
-		this.setOpened(true);
+		self.setOpened(true);
+		self.parentMenu.openedMenu = self.menu;
 	},
 
-	onMenuHideBefore: function()
+	onMenuHideBefore: function(params)
 	{
-		if (this.setHighlightedOnMenuHide)
-			this.setHighlighted(false);
-		this.setOpened(false);
-		if (this.setParentMenuShowMenu && !this.extraMenuItem)
-			this.parentMenu.showMenu = false;
+		var self = this;
+		if (self.setHighlightedOnMenuHide)
+			self.setHighlighted(false);
+		self.setOpened(false);
+		if (params.setParentMenuShowMenu && !self.extraMenuItem)
+			self.parentMenu.showMenu = false;
+		if (self.parentMenu.openedMenu === self.menu)
+			self.parentMenu.openedMenu = null;
 	},
 
 	onMenuLoadStart: function()
@@ -872,6 +971,11 @@ $.extend(hop.menuItem.prototype, {
 		{
 			self.onMouseleave(event);
 		});
+		
+		self.$node.on("mousemove", function(event)
+		{
+			self.onMousemove(event);
+		});
 
 		self.$node.on("mousedown", function(event)
 		{
@@ -891,11 +995,22 @@ $.extend(hop.menuItem.prototype, {
 		self.parentMenu.onItemMouseenter(self, event);
 		self.setHighlighted(true);
 		self.setHighlightedOnMenuHide = false;
-		if (self.menu && self.active)
+		if (self.parentMenu.type === "hover")
 		{
-			if (self.parentMenu.type === "hover")
+			if (self.menu && self.active)
 				self.menu.showWithDelay();
-			else if (self.parentMenu.showMenu)
+		}
+		else if (self.parentMenu.showMenu)
+		{
+			if (self.parentMenu.smartMouse && self.parentMenu.openedMenu
+				&& self.parentMenu.openedMenu !== self.menu)
+			{
+				self.smartMouseTimeout = setTimeout(function()
+				{
+					self.smartMouseTimeoutHandler();
+				}, self.parentMenu.smartMouseTimeout);
+			}
+			else if (self.menu && self.active)
 			{
 				self.menu.layer.finishAnimation();
 				self.menu.show({animate: false});
@@ -911,21 +1026,77 @@ $.extend(hop.menuItem.prototype, {
 		{
 			if (self.parentMenu.type === "hover")
 				self.menu.hideWithDelay();
-			else
+			else if (!self.parentMenu.smartMouse)
 			{
-				self.setParentMenuShowMenu = false;
-				self.menu.hide({animate: false});
-				self.setParentMenuShowMenu = true;
+				self.menu.hide({
+					animate: false,
+					setParentMenuShowMenu: false
+				});
 			}
+		}
+	},
+	
+	smartMouseTimeoutHandler: function()
+	{
+		var self = this, i, item;
+		for (i in self.parentMenu.items)
+		{
+			item = self.parentMenu.items[i];
+			if (item !== self)
+				item.onOtherItemSmartMouseTimeoutHandler(self);
+		}
+		self.parentMenu.onItemSmartMouseTimeoutHandler(self);
+		if (self.menu)
+		{
+			self.menu.layer.finishAnimation();
+			self.menu.show({animate: false});
+		}
+		clearTimeout(self.smartMouseTimeout);
+		self.smartMouseTimeout = null;
+	},
+	
+	onOtherItemSmartMouseTimeoutHandler: function(item)
+	{
+		if (this.menu)
+		{
+			this.menu.hide({
+				animate: false,
+				setParentMenuShowMenu: false
+			});
+		}
+	},
+	
+	onMousemove: function(event)
+	{
+		var self = this, parentMenu = self.parentMenu,
+			$node, offset, height, width, x0, y0, x1, y1, x2, y2;
+		if (self.smartMouseTimeout !== null && parentMenu.smartMouseTrack.length > 0)
+		{
+			$node = parentMenu.openedMenu.layer.$node;
+			offset = $node.offset();
+			height = $node.outerHeight();
+			width = $node.outerWidth();
+			x0 = parentMenu.smartMouseTrack[0].x;
+			y0 = parentMenu.smartMouseTrack[0].y;
+			x1 = Math.round(offset.left)-parentMenu.smartMouseTolerance;
+			y1 = Math.round(offset.top);
+			x2 = x1+width+parentMenu.smartMouseTolerance;
+			y2 = y1;
+			if (!pointInsideTriangle(event.pageX, event.pageY, x0, y0, x1, y1, x2, y2))
+				self.smartMouseTimeoutHandler();
 		}
 	},
 
 	onMouseleave: function(event)
 	{
-		if (this.menu && this.parentMenu.type === "hover")
-			this.menu.hideWithDelay();
-		this.setHighlighted(false);
-		this.setHighlightedOnMenuHide = true;
+		var self = this;
+		if (self.menu && self.parentMenu.type === "hover")
+			self.menu.hideWithDelay();
+		self.setHighlighted(false);
+		self.setHighlightedOnMenuHide = true;
+		if (self.smartMouseTimeout)
+			clearTimeout(self.smartMouseTimeout);
+		self.smartMouseTimeout = null;
 	},
 
 	onMousedown: function(event)
@@ -1017,14 +1188,26 @@ $.extend(hop.menuItem.prototype, {
 		{
 			if (self.parentMenu.type === "hover")
 				self.menu.hideWithDelay();
-			else
+			else if (!self.parentMenu.smartMouse)
 			{
-				self.setParentMenuShowMenu = false;
-				self.menu.hide({animate: false});
-				self.setParentMenuShowMenu = true;
+				self.menu.hide({
+					animate: false,
+					setParentMenuShowMenu: false
+				});
 			}
 		}
 	},
+	
+	onExtraMenuButtonSmartMouseTimeoutHandler: function()
+	{
+		if (this.menu)
+		{
+			this.menu.hide({
+				animate: false,
+				setParentMenuShowMenu: false
+			});
+		}
+	}
 });
 
 })(window, document, jQuery, hopjs);
