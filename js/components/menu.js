@@ -287,7 +287,7 @@ hop.inherit(hop.menu, hop.component, {
 					self.extraMenuButtonSmartMouseTimeoutHandler();
 				}, self.smartMouseTimeout);
 			}
-			else if (self.menu && self.active)
+			else if (self.extraMenu)
 			{
 				self.extraMenu.layer.finishAnimation();
 				self.extraMenu.show({animate: false});
