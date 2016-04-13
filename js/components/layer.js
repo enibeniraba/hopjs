@@ -46,7 +46,12 @@ hop.inherit(hop.layer, hop.component, {
 			position: "absolute",
 			element: "document",
 			elementBox: "border",
-			elementRegion: null,
+			elementRegion: {
+				top: 0,
+				left: 0,
+				height: 0,
+				width: 0
+			},
 			elementAlignY: 0,
 			elementAlignX: 0,
 			alignY: 0,
@@ -61,7 +66,12 @@ hop.inherit(hop.layer, hop.component, {
 			collisionRight: "none",
 			collisionElement: "document",
 			collisionElementBox: "border",
-			collisionRegion: null,
+			collisionRegion: {
+				top: 0,
+				left: 0,
+				height: 0,
+				width: 0
+			},
 			overlay: false,
 			overlayClass: null,
 			overlayTransparent: true,

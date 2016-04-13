@@ -5,6 +5,7 @@ module.exports = function(grunt)
 		buildPath = "build/hopjs-"+pkg.version,
 		concatAll = [
 			buildPath+"/js/base.js",
+			"js/components/contextmenu.js",
 			"js/components/datepicker.js",
 			"js/components/datepickeranimations.js",
 			"js/components/draggable.js",
@@ -22,6 +23,7 @@ module.exports = function(grunt)
 		minFiles = [
 			"hop",
 			"base",
+			"components/contextmenu",
 			"components/datepicker",
 			"components/datepickeranimations",
 			"components/dialog",

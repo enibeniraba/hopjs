@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Menu</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/dropdownmenu.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../js/base.js"></script>
+<script type="text/javascript" src="../js/components/layer.js"></script>
+<script type="text/javascript" src="../js/components/dropdownmenu.js"></script>
+<script type="text/javascript" src="../js/components/contextmenu.js"></script>
+<style type="text/css">
+.settings
+{
+	float: left;
+	margin: 0 20px 20px 0;
+}
+
+.table
+{
+	border-collapse: collapse;
+	background: #f8f8f8;
+}
+
+.table td
+{
+	padding: 8px;
+	border: solid 1px #ccc;
+}
+
+.table input[type="text"]
+{
+	width: 100px;
+}
+
+#cm1
+{
+	margin: 100px;
+	padding: 10px;
+	height: 200px;
+	width: 200px;
+	border: solid 1px #ccc;
+	background: #f8f8f8;
+}
+</style>
+</head>
+<body>
+<h1>Menu</h1>
+<p id="cm1">Click right mouse button to show context menu.<br />Hold ctrl button to show browser's context menu.</p>
+<div class="settings">
+	<p>Menu params</p>
+	<table class="table">
+		<tr>
+			<td>Param</td>
+			<td>Value</td>
+		</tr>
+		<tr>
+			<td>switchKey</td>
+			<td>
+				<input type="checkbox" id="switch-key" checked="checked" />
+			</td>
+		</tr>
+		<tr>
+			<td>showOnSwitchKey</td>
+			<td>
+				<input type="checkbox" id="show-on-switch-key" />
+			</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+
+	var items = [
+		{
+			text: "Menu",
+			icon: "../themes/default/images/datepickerdone.png",
+			menu: {
+				items: [
+					{
+						text: "Checkable",
+						checkable: true
+					},
+					{
+						text: "Checkable checked",
+						checkable: true,
+						checked: true,
+						onCheck: function(item)
+						{
+							alert(item.checked ? "Checked" : "Unchecked");
+						}
+					},
+					{
+						text: "Checked",
+						checked: true
+					},
+					{
+						text: "<b style=\"color: #a00\">Colored</b>",
+						checked: true
+					},
+					{
+						id: "deeper",
+						text: "Deeper",
+						menu: {
+							items: [
+								{
+									text: "Hide",
+									hideOnClick: false,
+									onClick: function(item, data)
+									{
+										item.parentMenu.hide();
+									}
+								},
+								{
+									text: "Hide top",
+									hideOnClick: false,
+									onClick: function(item, data)
+									{
+										item.parentMenu.getTopMenu().hide();
+									}
+								},
+								{
+									id: "deeper",
+									text: "Deeper",
+									menu: {
+										items: [
+											{text: "One"},
+											{text: "Two"},
+											{text: "Three"},
+											{text: "Four"},
+											{text: "Five"}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						text: "Menu layer params",
+						menu: {
+							items: [
+								{text: "One"},
+								{text: "Two"},
+								{text: "Three"},
+								{text: "Four"},
+								{text: "Five"}
+							],
+							layerParams: {
+								elementAlignY: "bottom",
+								elementAlignX: "left",
+								alignY: "bottom",
+								alignX: "right"
+							}
+						}
+					},
+					{
+						text: "On<br />Two<br />Three",
+						icon: "../themes/default/images/datepickerdone.png",
+						menu: {
+							items: [
+								{text: "One"},
+								{text: "Two"},
+								{text: "Three"},
+								{text: "Four"},
+								{text: "Five"}
+							]
+						}
+					}
+				]
+			}
+		},
+		{
+			text: "Radio",
+			menu: {
+				items: [
+					{text: "Not radio"},
+					"-",
+					{
+						text: "One",
+						checkable: true,
+						checked: true,
+						radioGroup: "radio1"
+					},
+					{
+						text: "Two",
+						checkable: true,
+						radioGroup: "radio1"
+					},
+					{
+						text: "Three",
+						checkable: true,
+						radioGroup: "radio1"
+					},
+					"-",
+					{
+						text: "Four",
+						checkable: true,
+						radioGroup: "radio2",
+						uncheckable: true
+					},
+					{
+						text: "Five",
+						checkable: true,
+						radioGroup: "radio2",
+						uncheckable: true
+					},
+					"-",
+					{
+						text: "Six",
+						radioGroup: "radio3"
+					},
+					{
+						text: "Seven",
+						checked: true,
+						radioGroup: "radio3"
+					}
+				]
+			}
+		},
+		{
+			text: "URL",
+			url: "http://example.com"
+		},
+		{
+			text: "Loader",
+			icon: "../themes/default/images/datepickercurrenttime.png",
+			menu: {
+				loader: function(params)
+				{
+					var self = this;
+					self.loadStart();
+					setTimeout(function()
+					{
+						self.addItems([
+							{text: "One"},
+							{text: "Two"},
+							{text: "Three"},
+							{text: "Four"},
+							{text: "Five"}
+						]);
+						self.loadFinish(params);
+					}, 1000);
+				}
+			}
+		},
+		{
+			text: "Ajax",
+			menu: {
+				ajax: {
+					url: "data/menuitems.json"
+				}
+			}
+		},
+		{
+			text: "Ajax JSONP",
+			menu: {
+				ajax: {
+					url: "data/menuitems.js",
+					dataType: "jsonp",
+					jsonpCallback: "menuCallback"
+				}
+			}
+		}
+	];
+	
+	cm1 = new hop.contextMenu({
+		node: $("#cm1")[0],
+		menu: {
+			items: items
+		}
+	});
+	
+	$("#switch-key").on("change", function()
+	{
+		cm1.switchKey = this.checked;
+	});
+	$("#show-on-switch-key").on("change", function()
+	{
+		cm1.showOnSwitchKey = this.checked;
+	});
+});
+</script>
+</body>
+</html>
