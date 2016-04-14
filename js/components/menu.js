@@ -14,11 +14,42 @@
 	
 var cp = "hopjs-menu-";
 
-var pointInsideTriangle = function(x, y, x1, y1, x2, y2, x3, y3)
+var pointRectangleSector = function(x0, y0, x1, y1, x2, y2, x3, y3, x4, y4)
 {
-	var a = (x1-x)*(y2-y1)-(x2-x1)*(y1-y),
-		b = (x2-x)*(y3-y2)-(x3-x2)*(y2-y),
-		c = (x3-x)*(y1-y3)-(x1-x3)*(y3-y);
+	var X1 = x1-x0, X2 = x2-x0, X3 = x3-x0, X4 = x4-x0,
+		Y1 = y1-y0, Y2 = y2-y0, Y3 = y3-y0, Y4 = y4-y0,
+		m1 = Math.sqrt(X1*X1+Y1*Y1),
+		m2 = Math.sqrt(X2*X2+Y2*Y2),
+		m3 = Math.sqrt(X3*X3+Y3*Y3),
+		m4 = Math.sqrt(X4*X4+Y4*Y4),
+		a = [
+			[Math.acos((X1*X2+Y1*Y2)/(m1*m2)), x1, y1, x2, y2],
+			[Math.acos((X1*X3+Y1*Y3)/(m1*m3)), x1, y1, x3, y3],
+			[Math.acos((X1*X4+Y1*Y4)/(m1*m4)), x1, y1, x4, y4],
+			[Math.acos((X2*X3+Y2*Y3)/(m2*m3)), x2, y2, x3, y3],
+			[Math.acos((X2*X4+Y2*Y4)/(m2*m4)), x2, y2, x4, y4],
+			[Math.acos((X3*X4+Y3*Y4)/(m3*m4)), x3, y3, x4, y4]
+		],
+		i, maxAngle = Number.NEGATIVE_INFINITY, result = {};
+		for (i in a)
+		{
+			if (a[i][0] > maxAngle)
+			{
+				maxAngle = a[i][0];
+				result.x1 = a[i][1];
+				result.y1 = a[i][2];
+				result.x2 = a[i][3];
+				result.y2 = a[i][4];
+			}
+		}
+		return result;
+};
+
+var pointInsideTriangle = function(x0, y0, x1, y1, x2, y2, x3, y3)
+{
+	var a = (x1-x0)*(y2-y1)-(x2-x1)*(y1-y0),
+		b = (x2-x0)*(y3-y2)-(x3-x2)*(y2-y0),
+		c = (x3-x0)*(y1-y3)-(x1-x3)*(y3-y0);
 	return (a >= 0 && b >= 0 && c >= 0 || a <= 0 && b <= 0 && c <= 0);
 };
 
@@ -38,7 +69,6 @@ hop.inherit(hop.menu, hop.component, {
 			dropdownMenuParams: null,
 			smartMouse: true,
 			smartMouseTimeout: 500,
-			smartMouseTolerance: 50,
 			smartMouseTrackSize: 3,
 			useExtraMenu: false,
 			extraMenuParams: null,
@@ -311,20 +341,18 @@ hop.inherit(hop.menu, hop.component, {
 	
 	onExtraMenuButtonMousemove: function(event)
 	{
-		var self = this, $node, offset, height, width, x0, y0, x1, y1, x2, y2;
+		var self = this, $node, offset, height, width, x, y, s;
 		if (self.extraMenuButtonSmartMouseTimeout !== null && self.smartMouseTrack.length > 0)
 		{
 			$node = self.openedMenu.layer.$node;
 			offset = $node.offset();
 			height = $node.outerHeight();
 			width = $node.outerWidth();
-			x0 = self.smartMouseTrack[0].x;
-			y0 = self.smartMouseTrack[0].y;
-			x1 = Math.round(offset.left)-self.smartMouseTolerance;
-			y1 = Math.round(offset.top);
-			x2 = x1+width+self.smartMouseTolerance;
-			y2 = y1;
-			if (!pointInsideTriangle(event.pageX, event.pageY, x0, y0, x1, y1, x2, y2))
+			x = self.smartMouseTrack[0].x;
+			y = self.smartMouseTrack[0].y;
+			s = pointRectangleSector(x, y, offset.left, offset.top, offset.left+width, offset.top,
+				offset.left+width, offset.top+height, offset.left, offset.top+height);
+			if (!pointInsideTriangle(event.pageX, event.pageY, x, y, s.x1, s.y1, s.x2, s.y2))
 				self.extraMenuButtonSmartMouseTimeoutHandler();
 		}
 	},
@@ -1069,20 +1097,18 @@ $.extend(hop.menuItem.prototype, {
 	onMousemove: function(event)
 	{
 		var self = this, parentMenu = self.parentMenu,
-			$node, offset, height, width, x0, y0, x1, y1, x2, y2;
+			$node, offset, height, width, x, y, s;
 		if (self.smartMouseTimeout !== null && parentMenu.smartMouseTrack.length > 0)
 		{
 			$node = parentMenu.openedMenu.layer.$node;
 			offset = $node.offset();
 			height = $node.outerHeight();
 			width = $node.outerWidth();
-			x0 = parentMenu.smartMouseTrack[0].x;
-			y0 = parentMenu.smartMouseTrack[0].y;
-			x1 = Math.round(offset.left)-parentMenu.smartMouseTolerance;
-			y1 = Math.round(offset.top);
-			x2 = x1+width+parentMenu.smartMouseTolerance;
-			y2 = y1;
-			if (!pointInsideTriangle(event.pageX, event.pageY, x0, y0, x1, y1, x2, y2))
+			x = parentMenu.smartMouseTrack[0].x;
+			y = parentMenu.smartMouseTrack[0].y;
+			s = pointRectangleSector(x, y, offset.left, offset.top, offset.left+width, offset.top,
+				offset.left+width, offset.top+height, offset.left, offset.top+height);
+			if (!pointInsideTriangle(event.pageX, event.pageY, x, y, s.x1, s.y1, s.x2, s.y2))
 				self.smartMouseTimeoutHandler();
 		}
 	},
