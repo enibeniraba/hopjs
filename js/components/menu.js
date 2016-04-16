@@ -66,6 +66,7 @@ hop.inherit(hop.menu, hop.component, {
 		return {
 			extraClass: "",
 			type: "click",
+			parentMarks: true,
 			dropdownMenuParams: null,
 			smartMouse: true,
 			smartMouseTimeout: 500,
@@ -151,6 +152,13 @@ hop.inherit(hop.menu, hop.component, {
 
 		this.type = value;
 		this.updateDropdownMenuParams();
+	},
+	
+	setParentMarks: function(value)
+	{
+		this.parentMarks = !!value;
+		for (var i in this.items)
+			this.items[i].updateParentMark();
 	},
 
 	setDropdownMenuParams: function(params, update)
@@ -1187,7 +1195,7 @@ $.extend(hop.menuItem.prototype, {
 	updateParentMark: function()
 	{
 		var menu = this.menu,
-			state = !!(menu && (menu.items.length > 0 || (menu.loader || menu.ajax) && !menu.loaded));
+			state = !!(this.parentMenu && this.parentMenu.parentMarks && menu && (menu.items.length > 0 || (menu.loader || menu.ajax) && !menu.loaded));
 		this.$node.toggleClass(cp+"parent", state);
 	},
 	
