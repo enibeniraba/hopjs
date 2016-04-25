@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<title>Button</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/button.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/dropdownmenu.css" />
+<script type="text/javascript" src="../external/jquery.js"></script>
+<script type="text/javascript" src="../js/base.js"></script>
+<script type="text/javascript" src="../js/components/layer.js"></script>
+<script type="text/javascript" src="../js/components/button.js"></script>
+<script type="text/javascript" src="../js/components/dropdownmenu.js"></script>
+<style type="text/css">
+.settings
+{
+	float: left;
+	margin: 0 20px 20px 0;
+}
+
+.table
+{
+	border-collapse: collapse;
+	background: #f8f8f8;
+}
+
+.table td
+{
+	padding: 8px;
+	border: solid 1px #ccc;
+}
+
+.table input[type="text"]
+{
+	width: 100px;
+}
+</style>
+</head>
+<body>
+<h1>Button</h1>
+<div id="container"></div>
+<br />
+<div class="settings">
+	<p>Button params</p>
+	<table class="table">
+		<tr>
+			<td>Param</td>
+			<td>Value</td>
+		</tr>
+		<tr>
+			<td>enabled</td>
+			<td>
+				<input type="checkbox" id="enabled" checked="checked" />
+			</td>
+		</tr>
+		
+		<tr>
+			<td>pressed</td>
+			<td>
+				<input type="checkbox" id="pressed" />
+			</td>
+		</tr>
+		<tr>
+			<td>allowToggle</td>
+			<td>
+				<input type="checkbox" id="allow-toggle" />
+			</td>
+		</tr>
+		<tr>
+			<td>allowFocus</td>
+			<td>
+				<input type="checkbox" id="allow-focus" checked="checked"/>
+			</td>
+		</tr>
+		<tr>
+			<td>text</td>
+			<td>
+				<input type="checkbox" id="text" checked="checked" />
+			</td>
+		</tr>
+		<tr>
+			<td>icon</td>
+			<td>
+				<input type="checkbox" id="icon" checked="checked" />
+			</td>
+		</tr>
+		<tr>
+			<td>iconPosition</td>
+			<td>
+				<select id="icon-position">
+					<option value="left">left</option>
+					<option value="right">right</option>
+					<option value="top">top</option>
+					<option value="bottom">bottom</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>arrow</td>
+			<td>
+				<select id="arrow">
+					<option value="auto">auto</option>
+					<option value="show">show</option>
+					<option value="hide">hide</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>arrowPosition</td>
+			<td>
+				<select id="arrow-position">
+					<option value="left">left</option>
+					<option value="right" selected="selected">right</option>
+					<option value="top">top</option>
+					<option value="bottom">bottom</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>menu</td>
+			<td>
+				<input type="checkbox" id="menu" />
+			</td>
+		</tr>
+		<tr>
+			<td>Multiple lines</td>
+			<td>
+				<input type="checkbox" id="multiple-lines" />
+			</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+$(function()
+{
+	var hop = hopjs;
+	
+	m1 = new hop.dropdownMenu({
+		items: [
+			{text: "One"},
+			{text: "Two"},
+			{
+				text: "Three",
+				menu: {
+					items: [
+						{text: "One"},
+						{text: "Two"},
+						{text: "Three"},
+						{text: "Four"},
+						{text: "Five"}
+					]
+				}
+			},
+			{text: "Four"},
+			{text: "Five"}
+		]
+	});
+
+	var text = "Button";
+	b1 = new hop.button({
+		parentNode: $("#container")[0],
+		text: text,
+		icon: "../themes/default/images/datepickerdone.png",
+		onClick: function(self, data)
+		{
+			console.log("Click");
+			console.log(data);
+		},
+		onToggle: function(self, data)
+		{
+			console.log("Toggle");
+			console.log(data);
+		}
+	});
+	
+	$("#enabled").on("change", function()
+	{
+		b1.setEnabled(this.checked);
+	});
+	$("#pressed").on("change", function()
+	{
+		b1.setPressed(this.checked);
+	});
+	$("#allow-toggle").on("change", function()
+	{
+		b1.allowToggle = this.checked;
+	});
+	$("#allow-focus").on("change", function()
+	{
+		b1.setAllowFocus(this.checked);
+	});
+	$("#text").on("change", function()
+	{
+		b1.setText(this.checked ? text : "");
+	});
+	$("#icon").on("change", function()
+	{
+		b1.setIcon(this.checked ? "../themes/default/images/datepickerdone.png" : "");
+	});
+	$("#icon-position").on("change", function()
+	{
+		b1.setIconPosition(this.value);
+	});
+	$("#arrow").on("change", function()
+	{
+		var arrow = null;
+		if (this.value === "show")
+			arrow = true;
+		else if (this.value === "hide")
+			arrow = false;
+		b1.setArrow(arrow);
+	});
+	$("#arrow-position").on("change", function()
+	{
+		b1.setArrowPosition(this.value);
+	});
+	$("#menu").on("change", function()
+	{
+		b1.setMenu(this.checked ? m1 : null);
+	});
+	$("#multiple-lines").on("change", function()
+	{
+		text = (this.checked ? "Button<br />Second line" : "Button");
+		b1.setText(text);
+	});
+});
+</script>
+</body>
+</html>
