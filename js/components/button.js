@@ -89,6 +89,7 @@ hop.inherit(hop.button, hop.component, {
 		self.setArrow(self.arrow);
 		self.setArrowPosition(self.arrowPosition);
 		self.setTabIndex(self.tabIndex);
+		self.setMenu(self.menu);
 	},
 	
 	setExtraClass: function(value)
@@ -187,7 +188,8 @@ hop.inherit(hop.button, hop.component, {
 		var self = this, menuParams = {};
 		if (menu && !(menu instanceof hop.dropdownMenu))
 			menu = new hop.dropdownMenu(menu);
-		self.$node.toggleClass(cp+"arrow", self.arrow || self.arrow === null && menu !== null);
+		if (self.node)
+			self.$node.toggleClass(cp+"arrow", self.arrow || self.arrow === null && menu !== null);
 		if (menu === self.menu)
 			return;
 
@@ -260,7 +262,8 @@ hop.inherit(hop.button, hop.component, {
 		value = String(value);
 		if ($.inArray(value, positions) !== -1)
 		{
-			this.$node.removeClass(cp+"arrow-"+this.arrowPosition);
+			if (this.node)
+				this.$node.removeClass(cp+"arrow-"+this.arrowPosition);
 			this.arrowPosition = value;
 			if (this.node)
 				this.$node.addClass(cp+"arrow-"+value);

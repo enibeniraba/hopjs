@@ -15,6 +15,7 @@ module.exports = function(grunt)
 			"js/components/menu.js",
 			"js/components/menubutton.js",
 			"js/components/resizable.js",
+			"js/components/splitbutton.js",
 			"js/components/tabs.js",
 			"js/components/tooltip.js",
 			"js/components/window.js",
@@ -36,6 +37,7 @@ module.exports = function(grunt)
 			"components/menubutton",
 			"components/message",
 			"components/resizable",
+			"components/splitbutton",
 			"components/tabs",
 			"components/tooltip",
 			"components/window"
