@@ -14,6 +14,8 @@
 	
 var cp = "hopjs-button-",
 	_cp = "."+cp,
+	aligns = ["left", "center", "right"],
+	verticalAligns = ["top", "middle", "bottom"],
 	positions = ["top", "bottom", "left", "right"];
 
 hop.button = function(params)
@@ -33,13 +35,20 @@ hop.inherit(hop.button, hop.component, {
 			allowToggle: false,
 			allowFocus: true,
 			text: "",
+			textAlign: "center",
+			wrapText: true,
 			icon: "",
 			iconPosition: "left",
+			fixedIcon: false,
 			menu: null,
 			menuParams: null,
 			arrow: null,
 			arrowPosition: "right",
-			tabIndex: 0
+			tabIndex: 0,
+			height: null,
+			width: null,
+			align: "center",
+			verticalAlign: "middle"
 		};
 	},
 
@@ -84,11 +93,18 @@ hop.inherit(hop.button, hop.component, {
 		self.setPressed(self.pressed);
 		self.setAllowFocus(self.allowFocus);
 		self.setText(self.text);
+		self.setTextAlign(self.textAlign);
+		self.setWrapText(self.wrapText);
 		self.setIcon(self.icon);
 		self.setIconPosition(self.iconPosition);
+		self.setFixedIcon(self.fixedIcon);
 		self.setArrow(self.arrow);
 		self.setArrowPosition(self.arrowPosition);
 		self.setTabIndex(self.tabIndex);
+		self.setHeight(self.height);
+		self.setWidth(self.width);
+		self.setAlign(self.align);
+		self.setVerticalAlign(self.verticalAlign);
 		self.setMenu(self.menu);
 	},
 	
@@ -150,6 +166,26 @@ hop.inherit(hop.button, hop.component, {
 		}
 	},
 	
+	setTextAlign: function(value)
+	{
+		value = String(value);
+		if ($.inArray(value, aligns) !== -1)
+		{
+			if (this.node)
+				this.$node.removeClass(cp+"text-align-"+this.textAlign);
+			this.textAlign = value;
+			if (this.node)
+				this.$node.addClass(cp+"text-align-"+value);
+		}
+	},
+	
+	setWrapText: function(value)
+	{
+		this.wrapText = !!value;
+		if (this.node)
+			this.$node.toggleClass(cp+"text-nowrap", !this.wrapText);
+	},
+	
 	setIcon: function(icon)
 	{
 		this.icon = String(icon);
@@ -172,6 +208,13 @@ hop.inherit(hop.button, hop.component, {
 			if (this.node && this.icon !== "")
 				this.$node.addClass(cp+"icon-"+value);
 		}
+	},
+	
+	setFixedIcon: function(value)
+	{
+		this.fixedIcon = !!value;
+		if (this.$node)
+			this.$node.toggleClass(cp+"fixed-icon", this.fixedIcon);
 	},
 	
 	setArrow: function(value)
@@ -281,6 +324,58 @@ hop.inherit(hop.button, hop.component, {
 			this.$node.attr("tabIndex", this.tabIndex);
 	},
 	
+	setHeight: function(value)
+	{
+		if (value !== null)
+		{
+			value = parseInt(value) || 0;
+			if (value <= 0)
+				return;
+		}
+		this.height = value;
+		if (this.node)
+			this.node.style.height = (value === null ? "" : value+"px");
+	},
+	
+	setWidth: function(value)
+	{
+		if (value !== null)
+		{
+			value = parseInt(value) || 0;
+			if (value <= 0)
+				return;
+		}
+		this.width = value;
+		if (this.node)
+			this.node.style.width = (value === null ? "" : value+"px");
+	},
+	
+	setAlign: function(value)
+	{
+		value = String(value);
+		if ($.inArray(value, aligns) !== -1)
+		{
+			if (this.node)
+				this.$node.removeClass(cp+"align-"+this.align);
+			this.align = value;
+			if (this.node)
+				this.$node.addClass(cp+"align-"+value);
+		}
+	},
+	
+	setVerticalAlign: function(value)
+	{
+		value = String(value);
+		if ($.inArray(value, verticalAligns) !== -1)
+		{
+			if (this.node)
+				this.$node.removeClass(cp+"vertical-align-"+this.verticalAlign);
+			this.verticalAlign = value;
+			if (this.node)
+				this.$node.addClass(cp+"vertical-align-"+value);
+		}
+	},
+	
 	generateHtml: function()
 	{
 		var self = this;
@@ -306,8 +401,8 @@ hop.inherit(hop.button, hop.component, {
 			self.onDocumentMouseup(event);
 		});
 		
-		self.$node.html('<span><span><i></i><span></span></span></span>');
-		self.$text = $("> span > span > span", self.node);
+		self.$node.html('<span><span><span><span><i></i><span></span></span></span></span></span>');
+		self.$text = $("> span > span > span > span > span", self.node);
 		self.textNode = self.$text[0];
 		self.$icon = $("i", self.node);
 		self.iconNode = self.$icon[0];

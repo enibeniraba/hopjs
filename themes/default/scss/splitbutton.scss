@@ -22,13 +22,12 @@
 	> span > span
 	{
 		display: block;
+		position: relative;
 		overflow: hidden;
+		box-sizing: border-box;
 		padding: 4px 8px;
 		height: 100%;
-		box-sizing: border-box;
 		min-height: 20px;
-		margin: 0;
-		position: relative;
 		background-color: $themeBackgroundColor;
 		border: solid 1px $themeBorderColor;
 		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
@@ -38,8 +37,28 @@
 	{
 		display: block;
 		height: 100%;
-		white-space: nowrap;
 		line-height: $themeLineHeight;
+		text-align: center;
+	}
+	
+	&.hopjs-button-text-align-left > span > span > span
+	{
+		text-align: left;
+	}
+	
+	&.hopjs-button-text-align-center > span > span > span
+	{
+		text-align: center;
+	}
+	
+	&.hopjs-button-text-align-right > span > span > span
+	{
+		text-align: right;
+	}
+	
+	&.hopjs-button-text-nowrap > span > span > span
+	{
+		white-space: nowrap;
 	}
 	
 	i

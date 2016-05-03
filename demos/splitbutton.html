@@ -80,6 +80,28 @@
 			</td>
 		</tr>
 		<tr>
+			<td>Multiple lines</td>
+			<td>
+				<input type="checkbox" id="multiple-lines" />
+			</td>
+		</tr>
+		<tr>
+			<td>textAlign</td>
+			<td>
+				<select id="text-align">
+					<option value="left">left</option>
+					<option value="center" selected="selected">center</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>wrapText</td>
+			<td>
+				<input type="checkbox" id="wrap-text" checked="checked"/>
+			</td>
+		</tr>
+		<tr>
 			<td>icon</td>
 			<td>
 				<input type="checkbox" id="icon" checked="checked" />
@@ -114,9 +136,15 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Multiple lines</td>
+			<td>height</td>
 			<td>
-				<input type="checkbox" id="multiple-lines" />
+				<input type="text" id="height" /> px
+			</td>
+		</tr>
+		<tr>
+			<td>width</td>
+			<td>
+				<input type="text" id="width" /> px
 			</td>
 		</tr>
 	</table>
@@ -189,6 +217,19 @@ $(function()
 	{
 		b1.setText(this.checked ? text : "");
 	});
+	$("#multiple-lines").on("change", function()
+	{
+		text = (this.checked ? "Button<br />Second line" : "Button");
+		b1.setText(text);
+	});
+	$("#text-align").on("change", function()
+	{
+		b1.setTextAlign(this.value);
+	});
+	$("#wrap-text").on("change", function()
+	{
+		b1.setWrapText(this.checked);
+	});
 	$("#icon").on("change", function()
 	{
 		b1.setIcon(this.checked ? "../themes/default/images/datepickerdone.png" : "");
@@ -214,10 +255,17 @@ $(function()
 	{
 		b1.setMenu(this.checked ? m1 : null);
 	});
-	$("#multiple-lines").on("change", function()
+	$("#height").on("change", function()
 	{
-		text = (this.checked ? "Button<br />Second line" : "Button");
-		b1.setText(text);
+		var $node = $("#height"), value = $node.val();
+		b1.setHeight(value === "" ? null : value);
+		$node.val(b1.height === null ? "" : b1.height);
+	});
+	$("#width").on("change", function()
+	{
+		var $node = $("#width"), value = $node.val();
+		b1.setWidth(value === "" ? null : value);
+		$node.val(b1.width === null ? "" : b1.width);
 	});
 });
 </script>

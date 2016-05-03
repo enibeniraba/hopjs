@@ -56,22 +56,110 @@
 		position: relative;
 		display: block;
 		height: 100%;
+		box-sizing: border-box;
 	}
-
+	
 	& > span > span
 	{
+		display: table;
+		height: 100%;
+		width: 100%;
+	}
+	
+	&.hopjs-button-fixed-icon > span > span
+	{
 		display: block;
-		padding: 4px 8px;
-		min-height: 20px;
-		margin: 0;
-		position: relative;
 	}
 	
 	& > span > span > span
 	{
-		display: block;
-		white-space: nowrap;
+		display: table-cell;
+		vertical-align: middle;
+	}
+	
+	&.hopjs-button-fixed-icon > span > span > span
+	{
+		display: table;
+		height: 100%;
+		width: 100%;
+	}
+
+	& > span > span > span > span
+	{
+		display: inline-block;
+		position: relative;
+		padding: 4px 8px;
 		line-height: $themeLineHeight;
+		min-height: #{$themeLineHeight}em;
+	}
+	
+	&.hopjs-button-fixed-icon > span > span > span > span
+	{
+		display: table-cell;
+		height: 100%;
+		width: 100%;
+		vertical-align: middle;
+	}
+	
+	& > span > span > span > span > span
+	{
+		line-height: inherit;
+	}
+	
+	&.hopjs-button-fixed-icon > span > span > span > span > span
+	{
+		display: inline-block;
+	}
+	
+	&.hopjs-button-align-left > span > span > span,
+	&.hopjs-button-text-align-left > span > span > span > span
+	{
+		text-align: left;
+	}
+	
+	&.hopjs-button-align-center > span > span > span,
+	&.hopjs-button-text-align-center > span > span > span > span
+	{
+		text-align: center;
+	}
+	
+	&.hopjs-button-align-right > span > span > span,
+	&.hopjs-button-text-align-right > span > span > span > span
+	{
+		text-align: right;
+	}
+	
+	&.hopjs-button-vertical-align-top > span > span > span
+	{
+		&,
+		> span
+		{
+			vertical-align: top;
+		}
+	}
+	
+	&.hopjs-button-vertical-align-middle > span > span > span
+	{
+		&,
+		> span
+		{
+			vertical-align: middle;
+		}
+	}
+	
+	&.hopjs-button-vertical-align-bottom > span > span > span
+	{
+		
+		&,
+		> span
+		{
+			vertical-align: bottom;
+		}
+	}
+	
+	&.hopjs-button-text-nowrap > span > span > span > span > span
+	{
+		white-space: nowrap;
 	}
 	
 	i
@@ -93,7 +181,7 @@
 		
 		&.hopjs-button-icon-left
 		{
-			> span > span
+			> span > span > span > span
 			{
 				padding-left: 20px;
 			}
@@ -105,7 +193,7 @@
 				left: 6px;
 			}
 
-			&.hopjs-button-text > span > span
+			&.hopjs-button-text > span > span > span > span
 			{
 				padding-left: 28px;
 			}
@@ -113,7 +201,7 @@
 
 		&.hopjs-button-icon-right
 		{
-			> span > span
+			> span > span > span > span
 			{
 				padding-right: 20px;
 			}
@@ -125,7 +213,7 @@
 				right: 6px;
 			}
 
-			&.hopjs-button-text > span > span
+			&.hopjs-button-text > span > span > span > span
 			{
 				padding-right: 28px;
 			}
@@ -133,7 +221,7 @@
 
 		&.hopjs-button-icon-top
 		{
-			> span > span
+			> span > span > span > span
 			{
 				padding-left: 20px;
 			}
@@ -145,7 +233,7 @@
 				top: 6px;
 			}
 
-			&.hopjs-button-text > span > span
+			&.hopjs-button-text > span > span > span > span
 			{
 				padding-top: 26px;
 				padding-left: 8px;
@@ -154,7 +242,7 @@
 
 		&.hopjs-button-icon-bottom
 		{
-			> span > span
+			> span > span > span > span
 			{
 				padding-left: 20px;
 			}
@@ -166,7 +254,7 @@
 				bottom: 6px;
 			}
 
-			&.hopjs-button-text > span > span
+			&.hopjs-button-text > span > span > span > span
 			{
 				padding-bottom: 26px;
 				padding-left: 8px;
