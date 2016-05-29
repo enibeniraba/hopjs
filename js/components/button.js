@@ -435,8 +435,8 @@ hop.inherit(hop.button, hop.component, {
 			self.onDocumentMouseup(event);
 		});
 		
-		self.$node.html('<span><span><span><span><i></i><span><span><span></span></span></span></span></span></span></span>');
-		self.$text = $("> span > span > span > span > span > span > span", self.node);
+		self.$node.html('<span><span><span><span><i></i><span><span><span><span></span></span></span></span></span></span></span></span>');
+		self.$text = $("> span > span > span > span > span > span > span > span", self.node);
 		self.textNode = self.$text[0];
 		self.$icon = $("i", self.node);
 		self.iconNode = self.$icon[0];

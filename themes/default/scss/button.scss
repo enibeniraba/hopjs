@@ -73,6 +73,8 @@
 	> span > span > span
 	{
 		display: table-cell;
+		height: 100%;
+		width: 100%;
 		padding: 2px;
 		line-height: 0;
 		text-align: center;
@@ -88,20 +90,30 @@
 	
 	> span > span > span > span > span
 	{
-		display: table;
+		display: block;
 		height: 100%;
 		width: 100%;
 	}
 	
 	> span > span > span > span > span > span
 	{
+		display: table;
+		height: 100%;
+		width: 100%;
+	}
+	
+	> span > span > span > span > span > span > span
+	{
 		display: table-cell;
+		box-sizing: border-box;
+		height: 100%;
+		width: 100%;
 		line-height: 0;
 		text-align: center;
 		vertical-align: middle;
 	}
 	
-	> span > span > span > span > span > span > span
+	> span > span > span > span > span > span > span > span
 	{
 		display: inline-block;
 		padding: 2px 6px;
@@ -119,45 +131,45 @@
 	}
 	
 	&.hopjs-button-align-left > span > span > span,
-	&.hopjs-button-align-left > span > span > span > span > span > span,
-	&.hopjs-button-text-align-left > span > span > span > span > span > span > span
+	&.hopjs-button-align-left > span > span > span > span > span > span > span,
+	&.hopjs-button-text-align-left > span > span > span > span > span > span > span > span
 	{
 		text-align: left;
 	}
 	
 	&.hopjs-button-align-center > span > span > span,
-	&.hopjs-button-align-center > span > span > span > span > span > span,
-	&.hopjs-button-text-align-center > span > span > span > span > span > span > span
+	&.hopjs-button-align-center > span > span > span > span > span > span > span,
+	&.hopjs-button-text-align-center > span > span > span > span > span > span > span > span
 	{
 		text-align: center;
 	}
 	
 	&.hopjs-button-align-right > span > span > span,
-	&.hopjs-button-align-right > span > span > span > span > span > span,
-	&.hopjs-button-text-align-right > span > span > span > span > span > span > span
+	&.hopjs-button-align-right > span > span > span > span > span > span > span,
+	&.hopjs-button-text-align-right > span > span > span > span > span > span > span > span
 	{
 		text-align: right;
 	}
 	
 	&.hopjs-button-vertical-align-top > span > span > span,
-	&.hopjs-button-vertical-align-top > span > span > span > span > span > span
+	&.hopjs-button-vertical-align-top > span > span > span > span > span > span > span
 	{
 		vertical-align: top;
 	}
 	
 	&.hopjs-button-vertical-align-middle > span > span > span,
-	&.hopjs-button-vertical-align-middle > span > span > span > span > span > span
+	&.hopjs-button-vertical-align-middle > span > span > span > span > span > span > span
 	{
 		vertical-align: middle;
 	}
 	
 	&.hopjs-button-vertical-align-bottom > span > span > span,
-	&.hopjs-button-vertical-align-bottom > span > span > span > span > span > span
+	&.hopjs-button-vertical-align-bottom > span > span > span > span > span > span > span
 	{
 		vertical-align: bottom;
 	}
 	
-	&.hopjs-button-text-nowrap > span > span > span > span > span > span > span
+	&.hopjs-button-text-nowrap > span > span > span > span > span > span > span > span
 	{
 		white-space: nowrap;
 	}
@@ -183,27 +195,27 @@
 		{
 			min-height: 24px;
 			min-width: 24px;
-			height: 1px;
 		}
 		
 		> span > span > span > span > span > span > span
 		{
+			height: 24px;
+			padding: 22px;
+		}
+		
+		> span > span > span > span > span > span > span > span
+		{
 			display: none;
 		}
 
-		&.hopjs-button-text > span > span > span > span > span > span > span
+		&.hopjs-button-text > span > span > span > span > span > span > span > span
 		{
 			display: inline-block;
-		}
-		
-		> span > span > span > span > span > span
-		{
-			padding: 22px;
 		}
 	
 		&.hopjs-button-icon-left
 		{
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
 				padding-top: 0 !important;
 				padding-bottom: 0 !important;
@@ -220,7 +232,7 @@
 
 		&.hopjs-button-icon-right
 		{
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
 				padding-top: 0 !important;
 				padding-bottom: 0 !important;
@@ -237,7 +249,7 @@
 
 		&.hopjs-button-icon-top
 		{
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
 				padding-bottom: 0 !important;
 				padding-left: 0 !important;
@@ -254,7 +266,7 @@
 
 		&.hopjs-button-icon-bottom
 		{
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
 				padding-top: 0 !important;
 				padding-left: 0 !important;
@@ -295,8 +307,9 @@
 				min-width: 32px;
 			}
 			
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
+				height: 32px;
 				padding: 30px;
 			}
 		}
@@ -327,8 +340,9 @@
 				min-width: 40px;
 			}
 			
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
+				height: 40px;
 				padding: 38px;
 			}
 		}
@@ -440,7 +454,7 @@
 			padding: 0;
 		}
 		
-		> span > span > span > span > span > span > span
+		> span > span > span > span > span > span > span > span
 		{
 			padding: 3px 6px 1px 6px;
 			min-height: 18px;
@@ -449,17 +463,17 @@
 		
 		&.hopjs-button-icon
 		{		
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
 				padding: 20px;
 			}
 			
-			&.hopjs-button-icon-size-24 > span > span > span > span > span > span
+			&.hopjs-button-icon-size-24 > span > span > span > span > span > span > span
 			{
 				padding: 28px;
 			}
 			
-			&.hopjs-button-icon-size-32 > span > span > span > span > span > span
+			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
 			{
 				padding: 36px;
 			}
@@ -475,7 +489,7 @@
 			padding: 4px;
 		}
 		
-		> span > span > span > span > span > span > span
+		> span > span > span > span > span > span > span > span
 		{
 			padding: 2px 6px 0px 6px;
 			min-height: 22px;
@@ -484,17 +498,17 @@
 		
 		&.hopjs-button-icon
 		{
-			> span > span > span > span > span > span
+			> span > span > span > span > span > span > span
 			{
 				padding: 24px;
 			}
 			
-			&.hopjs-button-icon-size-24 > span > span > span > span > span > span
+			&.hopjs-button-icon-size-24 > span > span > span > span > span > span > span
 			{
 				padding: 32px;
 			}
 			
-			&.hopjs-button-icon-size-32 > span > span > span > span > span > span
+			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
 			{
 				padding: 40px;
 			}
