@@ -3,22 +3,23 @@
 .hopjs-button
 {
 	display: inline-block;
-	overflow: hidden;
-	vertical-align: middle;
-	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
+	overflow: hidden;
 	border: solid 1px $themeBorderColor;
 	border-radius: 2px;
 	background-color: $themeBackgroundColor;
-	cursor: pointer;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+	vertical-align: middle;
 	font: $themeFont;
 	text-decoration: none;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+	cursor: pointer;
 	
 	&:hover
 	{
-		background-color: #f5f5f5;
+		background-color: #e6e6e6;
+		border-color: #adadad;
 	}
 	
 	&:focus
@@ -39,7 +40,8 @@
 		&.hopjs-button-pressed,
 		&.hopjs-button-open
 		{
-			background-color: #e8e8e8;
+			background-color: #d4d4d4;
+			border-color: #8c8c8c;
 			box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
 		}
 	}
@@ -47,117 +49,115 @@
 	&.hopjs-button-pressed,
 	&.hopjs-button-open
 	{
-		background-color: #eee;
+		background-color: #d4d4d4;
+		border-color: #8c8c8c;
 		box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
 	}
 	
-	& > span
+	> span
 	{
-		position: relative;
 		display: block;
 		height: 100%;
+		width: 100%;
 		box-sizing: border-box;
+		position: relative;
 	}
 	
-	& > span > span
+	> span > span
 	{
 		display: table;
 		height: 100%;
 		width: 100%;
 	}
 	
-	&.hopjs-button-fixed-icon > span > span
-	{
-		display: block;
-	}
-	
-	& > span > span > span
+	> span > span > span
 	{
 		display: table-cell;
+		padding: 2px;
+		line-height: 0;
+		text-align: center;
 		vertical-align: middle;
 	}
 	
-	&.hopjs-button-fixed-icon > span > span > span
-	{
-		display: table;
-		height: 100%;
-		width: 100%;
-	}
-
-	& > span > span > span > span
+	> span > span > span > span
 	{
 		display: inline-block;
 		position: relative;
-		padding: 4px 8px;
-		line-height: $themeLineHeight;
-		min-height: #{$themeLineHeight}em;
+		text-align: center;
 	}
 	
-	&.hopjs-button-fixed-icon > span > span > span > span
+	> span > span > span > span > span
 	{
-		display: table-cell;
+		display: table;
 		height: 100%;
 		width: 100%;
+	}
+	
+	> span > span > span > span > span > span
+	{
+		display: table-cell;
+		line-height: 0;
+		text-align: center;
 		vertical-align: middle;
 	}
 	
-	& > span > span > span > span > span
-	{
-		line-height: inherit;
-	}
-	
-	&.hopjs-button-fixed-icon > span > span > span > span > span
+	> span > span > span > span > span > span > span
 	{
 		display: inline-block;
+		padding: 2px 6px;
+		min-height: 20px;
+		line-height: 20px;
+	}
+	
+	&.hopjs-button-fixed-icon
+	{
+		> span > span > span > span
+		{
+			height: 100%;
+			width: 100%;
+		}
 	}
 	
 	&.hopjs-button-align-left > span > span > span,
-	&.hopjs-button-text-align-left > span > span > span > span
+	&.hopjs-button-align-left > span > span > span > span > span > span,
+	&.hopjs-button-text-align-left > span > span > span > span > span > span > span
 	{
 		text-align: left;
 	}
 	
 	&.hopjs-button-align-center > span > span > span,
-	&.hopjs-button-text-align-center > span > span > span > span
+	&.hopjs-button-align-center > span > span > span > span > span > span,
+	&.hopjs-button-text-align-center > span > span > span > span > span > span > span
 	{
 		text-align: center;
 	}
 	
 	&.hopjs-button-align-right > span > span > span,
-	&.hopjs-button-text-align-right > span > span > span > span
+	&.hopjs-button-align-right > span > span > span > span > span > span,
+	&.hopjs-button-text-align-right > span > span > span > span > span > span > span
 	{
 		text-align: right;
 	}
 	
-	&.hopjs-button-vertical-align-top > span > span > span
+	&.hopjs-button-vertical-align-top > span > span > span,
+	&.hopjs-button-vertical-align-top > span > span > span > span > span > span
 	{
-		&,
-		> span
-		{
-			vertical-align: top;
-		}
+		vertical-align: top;
 	}
 	
-	&.hopjs-button-vertical-align-middle > span > span > span
+	&.hopjs-button-vertical-align-middle > span > span > span,
+	&.hopjs-button-vertical-align-middle > span > span > span > span > span > span
 	{
-		&,
-		> span
-		{
-			vertical-align: middle;
-		}
+		vertical-align: middle;
 	}
 	
-	&.hopjs-button-vertical-align-bottom > span > span > span
+	&.hopjs-button-vertical-align-bottom > span > span > span,
+	&.hopjs-button-vertical-align-bottom > span > span > span > span > span > span
 	{
-		
-		&,
-		> span
-		{
-			vertical-align: bottom;
-		}
+		vertical-align: bottom;
 	}
 	
-	&.hopjs-button-text-nowrap > span > span > span > span > span
+	&.hopjs-button-text-nowrap > span > span > span > span > span > span > span
 	{
 		white-space: nowrap;
 	}
@@ -179,91 +179,164 @@
 			display: block;
 		}
 		
+		> span > span > span > span > span
+		{
+			min-height: 24px;
+			min-width: 24px;
+			height: 1px;
+		}
+		
+		> span > span > span > span > span > span > span
+		{
+			display: none;
+		}
+
+		&.hopjs-button-text > span > span > span > span > span > span > span
+		{
+			display: inline-block;
+		}
+		
+		> span > span > span > span > span > span
+		{
+			padding: 22px;
+		}
+	
 		&.hopjs-button-icon-left
 		{
-			> span > span > span > span
+			> span > span > span > span > span > span
 			{
-				padding-left: 20px;
+				padding-top: 0 !important;
+				padding-bottom: 0 !important;
+				padding-right: 0 !important;
 			}
 
 			i
 			{
 				top: 50%;
 				margin-top: -8px;
-				left: 6px;
-			}
-
-			&.hopjs-button-text > span > span > span > span
-			{
-				padding-left: 28px;
+				left: 4px;
 			}
 		}
 
 		&.hopjs-button-icon-right
 		{
-			> span > span > span > span
+			> span > span > span > span > span > span
 			{
-				padding-right: 20px;
+				padding-top: 0 !important;
+				padding-bottom: 0 !important;
+				padding-left: 0 !important;
 			}
 
 			i
 			{
 				top: 50%;
 				margin-top: -8px;
-				right: 6px;
-			}
-
-			&.hopjs-button-text > span > span > span > span
-			{
-				padding-right: 28px;
+				right: 4px;
 			}
 		}
 
 		&.hopjs-button-icon-top
 		{
-			> span > span > span > span
+			> span > span > span > span > span > span
 			{
-				padding-left: 20px;
+				padding-bottom: 0 !important;
+				padding-left: 0 !important;
+				padding-right: 0 !important;
 			}
 
 			i
 			{
 				left: 50%;
 				margin-left: -8px;
-				top: 6px;
-			}
-
-			&.hopjs-button-text > span > span > span > span
-			{
-				padding-top: 26px;
-				padding-left: 8px;
+				top: 4px;
 			}
 		}
 
 		&.hopjs-button-icon-bottom
 		{
-			> span > span > span > span
+			> span > span > span > span > span > span
 			{
-				padding-left: 20px;
+				padding-top: 0 !important;
+				padding-left: 0 !important;
+				padding-right: 0 !important;
 			}
 
 			i
 			{
 				left: 50%;
 				margin-left: -8px;
-				bottom: 6px;
+				bottom: 4px;
+			}
+		}
+
+		&.hopjs-button-icon-size-24
+		{
+			i
+			{
+				height: 24px;
+				width: 24px;
+			}
+			
+			&.hopjs-button-icon-left i,
+			&.hopjs-button-icon-right i
+			{
+				margin-top: -12px;
 			}
 
-			&.hopjs-button-text > span > span > span > span
+			&.hopjs-button-icon-top i,
+			&.hopjs-button-icon-bottom i
 			{
-				padding-bottom: 26px;
-				padding-left: 8px;
+				margin-left: -12px;
+			}
+			
+			> span > span > span > span > span
+			{
+				min-height: 32px;
+				min-width: 32px;
+			}
+			
+			> span > span > span > span > span > span
+			{
+				padding: 30px;
+			}
+		}
+
+		&.hopjs-button-icon-size-32
+		{
+			i
+			{
+				height: 32px;
+				width: 32px;
+			}
+			
+			&.hopjs-button-icon-left i,
+			&.hopjs-button-icon-right i
+			{
+				margin-top: -16px;
+			}
+
+			&.hopjs-button-icon-top i,
+			&.hopjs-button-icon-bottom i
+			{
+				margin-left: -16px;
+			}
+			
+			> span > span > span > span > span
+			{
+				min-height: 40px;
+				min-width: 40px;
+			}
+			
+			> span > span > span > span > span > span
+			{
+				padding: 38px;
 			}
 		}
 	}
-	
-	&.hopjs-button-arrow
+
+	&.hopjs-button-arrow 
 	{
+		
 		> span:after
 		{
 			content: "";
@@ -308,7 +381,7 @@
 		{
 			> span
 			{
-				padding-top: 15px;
+				padding-top: 13px;
 			}
 
 			> span:after
@@ -323,7 +396,7 @@
 		{
 			> span
 			{
-				padding-bottom: 15px;
+				padding-bottom: 13px;
 			}
 
 			> span:after
@@ -355,6 +428,227 @@
 		&.hopjs-button-open:hover
 		{
 			background-color: #eee;
+		}
+	}
+	
+	&.hopjs-button-size-small
+	{
+		font-size: 13px;
+		
+		> span > span > span
+		{
+			padding: 0;
+		}
+		
+		> span > span > span > span > span > span > span
+		{
+			padding: 3px 6px 1px 6px;
+			min-height: 18px;
+			line-height: 18px;
+		}
+		
+		&.hopjs-button-icon
+		{		
+			> span > span > span > span > span > span
+			{
+				padding: 20px;
+			}
+			
+			&.hopjs-button-icon-size-24 > span > span > span > span > span > span
+			{
+				padding: 28px;
+			}
+			
+			&.hopjs-button-icon-size-32 > span > span > span > span > span > span
+			{
+				padding: 36px;
+			}
+		}
+	}
+	
+	&.hopjs-button-size-large
+	{
+		font-size: 16px;
+		
+		> span > span > span
+		{
+			padding: 4px;
+		}
+		
+		> span > span > span > span > span > span > span
+		{
+			padding: 2px 6px 0px 6px;
+			min-height: 22px;
+			line-height: 22px;
+		}
+		
+		&.hopjs-button-icon
+		{
+			> span > span > span > span > span > span
+			{
+				padding: 24px;
+			}
+			
+			&.hopjs-button-icon-size-24 > span > span > span > span > span > span
+			{
+				padding: 32px;
+			}
+			
+			&.hopjs-button-icon-size-32 > span > span > span > span > span > span
+			{
+				padding: 40px;
+			}
+		}
+	}
+	
+	&.hopjs-button-style-primary
+	{
+		color: #fff;
+		background-color: #337ab7;
+		border-color: #2e6da4;
+		
+		&:hover
+		{
+			background-color: #286090;
+			border-color: #204d74;
+		}
+
+		&.hopjs-button-active
+		{
+			&,
+			&.hopjs-button-pressed,
+			&.hopjs-button-open
+			{
+				background-color: #204d74;
+				border-color: #122b40;
+			}
+		}
+		
+		&.hopjs-button-pressed,
+		&.hopjs-button-open
+		{
+			background-color: #204d74;
+			border-color: #122b40;
+		}
+		
+		&.hopjs-button-disabled
+		{
+			&:hover
+			{
+				background-color: #337ab7;
+				border-color: #2e6da4;
+			}
+
+			&.hopjs-button-pressed:hover,
+			&.hopjs-button-open:hover
+			{
+				background-color: #204d74;
+				border-color: #122b40;
+			}
+		}
+	}
+	
+	&.hopjs-button-style-success
+	{
+		color: #fff;
+		background-color: #5cb85c;
+		border-color: #4cae4c;
+		
+		&:hover
+		{
+			background-color: #449d44;
+			border-color: #398439;
+		}
+
+		&.hopjs-button-active
+		{
+			&,
+			&.hopjs-button-pressed,
+			&.hopjs-button-open
+			{
+				background-color: #398439;
+				border-color: #255625;
+			}
+		}
+		
+		&.hopjs-button-pressed,
+		&.hopjs-button-open
+		{
+			background-color: #398439;
+			border-color: #255625;
+		}
+		
+		&.hopjs-button-disabled
+		{
+			&:hover
+			{
+				background-color: #449d44;
+				border-color: #398439;
+			}
+
+			&.hopjs-button-pressed:hover,
+			&.hopjs-button-open:hover
+			{
+				background-color: #398439;
+				border-color: #255625;
+			}
+		}
+	}
+	
+	&.hopjs-button-style-danger 
+	{
+		color: #fff;
+		background-color: #d9534f;
+		border-color: #d43f3a;
+		
+		&:hover
+		{
+			background-color: #c9302c;
+			border-color: #ac2925;
+		}
+
+		&.hopjs-button-active
+		{
+			&,
+			&.hopjs-button-pressed,
+			&.hopjs-button-open
+			{
+				background-color: #ac2925;
+				border-color: #761c19;
+			}
+		}
+		
+		&.hopjs-button-pressed,
+		&.hopjs-button-open
+		{
+			background-color: #ac2925;
+			border-color: #761c19;
+		}
+		
+		&.hopjs-button-disabled
+		{
+			&:hover
+			{
+				background-color: #d9534f;
+				border-color: #d43f3a;
+			}
+
+			&.hopjs-button-pressed:hover,
+			&.hopjs-button-open:hover
+			{
+				background-color: #ac2925;
+				border-color: #761c19;
+			}
+		}
+	}
+	
+	&.hopjs-button-style-primary,
+	&.hopjs-button-style-success,
+	&.hopjs-button-style-danger
+	{
+		> span:after
+		{
+			background-image: url(../images/menusub_white.png);
 		}
 	}
 }

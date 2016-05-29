@@ -39,6 +39,7 @@ hop.inherit(hop.button, hop.component, {
 			wrapText: true,
 			icon: "",
 			iconPosition: "left",
+			iconSize: "16",
 			fixedIcon: false,
 			menu: null,
 			menuParams: null,
@@ -48,7 +49,9 @@ hop.inherit(hop.button, hop.component, {
 			height: null,
 			width: null,
 			align: "center",
-			verticalAlign: "middle"
+			verticalAlign: "middle",
+			size: "",
+			style: ""
 		};
 	},
 
@@ -97,6 +100,7 @@ hop.inherit(hop.button, hop.component, {
 		self.setWrapText(self.wrapText);
 		self.setIcon(self.icon);
 		self.setIconPosition(self.iconPosition);
+		self.setIconSize(self.iconSize);
 		self.setFixedIcon(self.fixedIcon);
 		self.setArrow(self.arrow);
 		self.setArrowPosition(self.arrowPosition);
@@ -191,7 +195,7 @@ hop.inherit(hop.button, hop.component, {
 		this.icon = String(icon);
 		if (this.$node)
 		{
-			this.iconNode.style.backgroundImage = (this.icon === "" ? "none" : "url("+icon+")");
+			this.iconNode.style.backgroundImage = (this.icon === "" ? "" : "url("+this.icon+")");
 			this.$node.toggleClass(cp+"icon", this.icon !== "");
 			this.$node.toggleClass(cp+"icon-"+this.iconPosition, this.icon !== "");
 		}
@@ -208,6 +212,16 @@ hop.inherit(hop.button, hop.component, {
 			if (this.node && this.icon !== "")
 				this.$node.addClass(cp+"icon-"+value);
 		}
+	},
+	
+	setIconSize: function(value)
+	{
+		value = String(value);
+		if (this.$node)
+			this.$node.removeClass(cp+"icon-size-"+this.iconSize);
+		this.iconSize = String(value);
+		if (this.$node && value !== "16")
+			this.$node.addClass(cp+"icon-size-"+value);
 	},
 	
 	setFixedIcon: function(value)
@@ -376,6 +390,26 @@ hop.inherit(hop.button, hop.component, {
 		}
 	},
 	
+	setSize: function(value)
+	{
+		value = String(value);
+		if (this.node && this.size !== "")
+			this.$node.removeClass(cp+"size-"+this.size);
+		this.size = value;
+		if (this.node && value !== "")
+			this.$node.addClass(cp+"size-"+value);
+	},
+	
+	setStyle: function(value)
+	{
+		value = String(value);
+		if (this.node && this.style !== "")
+			this.$node.removeClass(cp+"style-"+this.style);
+		this.style = value;
+		if (this.node && value !== "")
+			this.$node.addClass(cp+"style-"+value);
+	},
+	
 	generateHtml: function()
 	{
 		var self = this;
@@ -401,8 +435,8 @@ hop.inherit(hop.button, hop.component, {
 			self.onDocumentMouseup(event);
 		});
 		
-		self.$node.html('<span><span><span><span><i></i><span></span></span></span></span></span>');
-		self.$text = $("> span > span > span > span > span", self.node);
+		self.$node.html('<span><span><span><span><i></i><span><span><span></span></span></span></span></span></span></span>');
+		self.$text = $("> span > span > span > span > span > span > span", self.node);
 		self.textNode = self.$text[0];
 		self.$icon = $("i", self.node);
 		self.iconNode = self.$icon[0];
