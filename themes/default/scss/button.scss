@@ -200,7 +200,7 @@
 		> span > span > span > span > span > span > span
 		{
 			height: 24px;
-			padding: 22px;
+			padding: 24px 22px;
 		}
 		
 		> span > span > span > span > span > span > span > span
@@ -310,7 +310,7 @@
 			> span > span > span > span > span > span > span
 			{
 				height: 32px;
-				padding: 30px;
+				padding: 32px 30px;
 			}
 		}
 
@@ -343,7 +343,7 @@
 			> span > span > span > span > span > span > span
 			{
 				height: 40px;
-				padding: 38px;
+				padding: 40px 38px;
 			}
 		}
 	}
@@ -465,17 +465,17 @@
 		{		
 			> span > span > span > span > span > span > span
 			{
-				padding: 20px;
+				padding: 22px 20px;
 			}
 			
 			&.hopjs-button-icon-size-24 > span > span > span > span > span > span > span
 			{
-				padding: 28px;
+				padding: 30px 28px;
 			}
 			
 			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
 			{
-				padding: 36px;
+				padding: 38px 36px;
 			}
 		}
 	}
@@ -500,17 +500,17 @@
 		{
 			> span > span > span > span > span > span > span
 			{
-				padding: 24px;
+				padding: 26px 24px;
 			}
 			
 			&.hopjs-button-icon-size-24 > span > span > span > span > span > span > span
 			{
-				padding: 32px;
+				padding: 34px 32px;
 			}
 			
 			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
 			{
-				padding: 40px;
+				padding: 42px 40px;
 			}
 		}
 	}
