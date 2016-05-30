@@ -94,7 +94,6 @@ hop.inherit(hop.button, hop.component, {
 		}
 		self.setEnabled(self.enabled);
 		self.setPressed(self.pressed);
-		self.setAllowToggle(self.allowToggle);
 		self.setAllowFocus(self.allowFocus);
 		self.setText(self.text);
 		self.setTextAlign(self.textAlign);
