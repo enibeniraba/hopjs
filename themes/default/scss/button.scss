@@ -347,6 +347,45 @@
 			}
 		}
 	}
+	
+	&.hopjs-button-simulate-icon-height
+	{
+		> span > span > span > span > span
+		{
+			min-height: 24px;
+		}
+		
+		> span > span > span > span > span > span > span
+		{
+			height: 24px;
+		}
+		
+		&.hopjs-button-icon-size-24
+		{
+			> span > span > span > span > span
+			{
+				min-height: 32px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				height: 32px;
+			}
+		}
+
+		&.hopjs-button-icon-size-32
+		{
+			> span > span > span > span > span
+			{
+				min-height: 40px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				height: 40px;
+			}
+		}
+	}
 
 	&.hopjs-button-arrow 
 	{

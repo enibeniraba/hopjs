@@ -40,6 +40,7 @@ hop.inherit(hop.button, hop.component, {
 			icon: "",
 			iconPosition: "left",
 			iconSize: "16",
+			simulateIconHeight: false,
 			fixedIcon: false,
 			menu: null,
 			menuParams: null,
@@ -101,6 +102,7 @@ hop.inherit(hop.button, hop.component, {
 		self.setIcon(self.icon);
 		self.setIconPosition(self.iconPosition);
 		self.setIconSize(self.iconSize);
+		self.setSimulateIconHeight(self.simulateIconHeight);
 		self.setFixedIcon(self.fixedIcon);
 		self.setArrow(self.arrow);
 		self.setArrowPosition(self.arrowPosition);
@@ -224,6 +226,13 @@ hop.inherit(hop.button, hop.component, {
 		this.iconSize = String(value);
 		if (this.$node && value !== "16")
 			this.$node.addClass(cp+"icon-size-"+value);
+	},
+	
+	setSimulateIconHeight: function(value)
+	{
+		this.simulateIconHeight = !!value;
+		if (this.$node)
+			this.$node.toggleClass(cp+"simulate-icon-height", this.simulateIconHeight);
 	},
 	
 	setFixedIcon: function(value)

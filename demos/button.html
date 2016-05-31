@@ -192,6 +192,12 @@
 			</td>
 		</tr>
 		<tr>
+			<td>simulateIconHeight</td>
+			<td>
+				<input type="checkbox" id="simulate-icon-height" />
+			</td>
+		</tr>
+		<tr>
 			<td>fixedIcon</td>
 			<td>
 				<input type="checkbox" id="fixed-icon" />
@@ -284,6 +290,34 @@ $(function()
 	{
 		b1.setAllowFocus(this.checked);
 	});
+	$("#height").on("change", function()
+	{
+		var $node = $("#height"), value = $node.val();
+		b1.setHeight(value === "" ? null : value);
+		$node.val(b1.height === null ? "" : b1.height);
+	});
+	$("#width").on("change", function()
+	{
+		var $node = $("#width"), value = $node.val();
+		b1.setWidth(value === "" ? null : value);
+		$node.val(b1.width === null ? "" : b1.width);
+	});
+	$("#align").on("change", function()
+	{
+		b1.setAlign(this.value);
+	});
+	$("#vertical-align").on("change", function()
+	{
+		b1.setVerticalAlign(this.value);
+	});
+	$("#size").on("change", function()
+	{
+		b1.setSize(this.value);
+	});
+	$("#style").on("change", function()
+	{
+		b1.setStyle(this.value);
+	});
 	$("#text").on("change", function()
 	{
 		b1.setText(this.checked ? text : "");
@@ -313,6 +347,10 @@ $(function()
 	{
 		b1.setIconSize(this.value);
 	});
+	$("#simulate-icon-height").on("change", function()
+	{
+		b1.setSimulateIconHeight(this.checked);
+	});
 	$("#fixed-icon").on("change", function()
 	{
 		b1.setFixedIcon(this.checked);
@@ -333,34 +371,6 @@ $(function()
 	$("#menu").on("change", function()
 	{
 		b1.setMenu(this.checked ? m1 : null);
-	});
-	$("#height").on("change", function()
-	{
-		var $node = $("#height"), value = $node.val();
-		b1.setHeight(value === "" ? null : value);
-		$node.val(b1.height === null ? "" : b1.height);
-	});
-	$("#width").on("change", function()
-	{
-		var $node = $("#width"), value = $node.val();
-		b1.setWidth(value === "" ? null : value);
-		$node.val(b1.width === null ? "" : b1.width);
-	});
-	$("#align").on("change", function()
-	{
-		b1.setAlign(this.value);
-	});
-	$("#vertical-align").on("change", function()
-	{
-		b1.setVerticalAlign(this.value);
-	});
-	$("#size").on("change", function()
-	{
-		b1.setSize(this.value);
-	});
-	$("#style").on("change", function()
-	{
-		b1.setStyle(this.value);
 	});
 });
 </script>
