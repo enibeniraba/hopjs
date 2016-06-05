@@ -20,8 +20,8 @@
 <p><input type="button" id="button1" value="Open window" /></p>
 <div id="content" style="display: none;">
 <div style="padding: 6px;">
-<p>Date: <input id="dp1" /> <button id="dp1-button">...</button></p>
-<p><button id="button2">Options</button></p>
+<p>Date: <input id="dp1" /> <span id="dp1-button-container"></span></p>
+<p id="dp1-options-button-container"></p>
 <br />
 <div id="tabs1">
 	<span data-id="one">One</span>
@@ -295,6 +295,11 @@ $(function()
 			}
 		]
 	});
+	
+	b1 = new hop.button({
+		parentNode: $("#dp1-button-container")[0],
+		icon: "../themes/default/images/datepickertoday.png"
+	});
 
 	dp1 = new hop.datepicker({
 		locale: "ru",
@@ -306,9 +311,17 @@ $(function()
 		titleAnimations: slideFadeAnimations,
 		pickerAnimations: slideScaleAnimations,
 		input: $("#dp1")[0],
-		button: $("#dp1-button")[0],
+		button: b1.node,
 		layerParams: {
-			animationShow: "def"
+			animationShow: "def",
+			onShowCall: function()
+			{
+				b1.setPressed(true);
+			},
+			onHideCall: function()
+			{
+				b1.setPressed(false);
+			}
 		}
 	});
 	
@@ -427,9 +440,10 @@ $(function()
 			}
 		]
 	};
-
-	mb1 = new hop.menuButton({
-		node: $("#button2")[0],
+	
+	b2 = new hop.button({
+		parentNode: $("#dp1-options-button-container")[0],
+		text: "Datepicker options",
 		menu: menu2,
 		menuParams: {
 			layerParams: {
