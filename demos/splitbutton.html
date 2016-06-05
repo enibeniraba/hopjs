@@ -16,7 +16,14 @@
 .settings
 {
 	float: left;
-	margin: 0 20px 20px 0;
+	margin: 0 10px 10px 0;
+}
+
+.tables > tbody > tr > td
+{
+	border-collapse: collapse;
+	padding-right: 10px;
+	vertical-align: top;
 }
 
 .table
@@ -42,19 +49,13 @@
 <div id="container"></div>
 <br />
 <div class="settings">
-	<p>Button params</p>
 	<table class="table">
-		<tr>
-			<td>Param</td>
-			<td>Value</td>
-		</tr>
 		<tr>
 			<td>enabled</td>
 			<td>
 				<input type="checkbox" id="enabled" checked="checked" />
 			</td>
 		</tr>
-		
 		<tr>
 			<td>pressed</td>
 			<td>
@@ -73,6 +74,64 @@
 				<input type="checkbox" id="allow-focus" checked="checked"/>
 			</td>
 		</tr>
+		<tr>
+			<td>height</td>
+			<td>
+				<input type="text" id="height" /> px
+			</td>
+		</tr>
+		<tr>
+			<td>width</td>
+			<td>
+				<input type="text" id="width" /> px
+			</td>
+		</tr>
+		<tr>
+			<td>align</td>
+			<td>
+				<select id="align">
+					<option value="left">left</option>
+					<option value="center" selected="selected">center</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>verticalAlign</td>
+			<td>
+				<select id="vertical-align">
+					<option value="top">top</option>
+					<option value="middle" selected="selected">middle</option>
+					<option value="bottom">bottom</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>size</td>
+			<td>
+				<select id="size">
+					<option value=""></option>
+					<option value="small">small</option>
+					<option value="large">large</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>style</td>
+			<td>
+				<select id="style">
+					<option value=""></option>
+					<option value="primary">primary</option>
+					<option value="success">success</option>
+					<option value="danger">danger</option>
+
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="settings">
+	<table class="table">
 		<tr>
 			<td>text</td>
 			<td>
@@ -104,7 +163,12 @@
 		<tr>
 			<td>icon</td>
 			<td>
-				<input type="checkbox" id="icon" checked="checked" />
+				<select id="icon">
+					<option value="">none</option>
+					<option value="images/button16.png">16</option>
+					<option value="images/button24.png">24</option>
+					<option value="images/button32.png">32</option>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -116,6 +180,28 @@
 					<option value="top">top</option>
 					<option value="bottom">bottom</option>
 				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>iconSize</td>
+			<td>
+				<select id="icon-size">
+					<option value="16">16</option>
+					<option value="24">24</option>
+					<option value="32">32</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>simulateIconHeight</td>
+			<td>
+				<input type="checkbox" id="simulate-icon-height" />
+			</td>
+		</tr>
+		<tr>
+			<td>fixedIcon</td>
+			<td>
+				<input type="checkbox" id="fixed-icon" />
 			</td>
 		</tr>
 		<tr>
@@ -133,18 +219,6 @@
 			<td>menu</td>
 			<td>
 				<input type="checkbox" id="menu" />
-			</td>
-		</tr>
-		<tr>
-			<td>height</td>
-			<td>
-				<input type="text" id="height" /> px
-			</td>
-		</tr>
-		<tr>
-			<td>width</td>
-			<td>
-				<input type="text" id="width" /> px
 			</td>
 		</tr>
 	</table>
@@ -179,7 +253,6 @@ $(function()
 	b1 = new hop.splitButton({
 		parentNode: $("#container")[0],
 		text: text,
-		icon: "../themes/default/images/datepickerdone.png",
 		onClick: function(self, data)
 		{
 			console.log("Click");
@@ -188,11 +261,6 @@ $(function()
 		onToggle: function(self, data)
 		{
 			console.log("Toggle");
-			console.log(data);
-		},
-		onArrowClick: function(self, data)
-		{
-			console.log("Arrow click");
 			console.log(data);
 		}
 	});
@@ -213,6 +281,34 @@ $(function()
 	{
 		b1.setAllowFocus(this.checked);
 	});
+	$("#height").on("change", function()
+	{
+		var $node = $("#height"), value = $node.val();
+		b1.setHeight(value === "" ? null : value);
+		$node.val(b1.height === null ? "" : b1.height);
+	});
+	$("#width").on("change", function()
+	{
+		var $node = $("#width"), value = $node.val();
+		b1.setWidth(value === "" ? null : value);
+		$node.val(b1.width === null ? "" : b1.width);
+	});
+	$("#align").on("change", function()
+	{
+		b1.setAlign(this.value);
+	});
+	$("#vertical-align").on("change", function()
+	{
+		b1.setVerticalAlign(this.value);
+	});
+	$("#size").on("change", function()
+	{
+		b1.setSize(this.value);
+	});
+	$("#style").on("change", function()
+	{
+		b1.setStyle(this.value);
+	});
 	$("#text").on("change", function()
 	{
 		b1.setText(this.checked ? text : "");
@@ -232,20 +328,23 @@ $(function()
 	});
 	$("#icon").on("change", function()
 	{
-		b1.setIcon(this.checked ? "../themes/default/images/datepickerdone.png" : "");
+		b1.setIcon(this.value);
 	});
 	$("#icon-position").on("change", function()
 	{
 		b1.setIconPosition(this.value);
 	});
-	$("#arrow").on("change", function()
+	$("#icon-size").on("change", function()
 	{
-		var arrow = null;
-		if (this.value === "show")
-			arrow = true;
-		else if (this.value === "hide")
-			arrow = false;
-		b1.setArrow(arrow);
+		b1.setIconSize(this.value);
+	});
+	$("#simulate-icon-height").on("change", function()
+	{
+		b1.setSimulateIconHeight(this.checked);
+	});
+	$("#fixed-icon").on("change", function()
+	{
+		b1.setFixedIcon(this.checked);
 	});
 	$("#arrow-position").on("change", function()
 	{
@@ -254,18 +353,6 @@ $(function()
 	$("#menu").on("change", function()
 	{
 		b1.setMenu(this.checked ? m1 : null);
-	});
-	$("#height").on("change", function()
-	{
-		var $node = $("#height"), value = $node.val();
-		b1.setHeight(value === "" ? null : value);
-		$node.val(b1.height === null ? "" : b1.height);
-	});
-	$("#width").on("change", function()
-	{
-		var $node = $("#width"), value = $node.val();
-		b1.setWidth(value === "" ? null : value);
-		$node.val(b1.width === null ? "" : b1.width);
 	});
 });
 </script>

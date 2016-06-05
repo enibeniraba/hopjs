@@ -1,67 +1,208 @@
 @import "settings";
+@import "buttonsettings";
 
 .hopjs-splitbutton
 {
 	display: inline-block;
-	vertical-align: middle;
-	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	cursor: pointer;
+	box-sizing: border-box;
+	vertical-align: middle;
 	font: $themeFont;
 	text-decoration: none;
 	
+	&.hopjs-button-enabled
+	{
+		cursor: $buttonCursor;
+	
+		&:focus
+		{
+			@include buttonFocus;
+		}
+	
+		&.hopjs-button-no-focus:focus
+		{
+			outline: none;
+		}
+	}
+	
+	&.hopjs-button-disabled
+	{
+		opacity: $buttonDisabledOpacity;
+	}
+	
 	> span
 	{
-		position: relative;
 		display: block;
 		height: 100%;
+		width: 100%;
 		box-sizing: border-box;
+		position: relative;
 	}
 	
 	> span > span
 	{
-		display: block;
-		position: relative;
-		overflow: hidden;
-		box-sizing: border-box;
-		padding: 4px 8px;
+		display: table;
 		height: 100%;
-		min-height: 20px;
-		background-color: $themeBackgroundColor;
-		border: solid 1px $themeBorderColor;
-		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+		width: 100%;
 	}
 	
 	> span > span > span
 	{
-		display: block;
+		position: relative;
+		display: table-cell;
 		height: 100%;
-		line-height: $themeLineHeight;
+		width: 100%;
+		padding: 2px;
+		overflow: hidden;
+		line-height: 0;
+		text-align: center;
+		vertical-align: middle;
+		border: solid 1px $buttonBorderColor;
+		border-radius: $buttonBorderRadius 0 0 $buttonBorderRadius;
+		background-color: $buttonBackgroundColor;
+		box-shadow: $buttonBoxShadow;
+		z-index: 1;
+	}
+	
+	&.hopjs-button-enabled
+	{
+		&:hover,
+		&.hopjs-button-open
+		{
+			> span > span > span
+			{
+				border-color: $splitbuttonBorderColorHover;
+				background-color: $splitbuttonBackgroundColorHover;
+			}
+		}
+		
+		> span > span > span:hover
+		{
+			background-color: $buttonBackgroundColorHover;
+			border-color: $buttonBorderColorHover;
+			z-index: 2;
+		}
+	}
+	
+	&.hopjs-button-active,
+	&.hopjs-button-pressed
+	{
+		> span > span > span
+		{
+			box-shadow: none;
+			z-index: 3 !important;
+		}
+	}
+
+	&.hopjs-button-active,
+	&.hopjs-button-active:hover,
+	&.hopjs-button-pressed,
+	&.hopjs-button-pressed:hover
+	{
+		> span > span > span,
+		&:hover > span > span > span,
+		&.hopjs-button-open > span > span > span
+		{
+			background-color: $buttonBackgroundColorActive;
+			border-color: $buttonBorderColorActive;
+		}
+	}
+	
+	> span > span > span > span
+	{
+		display: inline-block;
+		position: relative;
 		text-align: center;
 	}
 	
-	&.hopjs-button-text-align-left > span > span > span
+	> span > span > span > span > span
+	{
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+	
+	> span > span > span > span > span > span
+	{
+		display: table;
+		height: 100%;
+		width: 100%;
+	}
+	
+	> span > span > span > span > span > span > span
+	{
+		display: table-cell;
+		box-sizing: border-box;
+		height: 100%;
+		width: 100%;
+		line-height: 0;
+		text-align: center;
+		vertical-align: middle;
+	}
+	
+	> span > span > span > span > span > span > span > span
+	{
+		display: inline-block;
+		padding: 2px 6px;
+		min-height: 20px;
+		line-height: 20px;
+	}
+	
+	&.hopjs-button-fixed-icon
+	{
+		> span > span > span > span
+		{
+			height: 100%;
+			width: 100%;
+		}
+	}
+	
+	&.hopjs-button-align-left > span > span > span,
+	&.hopjs-button-align-left > span > span > span > span > span > span > span,
+	&.hopjs-button-text-align-left > span > span > span > span > span > span > span > span
 	{
 		text-align: left;
 	}
 	
-	&.hopjs-button-text-align-center > span > span > span
+	&.hopjs-button-align-center > span > span > span,
+	&.hopjs-button-align-center > span > span > span > span > span > span > span,
+	&.hopjs-button-text-align-center > span > span > span > span > span > span > span > span
 	{
 		text-align: center;
 	}
 	
-	&.hopjs-button-text-align-right > span > span > span
+	&.hopjs-button-align-right > span > span > span,
+	&.hopjs-button-align-right > span > span > span > span > span > span > span,
+	&.hopjs-button-text-align-right > span > span > span > span > span > span > span > span
 	{
 		text-align: right;
 	}
 	
-	&.hopjs-button-text-nowrap > span > span > span
+	&.hopjs-button-vertical-align-top > span > span > span,
+	&.hopjs-button-vertical-align-top > span > span > span > span > span > span > span
+	{
+		vertical-align: top;
+	}
+	
+	&.hopjs-button-vertical-align-middle > span > span > span,
+	&.hopjs-button-vertical-align-middle > span > span > span > span > span > span > span
+	{
+		vertical-align: middle;
+	}
+	
+	&.hopjs-button-vertical-align-bottom > span > span > span,
+	&.hopjs-button-vertical-align-bottom > span > span > span > span > span > span > span
+	{
+		vertical-align: bottom;
+	}
+	
+	&.hopjs-button-text-nowrap > span > span > span > span > span > span > span > span
 	{
 		white-space: nowrap;
 	}
 	
-	i
+	> span > span > span > span > i
 	{
 		display: none;
 		height: 16px;
@@ -73,122 +214,290 @@
 	
 	&.hopjs-button-icon
 	{
-		i
+		> span > span > span > span > i
 		{
 			display: block;
 		}
 		
+		> span > span > span > span > span
+		{
+			min-height: 24px;
+			min-width: 24px;
+		}
+		
+		> span > span > span > span > span > span > span
+		{
+			height: 24px;
+			padding: 24px 22px;
+		}
+		
+		> span > span > span > span > span > span > span > span
+		{
+			display: none;
+		}
+
+		&.hopjs-button-text > span > span > span > span > span > span > span > span
+		{
+			display: inline-block;
+		}
+	
 		&.hopjs-button-icon-left
 		{
-			> span > span
-			{
-				padding-left: 20px;
-			}
-
-			i
+			> span > span > span > span > i
 			{
 				top: 50%;
 				margin-top: -8px;
-				left: 6px;
+				left: 4px;
 			}
-
-			&.hopjs-button-text > span > span
+			
+			> span > span > span > span > span > span > span
 			{
-				padding-left: 28px;
+				padding-top: 0 !important;
+				padding-bottom: 0 !important;
+				padding-right: 0 !important;
 			}
 		}
 
 		&.hopjs-button-icon-right
 		{
-			> span > span
-			{
-				padding-right: 20px;
-			}
-
-			i
+			> span > span > span > span > i
 			{
 				top: 50%;
 				margin-top: -8px;
-				right: 6px;
+				right: 4px;
 			}
-
-			&.hopjs-button-text > span > span
+			
+			> span > span > span > span > span > span > span
 			{
-				padding-right: 28px;
+				padding-top: 0 !important;
+				padding-bottom: 0 !important;
+				padding-left: 0 !important;
 			}
 		}
 
 		&.hopjs-button-icon-top
 		{
-			> span > span
-			{
-				padding-left: 20px;
-			}
-
-			i
+			> span > span > span > span > i
 			{
 				left: 50%;
 				margin-left: -8px;
-				top: 6px;
+				top: 4px;
 			}
-
-			&.hopjs-button-text > span > span
+			
+			> span > span > span > span > span > span > span
 			{
-				padding-top: 26px;
-				padding-left: 8px;
+				padding-bottom: 0 !important;
+				padding-left: 0 !important;
+				padding-right: 0 !important;
 			}
 		}
 
 		&.hopjs-button-icon-bottom
 		{
-			> span > span
-			{
-				padding-left: 20px;
-			}
-
-			i
+			> span > span > span > span > i
 			{
 				left: 50%;
 				margin-left: -8px;
-				bottom: 6px;
+				bottom: 4px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				padding-top: 0 !important;
+				padding-left: 0 !important;
+				padding-right: 0 !important;
+			}
+		}
+
+		&.hopjs-button-icon-size-24
+		{
+			> span > span > span > span > i
+			{
+				height: 24px;
+				width: 24px;
+			}
+			
+			&.hopjs-button-icon-left,
+			&.hopjs-button-icon-right
+			{
+				> span > span > span > span > i
+				{
+					margin-top: -12px;
+				}
 			}
 
-			&.hopjs-button-text > span > span
+			&.hopjs-button-icon-top,
+			&.hopjs-button-icon-bottom
 			{
-				padding-bottom: 26px;
-				padding-left: 8px;
+				> span > span > span > span > i
+				{
+					margin-left: -12px;
+				}
+			}
+			
+			> span > span > span > span > span
+			{
+				min-height: 32px;
+				min-width: 32px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				height: 32px;
+				padding: 32px 30px;
+			}
+		}
+
+		&.hopjs-button-icon-size-32
+		{
+			i
+			{
+				height: 32px;
+				width: 32px;
+			}
+			
+			&.hopjs-button-icon-left,
+			&.hopjs-button-icon-right
+			{
+				> span > span > span > span > i
+				{
+					margin-top: -16px;
+				}
+			}
+
+			&.hopjs-button-icon-top,
+			&.hopjs-button-icon-bottom
+			{
+				> span > span > span > span > i
+				{
+					margin-left: -16px;
+				}
+			}
+			
+			> span > span > span > span > span
+			{
+				min-height: 40px;
+				min-width: 40px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				height: 40px;
+				padding: 40px 38px;
 			}
 		}
 	}
 	
-	& div
+	&.hopjs-button-simulate-icon-height
+	{
+		> span > span > span > span > span
+		{
+			min-height: 24px;
+		}
+		
+		> span > span > span > span > span > span > span
+		{
+			height: 24px;
+		}
+		
+		&.hopjs-button-icon-size-24
+		{
+			> span > span > span > span > span
+			{
+				min-height: 32px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				height: 32px;
+			}
+		}
+
+		&.hopjs-button-icon-size-32
+		{
+			> span > span > span > span > span
+			{
+				min-height: 40px;
+			}
+			
+			> span > span > span > span > span > span > span
+			{
+				height: 40px;
+			}
+		}
+	}
+	
+	> span > div
 	{
 		position: absolute;
 		box-sizing: border-box;
-		background: $themeBackgroundColor url(../images/menusub.png) center center no-repeat;
-		border: solid 1px $themeBorderColor;
-		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+		border: solid 1px $buttonBorderColor;
+		box-shadow: $buttonBoxShadow;
+		background: $buttonBackgroundColor url(../images/menusub.png) center center no-repeat;
+		z-index: 1;
+	}
+	
+	&.hopjs-button-enabled
+	{
+		&:hover > span > div
+		{
+			border-color: $splitbuttonBorderColorHover;
+			background-color: $splitbuttonBackgroundColorHover;
+		}
+		
+		> span > div:hover
+		{
+			background-color: $buttonBackgroundColorHover;
+			border-color: $buttonBorderColorHover;
+			z-index: 2;
+		}
+	}
+	
+	&.hopjs-button-arrow-active,
+	&.hopjs-button-open
+	{
+		> span > div
+		{
+			box-shadow: none;
+			z-index: 3 !important;
+		}
 	}
 
+	&.hopjs-button-arrow-active,
+	&.hopjs-button-arrow-active:hover,
+	&.hopjs-button-open,
+	&.hopjs-button-open:hover
+	{
+		& > span > div
+		{
+			&,
+			&:hover
+			{
+				background-color: $buttonBackgroundColorActive;
+				border-color: $buttonBorderColorActive;
+			}
+		}
+	}
+	
 	&.hopjs-button-arrow-left
 	{
 		> span
 		{
 			padding-left: 16px;
 			
-			> span
+			> span > span
 			{
-				border-radius: 0 2px 2px 0;
+				border-radius: 0 $buttonBorderRadius $buttonBorderRadius 0;
 			}
 		}
 
-		div
+		> span > div
 		{
 			top: 0;
 			left: 0;
 			height: 100%;
 			width: 17px;
-			border-radius: 2px 0 0 2px;
+			border-radius: $buttonBorderRadius 0 0 $buttonBorderRadius;
 		}
 	}
 
@@ -198,19 +507,19 @@
 		{
 			padding-right: 16px;
 			
-			> span
+			> span > span
 			{
-				border-radius: 2px 0 0 2px;
+				border-radius: $buttonBorderRadius 0 0 $buttonBorderRadius;
 			}
 		}
 
-		div
+		> span > div
 		{
 			top: 0;
 			right: 0;
 			height: 100%;
 			width: 17px;
-			border-radius: 0 2px 2px 0;
+			border-radius: 0 $buttonBorderRadius $buttonBorderRadius 0;
 		}
 	}
 
@@ -220,19 +529,19 @@
 		{
 			padding-top: 15px;
 			
-			> span
+			> span > span
 			{
-				border-radius: 0 0 2px 2px;
+				border-radius: 0 0 $buttonBorderRadius $buttonBorderRadius;
 			}
 		}
 
-		div
+		> span > div
 		{
 			top: 0;
 			left: 0;
 			height: 16px;
 			width: 100%;
-			border-radius: 2px 2px 0 0;
+			border-radius: $buttonBorderRadius $buttonBorderRadius 0 0;
 			box-shadow: none;
 		}
 	}
@@ -243,90 +552,280 @@
 		{
 			padding-bottom: 15px;
 			
-			> span
+			> span > span
 			{
-				border-radius: 2px 2px 0 0;
+				border-radius: $buttonBorderRadius $buttonBorderRadius 0 0;
+				box-shadow: none;
 			}
 		}
 
-		div
+		> span > div
 		{
 			bottom: 0;
 			left: 0;
 			height: 16px;
 			width: 100%;
-			border-radius: 0 0 2px 2px;
+			border-radius: 0 0 $buttonBorderRadius $buttonBorderRadius;
 		}
 	}
 	
-	&:hover > span > span,
-	&:hover div
+	&.hopjs-button-size-small
 	{
-		background-color: #fafafa;
-	}
-	
-	&:hover > span > span:hover,
-	&:hover div:hover
-	{
-		background-color: #f5f5f5;
-	}
-	
-	&:focus
-	{
-		outline: thin dotted;
-		outline: 5px auto -webkit-focus-ring-color;
-		outline-offset: -2px;
-	}
-	
-	&.hopjs-button-no-focus:focus
-	{
-		outline: none;
-	}
-	
-	&.hopjs-button-active > span > span,
-	&.hopjs-button-active > span > span:hover,
-	&.hopjs-button-active.hopjs-button-pressed > span > span,
-	&.hopjs-button-active.hopjs-button-pressed > span > span:hover,
-	&.hopjs-button-arrow-active div,
-	&.hopjs-button-arrow-active div:hover,
-	&.hopjs-button-arrow-active.hopjs-button-open div,
-	&.hopjs-button-arrow-active.hopjs-button-open div:hover
-	{
-		background-color: #e8e8e8;
-		box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
-	}
-	
-	&.hopjs-button-pressed > span > span,
-	&.hopjs-button-pressed > span > span:hover,
-	&.hopjs-button-open div,
-	&.hopjs-button-open div:hover
-	{
-		background-color: #eee;
-		box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
-	}
-	
-	&.hopjs-button-disabled
-	{
-		opacity: 0.5;
-		cursor: default;
+		font-size: $buttonSmallFontSize;
 		
-		&:hover,
-		&:hover > span > span:hover,
-		&:hover div:hover
+		> span > span > span
 		{
-			background-color: $themeBackgroundColor;
+			padding: 0;
+		}
+		
+		> span > span > span > span > span > span > span > span
+		{
+			padding: 3px 6px 1px 6px;
+			min-height: $buttonSmallLineHeight;
+			line-height: $buttonSmallLineHeight;
+		}
+		
+		&.hopjs-button-icon
+		{		
+			> span > span > span > span > span > span > span
+			{
+				padding: 22px 20px;
+			}
+			
+			&.hopjs-button-icon-size-24 > span > span > span > span > span > span > span
+			{
+				padding: 30px 28px;
+			}
+			
+			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
+			{
+				padding: 38px 36px;
+			}
+		}
+	}
+	
+	&.hopjs-button-size-large
+	{
+		font-size: $buttonLargeFontSize;
+		
+		> span > span > span
+		{
+			padding: 4px;
+		}
+		
+		> span > span > span > span > span > span > span > span
+		{
+			padding: 2px 6px 0px 6px;
+			min-height: $buttonLargeLineHeight;
+			line-height: $buttonLargeLineHeight;
+		}
+		
+		&.hopjs-button-icon
+		{
+			> span > span > span > span > span > span > span
+			{
+				padding: 26px 24px;
+			}
+			
+			&.hopjs-button-icon-size-24 > span > span > span > span > span > span > span
+			{
+				padding: 34px 32px;
+			}
+			
+			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
+			{
+				padding: 42px 40px;
+			}
+		}
+	}
+	
+	&.hopjs-button-style-primary
+	{
+		color: $buttonPrimaryColor;
+		
+		> span > span > span,
+		> span > div
+		{
+			border-color: $buttonPrimaryBorderColor;
+			background-color: $buttonPrimaryBackgroundColor;
+		}
+	
+		&.hopjs-button-enabled
+		{
+			&:hover > span > span > span,
+			&.hopjs-button-open > span > span > span,
+			&:hover > span > div
+			{
+				border-color: $splitbuttonPrimaryBorderColorHover;
+				background-color: $splitbuttonPrimaryBackgroundColorHover;
+			}
+
+			> span > span > span:hover,
+			> span > div:hover
+			{
+				background-color: $buttonPrimaryBackgroundColorHover;
+				border-color: $buttonPrimaryBorderColorHover;
+			}
+		}
+		
+		&.hopjs-button-active,
+		&.hopjs-button-active:hover,
+		&.hopjs-button-pressed,
+		&.hopjs-button-pressed:hover
+		{
+			> span > span > span,
+			&:hover > span > span > span,
+			&.hopjs-button-open > span > span > span
+			{
+				background-color: $buttonPrimaryBackgroundColorActive;
+				border-color: $buttonPrimaryBorderColorActive;
+			}
 		}
 
-		&:focus
+		&.hopjs-button-arrow-active,
+		&.hopjs-button-arrow-active:hover,
+		&.hopjs-button-open,
+		&.hopjs-button-open:hover
 		{
-			outline: none;
+			> span > div
+			{
+				&,
+				&:hover
+				{
+					background-color: $buttonPrimaryBackgroundColorActive;
+					border-color: $buttonPrimaryBorderColorActive;
+				}
+			}
+		}
+	}
+	
+	&.hopjs-button-style-success
+	{
+		color: $buttonSuccessColor;
+		
+		> span > span > span,
+		> span > div
+		{
+			border-color: $buttonSuccessBorderColor;
+			background-color: $buttonSuccessBackgroundColor;
+		}
+	
+		&.hopjs-button-enabled
+		{
+			&:hover > span > span > span,
+			&.hopjs-button-open > span > span > span,
+			&:hover > span > div
+			{
+				border-color: $splitbuttonSuccessBorderColorHover;
+				background-color: $splitbuttonSuccessBackgroundColorHover;
+			}
+
+			> span > span > span:hover,
+			> span > div:hover
+			{
+				background-color: $buttonSuccessBackgroundColorHover;
+				border-color: $buttonSuccessBorderColorHover;
+			}
+		}
+		
+		&.hopjs-button-active,
+		&.hopjs-button-active:hover,
+		&.hopjs-button-pressed,
+		&.hopjs-button-pressed:hover
+		{
+			> span > span > span,
+			&:hover > span > span > span,
+			&.hopjs-button-open > span > span > span
+			{
+				background-color: $buttonSuccessBackgroundColorActive;
+				border-color: $buttonSuccessBorderColorActive;
+			}
 		}
 
-		&.hopjs-button-pressed > span > span:hover,
-		&.hopjs-button-open div:hover
+		&.hopjs-button-arrow-active,
+		&.hopjs-button-arrow-active:hover,
+		&.hopjs-button-open,
+		&.hopjs-button-open:hover
 		{
-			background-color: #eee;
-			box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
+			> span > div
+			{
+				&,
+				&:hover
+				{
+					background-color: $buttonSuccessBackgroundColorActive;
+					border-color: $buttonSuccessBorderColorActive;
+				}
+			}
+		}
+	}
+	
+	&.hopjs-button-style-danger 
+	{
+		color: $buttonDangerColor;
+		
+		> span > span > span,
+		> span > div
+		{
+			border-color: $buttonDangerBorderColor;
+			background-color: $buttonDangerBackgroundColor;
+		}
+	
+		&.hopjs-button-enabled
+		{
+			&:hover > span > span > span,
+			&.hopjs-button-open > span > span > span,
+			&:hover > span > div
+			{
+				border-color: $splitbuttonDangerBorderColorHover;
+				background-color: $splitbuttonDangerBackgroundColorHover;
+			}
+
+			> span > span > span:hover,
+			> span > div:hover
+			{
+				background-color: $buttonDangerBackgroundColorHover;
+				border-color: $buttonDangerBorderColorHover;
+			}
+		}
+		
+		&.hopjs-button-active,
+		&.hopjs-button-active:hover,
+		&.hopjs-button-pressed,
+		&.hopjs-button-pressed:hover
+		{
+			> span > span > span,
+			&:hover > span > span > span,
+			&.hopjs-button-open > span > span > span
+			{
+				background-color: $buttonDangerBackgroundColorActive;
+				border-color: $buttonDangerBorderColorActive;
+			}
+		}
+
+		&.hopjs-button-arrow-active,
+		&.hopjs-button-arrow-active:hover,
+		&.hopjs-button-open,
+		&.hopjs-button-open:hover
+		{
+			> span > div
+			{
+				&,
+				&:hover
+				{
+					background-color: $buttonDangerBackgroundColorActive;
+					border-color: $buttonDangerBorderColorActive;
+				}
+			}
+		}
+	}
+	
+	&.hopjs-button-style-primary,
+	&.hopjs-button-style-success,
+	&.hopjs-button-style-danger
+	{
+		> span > div
+		{
+			background-image: url(../images/menusub_white.png);
 		}
 	}
 }

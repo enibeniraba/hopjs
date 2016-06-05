@@ -1,6 +1,8 @@
-$themeFont: normal normal normal 14px/1 Arial;
+$themeFontFamily: Arial;
+$themeFontSize: 14px;
 $themeColor: #000;
+$themeLineHeight: 20/14;
+$themeFont: normal normal normal #{$themeFontSize}/1 $themeFontFamily;
 $themeBackgroundColor: #fff;
 $themeBorderColor: #ccc;
 $themeBoxShadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-$themeLineHeight: 20/14;

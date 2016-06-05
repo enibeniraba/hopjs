@@ -1,4 +1,5 @@
 @import "settings";
+@import "buttonsettings";
 
 .hopjs-button
 {
@@ -7,51 +8,52 @@
 	padding: 0;
 	box-sizing: border-box;
 	overflow: hidden;
-	border: solid 1px $themeBorderColor;
-	border-radius: 2px;
-	background-color: $themeBackgroundColor;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+	border: solid 1px $buttonBorderColor;
+	border-radius: $buttonBorderRadius;
+	background-color: $buttonBackgroundColor;
+	box-shadow: $buttonBoxShadow;
 	vertical-align: middle;
 	font: $themeFont;
 	text-decoration: none;
-	cursor: pointer;
 	
-	&:hover
+	&.hopjs-button-enabled
 	{
-		background-color: #e6e6e6;
-		border-color: #adadad;
-	}
-	
-	&:focus
-	{
-		outline: thin dotted;
-		outline: 5px auto -webkit-focus-ring-color;
-		outline-offset: -2px;
-	}
-	
-	&.hopjs-button-no-focus:focus
-	{
-		outline: none;
-	}
-	
-	&.hopjs-button-active
-	{
-		&,
-		&.hopjs-button-pressed,
-		&.hopjs-button-open
+		cursor: $buttonCursor;
+		
+		&:hover
 		{
-			background-color: #d4d4d4;
-			border-color: #8c8c8c;
-			box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
+			background-color: $buttonBackgroundColorHover;
+			border-color: $buttonBorderColorHover;
+		}
+
+		&:focus
+		{
+			@include buttonFocus;
+		}
+
+		&.hopjs-button-no-focus:focus
+		{
+			outline: none;
 		}
 	}
 	
+	&.hopjs-button-active,
 	&.hopjs-button-pressed,
 	&.hopjs-button-open
 	{
-		background-color: #d4d4d4;
-		border-color: #8c8c8c;
-		box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
+		box-shadow: none;
+		
+		&,
+		&:hover
+		{
+			background-color: $buttonBackgroundColorActive;
+			border-color: $buttonBorderColorActive;
+		}
+	}
+	
+	&.hopjs-button-disabled
+	{
+		opacity: $buttonDisabledOpacity;
 	}
 	
 	> span
@@ -174,7 +176,7 @@
 		white-space: nowrap;
 	}
 	
-	i
+	> span > span > span > span > i
 	{
 		display: none;
 		height: 16px;
@@ -186,7 +188,7 @@
 	
 	&.hopjs-button-icon
 	{
-		i
+		> span > span > span > span > i
 		{
 			display: block;
 		}
@@ -215,90 +217,96 @@
 	
 		&.hopjs-button-icon-left
 		{
-			> span > span > span > span > span > span > span
-			{
-				padding-top: 0 !important;
-				padding-bottom: 0 !important;
-				padding-right: 0 !important;
-			}
-
-			i
+			> span > span > span > span > i
 			{
 				top: 50%;
 				margin-top: -8px;
 				left: 4px;
 			}
-		}
-
-		&.hopjs-button-icon-right
-		{
+			
 			> span > span > span > span > span > span > span
 			{
 				padding-top: 0 !important;
 				padding-bottom: 0 !important;
-				padding-left: 0 !important;
+				padding-right: 0 !important;
 			}
+		}
 
-			i
+		&.hopjs-button-icon-right
+		{
+			> span > span > span > span > i
 			{
 				top: 50%;
 				margin-top: -8px;
 				right: 4px;
 			}
+			
+			> span > span > span > span > span > span > span
+			{
+				padding-top: 0 !important;
+				padding-bottom: 0 !important;
+				padding-left: 0 !important;
+			}
 		}
 
 		&.hopjs-button-icon-top
 		{
+			> span > span > span > span > i
+			{
+				left: 50%;
+				margin-left: -8px;
+				top: 4px;
+			}
+			
 			> span > span > span > span > span > span > span
 			{
 				padding-bottom: 0 !important;
 				padding-left: 0 !important;
 				padding-right: 0 !important;
 			}
-
-			i
-			{
-				left: 50%;
-				margin-left: -8px;
-				top: 4px;
-			}
 		}
 
 		&.hopjs-button-icon-bottom
 		{
+			> span > span > span > span > i
+			{
+				left: 50%;
+				margin-left: -8px;
+				bottom: 4px;
+			}
+			
 			> span > span > span > span > span > span > span
 			{
 				padding-top: 0 !important;
 				padding-left: 0 !important;
 				padding-right: 0 !important;
 			}
-
-			i
-			{
-				left: 50%;
-				margin-left: -8px;
-				bottom: 4px;
-			}
 		}
 
 		&.hopjs-button-icon-size-24
 		{
-			i
+			> span > span > span > span > i
 			{
 				height: 24px;
 				width: 24px;
 			}
 			
-			&.hopjs-button-icon-left i,
-			&.hopjs-button-icon-right i
+			&.hopjs-button-icon-left,
+			&.hopjs-button-icon-right
 			{
-				margin-top: -12px;
+				> span > span > span > span > i
+				{
+					margin-top: -12px;
+				}
 			}
 
-			&.hopjs-button-icon-top i,
-			&.hopjs-button-icon-bottom i
+			&.hopjs-button-icon-top,
+			&.hopjs-button-icon-bottom
 			{
-				margin-left: -12px;
+				> span > span > span > span > i
+				{
+					margin-left: -12px;
+				}
 			}
 			
 			> span > span > span > span > span
@@ -322,16 +330,22 @@
 				width: 32px;
 			}
 			
-			&.hopjs-button-icon-left i,
-			&.hopjs-button-icon-right i
+			&.hopjs-button-icon-left,
+			&.hopjs-button-icon-right
 			{
-				margin-top: -16px;
+				> span > span > span > span > i
+				{
+					margin-top: -16px;
+				}
 			}
 
-			&.hopjs-button-icon-top i,
-			&.hopjs-button-icon-bottom i
+			&.hopjs-button-icon-top,
+			&.hopjs-button-icon-bottom
 			{
-				margin-left: -16px;
+				> span > span > span > span > i
+				{
+					margin-left: -16px;
+				}
 			}
 			
 			> span > span > span > span > span
@@ -461,32 +475,9 @@
 		}
 	}
 	
-	&.hopjs-button-disabled
-	{
-		opacity: 0.5;
-		cursor: default;
-		
-		&:hover
-		{
-			background-color: $themeBackgroundColor;
-			border-color: $themeBorderColor;
-		}
-
-		&:focus
-		{
-			outline: none;
-		}
-
-		&.hopjs-button-pressed:hover,
-		&.hopjs-button-open:hover
-		{
-			background-color: #eee;
-		}
-	}
-	
 	&.hopjs-button-size-small
 	{
-		font-size: 13px;
+		font-size: $buttonSmallFontSize;
 		
 		> span > span > span
 		{
@@ -496,8 +487,8 @@
 		> span > span > span > span > span > span > span > span
 		{
 			padding: 3px 6px 1px 6px;
-			min-height: 18px;
-			line-height: 18px;
+			min-height: $buttonSmallLineHeight;
+			line-height: $buttonSmallLineHeight;
 		}
 		
 		&.hopjs-button-icon
@@ -521,7 +512,7 @@
 	
 	&.hopjs-button-size-large
 	{
-		font-size: 16px;
+		font-size: $buttonLargeFontSize;
 		
 		> span > span > span
 		{
@@ -531,8 +522,8 @@
 		> span > span > span > span > span > span > span > span
 		{
 			padding: 2px 6px 0px 6px;
-			min-height: 22px;
-			line-height: 22px;
+			min-height: $buttonLargeLineHeight;
+			line-height: $buttonLargeLineHeight;
 		}
 		
 		&.hopjs-button-icon
@@ -556,141 +547,75 @@
 	
 	&.hopjs-button-style-primary
 	{
-		color: #fff;
-		background-color: #337ab7;
-		border-color: #2e6da4;
+		color: $buttonPrimaryColor;
+		background-color: $buttonPrimaryBackgroundColor;
+		border-color: $buttonPrimaryBorderColor;
 		
-		&:hover
+		&.hopjs-button-enabled:hover
 		{
-			background-color: #286090;
-			border-color: #204d74;
+			background-color: $buttonPrimaryBackgroundColorHover;
+			border-color: $buttonPrimaryBorderColorHover;
 		}
 
-		&.hopjs-button-active
-		{
-			&,
-			&.hopjs-button-pressed,
-			&.hopjs-button-open
-			{
-				background-color: #204d74;
-				border-color: #122b40;
-			}
-		}
-		
+		&.hopjs-button-active,
 		&.hopjs-button-pressed,
 		&.hopjs-button-open
 		{
-			background-color: #204d74;
-			border-color: #122b40;
-		}
-		
-		&.hopjs-button-disabled
-		{
+			&,
 			&:hover
 			{
-				background-color: #337ab7;
-				border-color: #2e6da4;
-			}
-
-			&.hopjs-button-pressed:hover,
-			&.hopjs-button-open:hover
-			{
-				background-color: #204d74;
-				border-color: #122b40;
+				background-color: $buttonPrimaryBackgroundColorActive;
+				border-color: $buttonPrimaryBorderColorActive;
 			}
 		}
 	}
 	
 	&.hopjs-button-style-success
 	{
-		color: #fff;
-		background-color: #5cb85c;
-		border-color: #4cae4c;
+		color: $buttonSuccessColor;
+		background-color: $buttonSuccessBackgroundColor;
+		border-color: $buttonSuccessBorderColor;
 		
-		&:hover
+		&.hopjs-button-enabled:hover
 		{
-			background-color: #449d44;
-			border-color: #398439;
+			background-color: $buttonSuccessBackgroundColorHover;
+			border-color: $buttonSuccessBorderColorHover;
 		}
 
-		&.hopjs-button-active
-		{
-			&,
-			&.hopjs-button-pressed,
-			&.hopjs-button-open
-			{
-				background-color: #398439;
-				border-color: #255625;
-			}
-		}
-		
+		&.hopjs-button-active,
 		&.hopjs-button-pressed,
 		&.hopjs-button-open
 		{
-			background-color: #398439;
-			border-color: #255625;
-		}
-		
-		&.hopjs-button-disabled
-		{
+			&,
 			&:hover
 			{
-				background-color: #449d44;
-				border-color: #398439;
-			}
-
-			&.hopjs-button-pressed:hover,
-			&.hopjs-button-open:hover
-			{
-				background-color: #398439;
-				border-color: #255625;
+				background-color: $buttonSuccessBackgroundColorActive;
+				border-color: $buttonSuccessBorderColorActive;
 			}
 		}
 	}
 	
 	&.hopjs-button-style-danger 
 	{
-		color: #fff;
-		background-color: #d9534f;
-		border-color: #d43f3a;
+		color: $buttonDangerColor;
+		background-color: $buttonDangerBackgroundColor;
+		border-color: $buttonDangerBorderColor;
 		
-		&:hover
+		&.hopjs-button-enabled:hover
 		{
-			background-color: #c9302c;
-			border-color: #ac2925;
+			background-color: $buttonDangerBackgroundColorHover;
+			border-color: $buttonDangerBorderColorHover;
 		}
 
-		&.hopjs-button-active
-		{
-			&,
-			&.hopjs-button-pressed,
-			&.hopjs-button-open
-			{
-				background-color: #ac2925;
-				border-color: #761c19;
-			}
-		}
-		
+		&.hopjs-button-active,
 		&.hopjs-button-pressed,
 		&.hopjs-button-open
 		{
-			background-color: #ac2925;
-			border-color: #761c19;
-		}
-		
-		&.hopjs-button-disabled
-		{
+			&,
 			&:hover
 			{
-				background-color: #d9534f;
-				border-color: #d43f3a;
-			}
-
-			&.hopjs-button-pressed:hover,
-			&.hopjs-button-open:hover
-			{
-				background-color: #ac2925;
-				border-color: #761c19;
+				background-color: $buttonDangerBackgroundColorActive;
+				border-color: $buttonDangerBorderColorActive;
 			}
 		}
 	}

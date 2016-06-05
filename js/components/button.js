@@ -1,5 +1,5 @@
 /*!
- * hopjs.menuButton
+ * hopjs.button
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -133,6 +133,7 @@ hop.inherit(hop.button, hop.component, {
 		if (this.node)
 		{
 			this.$node.attr("tabIndex", this.enabled ? this.tabIndex : -1);
+			this.$node.toggleClass(cp+"enabled", this.enabled);
 			this.$node.toggleClass(cp+"disabled", !this.enabled);
 			this.$node.removeClass(cp+"active");
 			if (this.menu)
@@ -430,6 +431,11 @@ hop.inherit(hop.button, hop.component, {
 		if (self.extraClass !== "")
 			self.node.className += " "+self.extraClass;
 		self.$node = $(self.node);
+		self.$node.html('<span><span><span><span><i></i><span><span><span><span></span></span></span></span></span></span></span></span>');
+		self.$text = $("> span > span > span > span > span > span > span > span", self.node);
+		self.textNode = self.$text[0];
+		self.$icon = $("i", self.node);
+		self.iconNode = self.$icon[0];
 		
 		self.$node.on("mousedown", function(event)
 		{
@@ -445,12 +451,6 @@ hop.inherit(hop.button, hop.component, {
 		{
 			self.onDocumentMouseup(event);
 		});
-		
-		self.$node.html('<span><span><span><span><i></i><span><span><span><span></span></span></span></span></span></span></span></span>');
-		self.$text = $("> span > span > span > span > span > span > span > span", self.node);
-		self.textNode = self.$text[0];
-		self.$icon = $("i", self.node);
-		self.iconNode = self.$icon[0];
 	},
 	
 	onNodeMousedown: function(event)

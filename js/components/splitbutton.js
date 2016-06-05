@@ -1,5 +1,5 @@
 /*!
- * hopjs.menuButton
+ * hopjs.splitButton
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -12,9 +12,7 @@
 (function(document, $, hop)
 {
 	
-var cp = "hopjs-button-",
-	_cp = "."+cp,
-	positions = ["top", "bottom", "left", "right"];
+var cp = "hopjs-button-";
 
 hop.splitButton = function(params)
 {
@@ -38,10 +36,10 @@ hop.inherit(hop.splitButton, hop.button, {
 		if (self.extraClass !== "")
 			self.node.className += " "+self.extraClass;
 		self.$node = $(self.node);
-		self.$node.html('<span><span><i></i><span></span></span><div></div></span>');
+		self.$node.html('<span><span><span><span><i></i><span><span><span><span></span></span></span></span></span></span></span><div><span></span></div></span>');
 		self.$main = $("> span > span", self.node);
 		self.mainNode = self.$main[0];
-		self.$text = $("> span > span > span", self.node);
+		self.$text = $("> span > span > span > span > span > span > span > span", self.node);
 		self.textNode = self.$text[0];
 		self.$icon = $("i", self.node);
 		self.iconNode = self.$icon[0];

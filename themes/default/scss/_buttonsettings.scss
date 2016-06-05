@@ -1,0 +1,57 @@
+$buttonBorderRadius: 2px;
+$buttonDisabledOpacity: 0.5;
+$buttonBoxShadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+$buttonCursor: pointer;
+
+$buttonSmallFontSize: 13px;
+$buttonSmallLineHeight: 18px;
+
+$buttonLargeFontSize: 16px;
+$buttonLargeLineHeight: 22px;
+
+$buttonColor: #000;
+$buttonBorderColor: #ccc;
+$buttonBorderColorHover: #adadad;
+$buttonBorderColorActive: #8c8c8c;
+$splitbuttonBorderColorHover: #bdbdbd;
+$buttonBackgroundColor: #fff;
+$buttonBackgroundColorHover: #e6e6e6;
+$buttonBackgroundColorActive: #d4d4d4;
+$splitbuttonBackgroundColorHover: #f2f2f2;
+
+$buttonPrimaryColor: #fff;
+$buttonPrimaryBorderColor: #2e6da4;
+$buttonPrimaryBorderColorHover: #204d74;
+$buttonPrimaryBorderColorActive: #122b40;
+$splitbuttonPrimaryBorderColorHover: #275d8c;
+$buttonPrimaryBackgroundColor: #337ab7;
+$buttonPrimaryBackgroundColorHover: #286090;
+$buttonPrimaryBackgroundColorActive: #204d74;
+$splitbuttonPrimaryBackgroundColorHover: #2e6ca3;
+
+$buttonSuccessColor: #fff;
+$buttonSuccessBorderColor: #4cae4c;
+$buttonSuccessBorderColorHover: #398439;
+$buttonSuccessBorderColorActive: #255625;
+$splitbuttonSuccessBorderColorHover: #429942;
+$buttonSuccessBackgroundColor: #5cb85c;
+$buttonSuccessBackgroundColorHover: #449d44;
+$buttonSuccessBackgroundColorActive: #398439;
+$splitbuttonSuccessBackgroundColorHover: #49ab49;
+
+$buttonDangerColor: #fff;
+$buttonDangerBorderColor: #d43f3a;
+$buttonDangerBorderColorHover: #ac2925;
+$buttonDangerBorderColorActive: #761c19;
+$splitbuttonDangerBorderColorHover: #bf2f2a;
+$buttonDangerBackgroundColor: #d9534f;
+$buttonDangerBackgroundColorHover: #c9302c;
+$buttonDangerBackgroundColorActive: #ac2925;
+$splitbuttonDangerBackgroundColorHover: #d1332e;
+
+@mixin buttonFocus
+{
+	outline: thin dotted;
+	outline: 5px auto -webkit-focus-ring-color;
+	outline-offset: -2px;
+}
