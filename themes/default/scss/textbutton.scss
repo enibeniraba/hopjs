@@ -345,14 +345,30 @@
 
 	&.hopjs-button-arrow
 	{
-		&.hopjs-button-arrow-left > span
+		&.hopjs-button-arrow-left
 		{
-			padding-left: 12px;
+			> span
+			{
+				padding-left: 15px;
+			}
+
+			> span:after
+			{
+				left: 4px;
+			}
 		}
 
-		&.hopjs-button-arrow-right > span
+		&.hopjs-button-arrow-right
 		{
-			padding-right: 12px;
+			> span
+			{
+				padding-right: 15px;
+			}
+
+			> span:after
+			{
+				right: 3px;
+			}
 		}
 
 		&.hopjs-button-arrow-top > span
@@ -399,6 +415,35 @@
 				padding: 38px 34px;
 			}
 		}
+
+		&.hopjs-button-arrow
+		{
+			&.hopjs-button-arrow-left
+			{
+				> span
+				{
+					padding-left: 13px;
+				}
+
+				> span:after
+				{
+					left: 2px;
+				}
+			}
+
+			&.hopjs-button-arrow-right
+			{
+				> span
+				{
+					padding-right: 13px;
+				}
+
+				> span:after
+				{
+					right: 1px;
+				}
+			}
+		}
 	}
 
 	&.hopjs-button-size-large
@@ -432,6 +477,35 @@
 			&.hopjs-button-icon-size-32 > span > span > span > span > span > span > span
 			{
 				padding: 42px 38px;
+			}
+		}
+
+		&.hopjs-button-arrow
+		{
+			&.hopjs-button-arrow-left
+			{
+				> span
+				{
+					padding-left: 17px;
+				}
+
+				> span:after
+				{
+					left: 6px;
+				}
+			}
+
+			&.hopjs-button-arrow-right
+			{
+				> span
+				{
+					padding-right: 17px;
+				}
+
+				> span:after
+				{
+					right: 5px;
+				}
 			}
 		}
 	}
