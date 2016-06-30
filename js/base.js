@@ -44,7 +44,7 @@ hopjs = {
 			child.prototype = new f();
 		}
 		child.prototype.constructor = child;
-		child.parentClass = parent;
+		child.superClass = parent;
 		if (proto)
 		{
 			for (property in proto)
@@ -54,7 +54,7 @@ hopjs = {
 			}
 		}
 	},
-	
+
 	resolvePath: function(path)
 	{
 		var parts = path.split("."), i, parent = window;
@@ -657,10 +657,10 @@ hop.dom = {
 			nextNode = targetNode.nextSibling;
 		if (nextNode)
 			return parentNode.insertBefore(node, nextNode);
-		
+
 		return parentNode.appendChild(node);
 	},
-	
+
 	maxZIndex: function(childNode)
 	{
 		if (!def(childNode))
@@ -805,7 +805,7 @@ hop.configurable.prototype = {
 	{
 		return [];
 	},
-	
+
 	setDefaults: function()
 	{
 		$.extend(true, this, this.defaults);

@@ -17,6 +17,8 @@ module.exports = function(grunt)
 			"js/components/resizable.js",
 			"js/components/splitbutton.js",
 			"js/components/tabs.js",
+			"js/components/textbutton.js",
+			"js/components/textsplitbutton.js",
 			"js/components/tooltip.js",
 			"js/components/window.js",
 			"js/components/dialog.js",
@@ -39,6 +41,8 @@ module.exports = function(grunt)
 			"components/resizable",
 			"components/splitbutton",
 			"components/tabs",
+			"components/textbutton",
+			"components/textsplitbutton",
 			"components/tooltip",
 			"components/window"
 		],
@@ -117,7 +121,7 @@ module.exports = function(grunt)
 				"js/**"
 			]
 		},
-		sass: {  
+		sass: {
 			dist: {
 				options: {
 					outputStyle: "expanded",

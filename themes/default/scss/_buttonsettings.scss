@@ -3,51 +3,50 @@ $buttonDisabledOpacity: 0.5;
 $buttonBoxShadow: 0 1px 0 rgba(0, 0, 0, 0.08);
 $buttonCursor: pointer;
 
-$buttonSmallFontSize: 13px;
-$buttonSmallLineHeight: 18px;
-
-$buttonLargeFontSize: 16px;
-$buttonLargeLineHeight: 22px;
-
-$buttonColor: #000;
-$buttonBorderColor: #ccc;
-$buttonBorderColorHover: #adadad;
-$buttonBorderColorActive: #8c8c8c;
-$splitbuttonBorderColorHover: #bdbdbd;
-$buttonBackgroundColor: #fff;
-$buttonBackgroundColorHover: #e6e6e6;
-$buttonBackgroundColorActive: #d4d4d4;
-$splitbuttonBackgroundColorHover: #f2f2f2;
+$buttonDefaultColor: #000;
+$buttonDefaultBorderColor: #ccc;
+$splitButtonDefaultBorderColorHover: #bdbdbd;
+$buttonDefaultBorderColorHover: #adadad;
+$buttonDefaultBorderColorPressed: #8c8c8c;
+$buttonDefaultBackgroundColor: #fff;
+$splitButtonDefaultBackgroundColorHover: #f2f2f2;
+$buttonDefaultBackgroundColorHover: #e6e6e6;
+$buttonDefaultBackgroundColorPressed: #d4d4d4;
 
 $buttonPrimaryColor: #fff;
 $buttonPrimaryBorderColor: #2e6da4;
+$splitButtonPrimaryBorderColorHover: #275d8c;
 $buttonPrimaryBorderColorHover: #204d74;
-$buttonPrimaryBorderColorActive: #122b40;
-$splitbuttonPrimaryBorderColorHover: #275d8c;
+$buttonPrimaryBorderColorPressed: #122b40;
 $buttonPrimaryBackgroundColor: #337ab7;
+$splitButtonPrimaryBackgroundColorHover: #2e6ca3;
 $buttonPrimaryBackgroundColorHover: #286090;
-$buttonPrimaryBackgroundColorActive: #204d74;
-$splitbuttonPrimaryBackgroundColorHover: #2e6ca3;
+$buttonPrimaryBackgroundColorPressed: #204d74;
 
 $buttonSuccessColor: #fff;
 $buttonSuccessBorderColor: #4cae4c;
+$splitButtonSuccessBorderColorHover: #429942;
 $buttonSuccessBorderColorHover: #398439;
-$buttonSuccessBorderColorActive: #255625;
-$splitbuttonSuccessBorderColorHover: #429942;
+$buttonSuccessBorderColorPressed: #255625;
 $buttonSuccessBackgroundColor: #5cb85c;
+$splitButtonSuccessBackgroundColorHover: #49ab49;
 $buttonSuccessBackgroundColorHover: #449d44;
-$buttonSuccessBackgroundColorActive: #398439;
-$splitbuttonSuccessBackgroundColorHover: #49ab49;
+$buttonSuccessBackgroundColorPressed: #398439;
 
 $buttonDangerColor: #fff;
 $buttonDangerBorderColor: #d43f3a;
+$splitButtonDangerBorderColorHover: #bf2f2a;
 $buttonDangerBorderColorHover: #ac2925;
-$buttonDangerBorderColorActive: #761c19;
-$splitbuttonDangerBorderColorHover: #bf2f2a;
+$buttonDangerBorderColorPressed: #761c19;
 $buttonDangerBackgroundColor: #d9534f;
+$splitButtonDangerBackgroundColorHover: #d1332e;
 $buttonDangerBackgroundColorHover: #c9302c;
-$buttonDangerBackgroundColorActive: #ac2925;
-$splitbuttonDangerBackgroundColorHover: #d1332e;
+$buttonDangerBackgroundColorPressed: #ac2925;
+
+$buttonSmallFontSize: 13px;
+$buttonSmallLineHeight: 18px;
+$buttonLargeFontSize: 16px;
+$buttonLargeLineHeight: 22px;
 
 @mixin buttonFocus
 {

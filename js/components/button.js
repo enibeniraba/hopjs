@@ -9,13 +9,10 @@
  * Date: @DATE
  */
 
-(function(document, $, hop)
+(function(window, document, $, hop)
 {
-	
+
 var cp = "hopjs-button-",
-	_cp = "."+cp,
-	aligns = ["left", "center", "right"],
-	verticalAligns = ["top", "middle", "bottom"],
 	positions = ["top", "bottom", "left", "right"];
 
 hop.button = function(params)
@@ -32,26 +29,19 @@ hop.inherit(hop.button, hop.component, {
 			extraClass: "",
 			enabled: true,
 			pressed: false,
+			toggled: false,
+			toggleOnPress: false,
 			allowToggle: false,
 			allowFocus: true,
-			text: "",
-			textAlign: "center",
-			wrapText: true,
-			icon: "",
-			iconPosition: "left",
-			iconSize: "16",
-			simulateIconHeight: false,
-			fixedIcon: false,
+			usePressedStyle: true,
 			menu: null,
 			menuParams: null,
+			toggleMenuOnPress: false,
 			arrow: null,
 			arrowPosition: "right",
 			tabIndex: 0,
 			height: null,
 			width: null,
-			align: "center",
-			verticalAlign: "middle",
-			size: "",
 			style: ""
 		};
 	},
@@ -69,7 +59,8 @@ hop.inherit(hop.button, hop.component, {
 	getEvents: function()
 	{
 		return [
-			"click",
+			"press",
+			"release",
 			"toggle",
 			"destroy"
 		];
@@ -79,6 +70,12 @@ hop.inherit(hop.button, hop.component, {
 	{
 		var self = this;
 		self.defaultMenuParams = self.getDefaultMenuParams();
+		self.canceled = false;
+		self.focused = false;
+		self.toggleMenu = true;
+		self.mouseOver = false;
+		self.mousePressed = false;
+		self.keyPressed = false;
 		hop.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (params.parentNode)
@@ -87,35 +84,28 @@ hop.inherit(hop.button, hop.component, {
 			params.beforeNode.parentNode.insertBefore(self.node, params.beforeNode);
 		else if (params.afterNode)
 			hop.dom.insertAfter(self.node, params.afterNode);
+		self.setEnabled(self.enabled);
+		self.setPressed(self.pressed);
+		self.setToggled(self.toggled);
+		self.setAllowFocus(self.allowFocus);
+		self.setUsePressedStyle(self.usePressedStyle);
+		self.setArrow(self.arrow);
+		self.setArrowPosition(self.arrowPosition);
+		self.setTabIndex(self.tabIndex);
+		self.setHeight(self.height);
+		self.setWidth(self.width);
+		self.setStyle(self.style);
+		self.setMenu(self.menu);
 		if (self.menu)
 		{
 			self.menu.layer.configure({
 				element: self.node
 			});
 		}
-		self.setEnabled(self.enabled);
-		self.setPressed(self.pressed);
-		self.setAllowFocus(self.allowFocus);
-		self.setText(self.text);
-		self.setTextAlign(self.textAlign);
-		self.setWrapText(self.wrapText);
-		self.setIcon(self.icon);
-		self.setIconPosition(self.iconPosition);
-		self.setIconSize(self.iconSize);
-		self.setSimulateIconHeight(self.simulateIconHeight);
-		self.setFixedIcon(self.fixedIcon);
-		self.setArrow(self.arrow);
-		self.setArrowPosition(self.arrowPosition);
-		self.setTabIndex(self.tabIndex);
-		self.setHeight(self.height);
-		self.setWidth(self.width);
-		self.setAlign(self.align);
-		self.setVerticalAlign(self.verticalAlign);
-		self.setSize(self.size);
-		self.setStyle(self.style);
-		self.setMenu(self.menu);
+		if (params.content)
+			self.setContent(params.content);
 	},
-	
+
 	setExtraClass: function(value)
 	{
 		var self = this;
@@ -126,130 +116,151 @@ hop.inherit(hop.button, hop.component, {
 		}
 		self.extraClass = value;
 	},
-	
+
 	setEnabled: function(value)
 	{
 		this.enabled = !!value;
 		if (this.node)
 		{
-			this.$node.attr("tabIndex", this.enabled ? this.tabIndex : -1);
+			this.updateTabIndex();
 			this.$node.toggleClass(cp+"enabled", this.enabled);
 			this.$node.toggleClass(cp+"disabled", !this.enabled);
-			this.$node.removeClass(cp+"active");
+			this.setPressed(false);
 			if (this.menu)
 				this.menu.hide({animation: false});
 		}
 	},
-	
+
+	updateTabIndex: function()
+	{
+		if (this.enabled && this.allowFocus && this.tabIndex !== null)
+			this.$node.attr("tabIndex", this.tabIndex);
+		else
+			this.$node.removeAttr("tabIndex");
+	},
+
 	setPressed: function(value)
 	{
-		var prev = this.pressed;
-		this.pressed = !!value;
-		if (this.node)
+		var self = this,
+			prev = self.pressed;
+		self.pressed = !!value;
+		self.mousePressed = false;
+		self.keyPressed = false;
+		if (self.node)
 		{
-			this.$node.toggleClass(cp+"pressed", this.pressed);
-			if (this.created && this.pressed !== prev)
-				this.onToggle();
+			if (this.usePressedStyle)
+				self.$node.toggleClass(cp+"pressed", self.pressed);
+			if (self.created && self.pressed !== prev)
+			{
+				var data = {
+					allowToggle: true
+				};
+				if (self.pressed)
+				{
+					self.onPress(data);
+					if (self.allowToggle)
+					{
+						if (self.toggleOnPress && data.allowToggle)
+							self.toggle();
+					}
+					else if (this.menu && this.toggleMenuOnPress)
+						this.menu.toggle();
+				}
+				else
+				{
+					self.onRelease(data);
+					if (!self.canceled)
+					{
+						if (self.allowToggle)
+						{
+							if (!self.toggleOnPress && data.allowToggle)
+								self.toggle();
+						}
+						else if (this.menu && !this.toggleMenuOnPress)
+							this.menu.toggle();
+					}
+				}
+			}
 		}
 	},
-	
+
+	onPress: function(data)
+	{
+		this.trigger("press", data);
+	},
+
+	onRelease: function(data)
+	{
+		this.trigger("release", data);
+	},
+
+	setToggled: function(value)
+	{
+		var self = this,
+			prev = self.toggled;
+		self.toggled = !!value;
+		if (self.node)
+		{
+			self.$node.toggleClass(cp+"toggled", self.toggled);
+			if (self.created && self.toggled !== prev)
+			{
+				if (self.menu && self.toggleMenu)
+				{
+					if (self.toggled)
+						self.menu.show();
+					else
+						self.menu.hide();
+				}
+				self.onToggle();
+			}
+		}
+	},
+
 	onToggle: function()
 	{
 		this.trigger("toggle");
 	},
-	
+
 	setAllowFocus: function(value)
 	{
 		this.allowFocus = !!value;
 		if (this.node)
+		{
+			this.updateTabIndex();
 			this.$node.toggleClass(cp+"no-focus", !this.allowFocus);
+		}
 	},
-	
-	setText: function(value)
+
+	setUsePressedStyle: function(value)
 	{
-		this.text = String(value);
+		this.usePressedStyle = !!value;
 		if (this.node)
-		{
-			this.$text.html(this.text);
-			this.$node.toggleClass(cp+"text", this.text !== "");
-		}
+			this.$node.toggleClass(cp+"pressed", this.usePressedStyle && this.pressed);
 	},
-	
-	setTextAlign: function(value)
+
+	setContent: function(value)
 	{
-		value = String(value);
-		if ($.inArray(value, aligns) !== -1)
-		{
-			if (this.node)
-				this.$node.removeClass(cp+"text-align-"+this.textAlign);
-			this.textAlign = value;
-			if (this.node)
-				this.$node.addClass(cp+"text-align-"+value);
-		}
-	},
-	
-	setWrapText: function(value)
-	{
-		this.wrapText = !!value;
 		if (this.node)
-			this.$node.toggleClass(cp+"text-nowrap", !this.wrapText);
+			this.$content.html(value);
 	},
-	
-	setIcon: function(icon)
-	{
-		this.icon = String(icon);
-		if (this.$node)
-		{
-			this.iconNode.style.backgroundImage = (this.icon === "" ? "" : "url("+this.icon+")");
-			this.$node.toggleClass(cp+"icon", this.icon !== "");
-			this.$node.toggleClass(cp+"icon-"+this.iconPosition, this.icon !== "");
-		}
-	},
-	
-	setIconPosition: function(value)
-	{
-		value = String(value);
-		if ($.inArray(value, positions) !== -1)
-		{
-			if (this.node)
-				this.$node.removeClass(cp+"icon-"+this.iconPosition);
-			this.iconPosition = value;
-			if (this.node && this.icon !== "")
-				this.$node.addClass(cp+"icon-"+value);
-		}
-	},
-	
-	setIconSize: function(value)
-	{
-		value = String(value);
-		if (this.$node)
-			this.$node.removeClass(cp+"icon-size-"+this.iconSize);
-		this.iconSize = String(value);
-		if (this.$node && value !== "16")
-			this.$node.addClass(cp+"icon-size-"+value);
-	},
-	
-	setSimulateIconHeight: function(value)
-	{
-		this.simulateIconHeight = !!value;
-		if (this.$node)
-			this.$node.toggleClass(cp+"simulate-icon-height", this.simulateIconHeight);
-	},
-	
-	setFixedIcon: function(value)
-	{
-		this.fixedIcon = !!value;
-		if (this.$node)
-			this.$node.toggleClass(cp+"fixed-icon", this.fixedIcon);
-	},
-	
+
 	setArrow: function(value)
 	{
 		if (value !== null)
 			value = !!value;
 		this.arrow = value;
+		this.updateArrowClass();
+	},
+
+	updateArrowClass: function()
+	{
 		if (this.node)
-			this.$node.toggleClass(cp+"arrow", this.arrow || this.arrow === null && this.menu !== null);
+			this.$node.toggleClass(cp+"arrow", this.arrow || this.arrow === null && this.getDefaultArrow());
+	},
+
+	getDefaultArrow: function()
+	{
+		return (this.menu !== null);
 	},
 
 	setMenu: function(menu)
@@ -257,8 +268,7 @@ hop.inherit(hop.button, hop.component, {
 		var self = this, menuParams = {};
 		if (menu && !(menu instanceof hop.dropdownMenu))
 			menu = new hop.dropdownMenu(menu);
-		if (self.node)
-			self.$node.toggleClass(cp+"arrow", self.arrow || self.arrow === null && menu !== null);
+		self.updateArrowClass();
 		if (menu === self.menu)
 			return;
 
@@ -271,6 +281,7 @@ hop.inherit(hop.button, hop.component, {
 			});
 		}
 		self.menu = menu;
+		self.updateArrowClass();
 		if (!menu)
 			return;
 
@@ -284,7 +295,7 @@ hop.inherit(hop.button, hop.component, {
 				element: self.node
 			});
 		}
-		
+
 		self.menuLayerShowBefore = function()
 		{
 			self.onMenuLayerShowBefore();
@@ -297,17 +308,25 @@ hop.inherit(hop.button, hop.component, {
 		};
 		menu.layer.on("hideBefore", self.menuLayerHideBefore);
 	},
-	
+
 	onMenuLayerShowBefore: function()
 	{
-		if (this.node)
-			this.$node.addClass(cp+"open");
+		if (this.node && this.allowToggle)
+		{
+			this.toggleMenu = false;
+			this.setToggled(true);
+			this.toggleMenu = true;
+		}
 	},
 
 	onMenuLayerHideBefore: function()
 	{
-		if (this.node)
-			this.$node.removeClass(cp+"open");
+		if (this.node && this.allowToggle)
+		{
+			this.toggleMenu = false;
+			this.setToggled(false);
+			this.toggleMenu = true;
+		}
 	},
 
 	setMenuParams: function(params, update)
@@ -325,7 +344,7 @@ hop.inherit(hop.button, hop.component, {
 			self.menu.configure(menuParams);
 		}
 	},
-	
+
 	setArrowPosition: function(value)
 	{
 		value = String(value);
@@ -338,18 +357,22 @@ hop.inherit(hop.button, hop.component, {
 				this.$node.addClass(cp+"arrow-"+value);
 		}
 	},
-	
+
 	setTabIndex: function(value)
 	{
-		value = parseInt(value);
-		if (isNaN(value))
-			return;
-		
+		if (value === "")
+			value = null;
+		if (value !== null)
+		{
+			value = parseInt(value);
+			if (isNaN(value))
+				return;
+		}
 		this.tabIndex = value;
-		if (this.node && this.enabled)
-			this.$node.attr("tabIndex", this.tabIndex);
+		if (this.node)
+			this.updateTabIndex();
 	},
-	
+
 	setHeight: function(value)
 	{
 		if (value !== null)
@@ -362,7 +385,7 @@ hop.inherit(hop.button, hop.component, {
 		if (this.node)
 			this.node.style.height = (value === null ? "" : value+"px");
 	},
-	
+
 	setWidth: function(value)
 	{
 		if (value !== null)
@@ -375,43 +398,7 @@ hop.inherit(hop.button, hop.component, {
 		if (this.node)
 			this.node.style.width = (value === null ? "" : value+"px");
 	},
-	
-	setAlign: function(value)
-	{
-		value = String(value);
-		if ($.inArray(value, aligns) !== -1)
-		{
-			if (this.node)
-				this.$node.removeClass(cp+"align-"+this.align);
-			this.align = value;
-			if (this.node)
-				this.$node.addClass(cp+"align-"+value);
-		}
-	},
-	
-	setVerticalAlign: function(value)
-	{
-		value = String(value);
-		if ($.inArray(value, verticalAligns) !== -1)
-		{
-			if (this.node)
-				this.$node.removeClass(cp+"vertical-align-"+this.verticalAlign);
-			this.verticalAlign = value;
-			if (this.node)
-				this.$node.addClass(cp+"vertical-align-"+value);
-		}
-	},
-	
-	setSize: function(value)
-	{
-		value = String(value);
-		if (this.node && this.size !== "")
-			this.$node.removeClass(cp+"size-"+this.size);
-		this.size = value;
-		if (this.node && value !== "")
-			this.$node.addClass(cp+"size-"+value);
-	},
-	
+
 	setStyle: function(value)
 	{
 		value = String(value);
@@ -421,74 +408,201 @@ hop.inherit(hop.button, hop.component, {
 		if (this.node && value !== "")
 			this.$node.addClass(cp+"style-"+value);
 	},
-	
+
+	enable: function()
+	{
+		this.setEnabled(true);
+	},
+
+	disable: function()
+	{
+		this.setEnabled(false);
+	},
+
+	press: function()
+	{
+		this.setPressed(true);
+	},
+
+	release: function()
+	{
+		this.setPressed(false);
+	},
+
+	toggle: function(value)
+	{
+		if (!hop.def(value))
+			value = !this.toggled;
+		this.setToggled(value);
+	},
+
+	cancel: function()
+	{
+		if (this.pressed)
+		{
+			this.canceled = true;
+			this.setPressed(false);
+			this.canceled = false;
+		}
+	},
+
 	generateHtml: function()
+	{
+		var self = this;
+		self.createNode();
+		self.generateInnerHtml();
+		self.attachEvents();
+	},
+
+	createNode: function()
 	{
 		var self = this;
 		self.node = document.createElement("span");
 		self.node.hopButton = self;
-		self.node.className = "hopjs-button";
+		self.node.className = self.createClassName();
 		if (self.extraClass !== "")
 			self.node.className += " "+self.extraClass;
 		self.$node = $(self.node);
-		self.$node.html('<span><span><span><span><i></i><span><span><span><span></span></span></span></span></span></span></span></span>');
-		self.$text = $("> span > span > span > span > span > span > span > span", self.node);
-		self.textNode = self.$text[0];
-		self.$icon = $("i", self.node);
-		self.iconNode = self.$icon[0];
-		
+	},
+
+	createClassName: function()
+	{
+		return "hopjs-button";
+	},
+
+	generateInnerHtml: function()
+	{
+		var self = this;
+		self.$node.html('<span><span></span></span>');
+		self.$content = $("> span > span", self.node);
+		self.contentNode = self.$content[0];
+	},
+
+	attachEvents: function()
+	{
+		var self = this;
+		self.$node.on("mouseenter", function(event)
+		{
+			self.onNodeMouseenter(event);
+		});
+
+		self.$node.on("mouseleave", function(event)
+		{
+			self.onNodeMouseleave(event);
+		});
+
 		self.$node.on("mousedown", function(event)
 		{
 			self.onNodeMousedown(event);
 		});
-		
-		self.$node.on("click", function(event)
+
+		self.$node.on("mouseup", function(event)
 		{
-			self.onNodeClick(event);
+			self.onNodeMouseup(event);
 		});
-		
+
+		self.$node.on("focus", function(event)
+		{
+			self.onFocus();
+		});
+
+		self.$node.on("blur", function(event)
+		{
+			self.onBlur();
+		});
+
 		$(document).on("mouseup", function(event)
 		{
 			self.onDocumentMouseup(event);
 		});
+
+		$(document).on("keydown", function(event)
+		{
+			self.onDocumentKeydown(event);
+		});
+
+		$(document).on("keyup", function(event)
+		{
+			self.onDocumentKeyup(event);
+		});
+
+		$(window).on("blur", function(event)
+		{
+			self.onWindowBlur(event);
+		});
 	},
-	
+
+	onNodeMouseenter: function(event)
+	{
+		this.mouseOver = true;
+	},
+
+	onNodeMouseleave: function(event)
+	{
+		this.mouseOver = false;
+	},
+
 	onNodeMousedown: function(event)
 	{
 		if (event.which === 1 && this.enabled)
 		{
+			if (this.allowFocus && this.tabIndex === null)
+				this.node.focus();
 			if (this.menu)
 				this.menu.mousedown = true;
-			this.$node.addClass(cp+"active");
+			this.press();
+			this.mousePressed = true;
 		}
 	},
-	
-	onNodeClick: function(event)
+
+	onNodeMouseup: function(event)
 	{
-		if (event.which === 1 && this.enabled)
-		{
-			if (this.menu)
-				this.menu.toggle();
-			if (this.allowToggle)
-				this.toggle();
-			this.onClick(event);
-		}
+		if (event.which === 1 && this.enabled && this.mousePressed)
+			this.release();
 	},
-	
-	onClick: function(event)
+
+	onFocus: function(event)
 	{
-		this.trigger("click", {event: event});
+		this.focused = true;
 	},
-	
-	toggle: function()
+
+	onBlur: function(event)
 	{
-		this.setPressed(!this.pressed);
+		this.focused = false;
+		if (this.keyPressed)
+			this.cancel();
 	},
-	
+
 	onDocumentMouseup: function(event)
 	{
-		if (event.which === 1)
-			this.$node.removeClass(cp+"active");
+		if (event.which === 1 && this.enabled && this.mousePressed && !this.mouseOver)
+			this.cancel();
+	},
+
+	onDocumentKeydown: function(event)
+	{
+		if (this.enabled)
+		{
+			if (this.focused && (event.which === 13 || event.which === 32))
+			{
+				this.press();
+				this.keyPressed = true;
+			}
+			else if (event.which === 27 && this.mousePressed)
+				this.cancel();
+		}
+	},
+
+	onDocumentKeyup: function(event)
+	{
+		if (this.enabled && this.focused && this.keyPressed && (event.which === 13 || event.which === 32))
+			this.release();
+	},
+
+	onWindowBlur: function(event)
+	{
+		if (this.mousePressed || this.keyPressed)
+			this.cancel();
 	},
 
 	destroy: function()
@@ -505,4 +619,4 @@ hop.inherit(hop.button, hop.component, {
 	}
 });
 
-})(document, jQuery, hopjs);
+})(window, document, jQuery, hopjs);

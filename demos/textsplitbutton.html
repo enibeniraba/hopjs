@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<title>Split button</title>
+<title>Text split button</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="css/common.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/splitbutton.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/textsplitbutton.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/dropdownmenu.css" />
 <script type="text/javascript" src="../external/jquery.js"></script>
 <script type="text/javascript" src="../js/base.js"></script>
 <script type="text/javascript" src="../js/components/layer.js"></script>
 <script type="text/javascript" src="../js/components/splitbutton.js"></script>
+<script type="text/javascript" src="../js/components/textsplitbutton.js"></script>
 <script type="text/javascript" src="../js/components/dropdownmenu.js"></script>
 <style type="text/css">
 .settings
@@ -44,7 +46,7 @@
 </style>
 </head>
 <body>
-<h1>Split button</h1>
+<h1>Text split button</h1>
 <div id="container"></div>
 <br />
 <div class="settings">
@@ -187,6 +189,112 @@
 		</tr>
 	</table>
 </div>
+<div class="settings">
+	<table class="table">
+		<tr>
+			<td>text</td>
+			<td>
+				<input type="checkbox" id="text" checked="checked" />
+			</td>
+		</tr>
+		<tr>
+			<td>Multiple lines</td>
+			<td>
+				<input type="checkbox" id="multiple-lines" />
+			</td>
+		</tr>
+		<tr>
+			<td>textAlign</td>
+			<td>
+				<select id="text-align">
+					<option value="left">left</option>
+					<option value="center" selected="selected">center</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>wrapText</td>
+			<td>
+				<input type="checkbox" id="wrap-text" checked="checked"/>
+			</td>
+		</tr>
+		<tr>
+			<td>icon</td>
+			<td>
+				<select id="icon">
+					<option value="">none</option>
+					<option value="images/button16.png">16</option>
+					<option value="images/button24.png">24</option>
+					<option value="images/button32.png">32</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>iconPosition</td>
+			<td>
+				<select id="icon-position">
+					<option value="left">left</option>
+					<option value="right">right</option>
+					<option value="top">top</option>
+					<option value="bottom">bottom</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>iconSize</td>
+			<td>
+				<select id="icon-size">
+					<option value="16">16</option>
+					<option value="24">24</option>
+					<option value="32">32</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>simulateIconHeight</td>
+			<td>
+				<input type="checkbox" id="simulate-icon-height" />
+			</td>
+		</tr>
+		<tr>
+			<td>fixedIcon</td>
+			<td>
+				<input type="checkbox" id="fixed-icon" />
+			</td>
+		</tr>
+		<tr>
+			<td>align</td>
+			<td>
+				<select id="align">
+					<option value="left">left</option>
+					<option value="center" selected="selected">center</option>
+					<option value="right">right</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>verticalAlign</td>
+			<td>
+				<select id="vertical-align">
+					<option value="top">top</option>
+					<option value="middle" selected="selected">middle</option>
+					<option value="bottom">bottom</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>size</td>
+			<td>
+				<select id="size">
+					<option value=""></option>
+					<option value="small">small</option>
+					<option value="large">large</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
 <script type="text/javascript">
 $(function()
 {
@@ -213,10 +321,11 @@ $(function()
 		]
 	});
 
-	b1 = new hop.splitButton({
+	var text = "Button";
+	b1 = new hop.textSplitButton({
 		parentNode: $("#container")[0],
 		style: "default",
-		content: "<div>Button<br />content</div>",
+		text: text,
 		onPress: function(self, data)
 		{
 			console.log("Press");
@@ -342,6 +451,55 @@ $(function()
 	$("#toggle-menu-on-press").on("change", function()
 	{
 		b1.toggleMenuOnPress = this.checked;
+	});
+	$("#align").on("change", function()
+	{
+		b1.setAlign(this.value);
+	});
+	$("#vertical-align").on("change", function()
+	{
+		b1.setVerticalAlign(this.value);
+	});
+	$("#size").on("change", function()
+	{
+		b1.setSize(this.value);
+	});
+	$("#text").on("change", function()
+	{
+		b1.setText(this.checked ? text : "");
+	});
+	$("#multiple-lines").on("change", function()
+	{
+		text = (this.checked ? "Button<br />Second line" : "Button");
+		b1.setText(text);
+	});
+	$("#text-align").on("change", function()
+	{
+		b1.setTextAlign(this.value);
+	});
+	$("#wrap-text").on("change", function()
+	{
+		b1.setWrapText(this.checked);
+	});
+	$("#icon").on("change", function()
+	{
+		b1.setIcon(this.value);
+	});
+	$("#icon-position").on("change", function()
+	{
+		b1.setIconPosition(this.value);
+	});
+	$("#icon-size").on("change", function()
+	{
+		b1.setIconSize(this.value);
+	});
+	$("#simulate-icon-height").on("change", function()
+	{
+		b1.setSimulateIconHeight(this.checked);
+	});
+	$("#fixed-icon").on("change", function()
+	{
+		b1.setFixedIcon(this.checked);
 	});
 });
 </script>
