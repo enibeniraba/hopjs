@@ -4,7 +4,7 @@ module.exports = function(grunt)
 		fs = require("fs"),
 		buildPath = "build/hopjs-"+pkg.version,
 		concatAll = [
-			buildPath+"/js/base.js",
+			"js/base.js",
 			"js/components/button.js",
 			"js/components/contextmenu.js",
 			"js/components/datepicker.js",
@@ -24,38 +24,8 @@ module.exports = function(grunt)
 			"js/components/dialog.js",
 			"js/components/message.js"
 		],
-		minFiles = [
-			"hop",
-			"base",
-			"components/button",
-			"components/contextmenu",
-			"components/datepicker",
-			"components/datepickeranimations",
-			"components/dialog",
-			"components/draggable",
-			"components/dropdownmenu",
-			"components/layer",
-			"components/menu",
-			"components/menubutton",
-			"components/message",
-			"components/resizable",
-			"components/splitbutton",
-			"components/tabs",
-			"components/textbutton",
-			"components/textsplitbutton",
-			"components/tooltip",
-			"components/window"
-		],
 		locales = fs.readdirSync("js/i18n"),
-		minFilesMap = [], i;
-
-	for (i in minFiles)
-	{
-		minFilesMap.push({
-			src: buildPath+'/js/'+minFiles[i]+'.js',
-			dest: buildPath+'/js/min/'+minFiles[i]+'.min.js'
-		});
-	}
+		i;
 
 	i18nConcatFilesMap = [];
 	for (i in locales)
@@ -85,9 +55,7 @@ module.exports = function(grunt)
 				files: i18nConcatFilesMap
 			},
 			css: {
-				src: [
-					buildPath+"/themes/default/css/*"
-				],
+				src: buildPath+"/themes/default/css/*",
 				dest: buildPath+"/themes/default/css/hop.css"
 			}
 		},
@@ -95,18 +63,15 @@ module.exports = function(grunt)
 			build: {
 				files: [
 					{
+						expand: true,
 						src: [
 							"demos/**",
 							"external/**",
 							"js/**",
-							"themes/default/images/**"
+							"themes/default/images/**",
+							"LICENSE.txt"
 						],
-						dest: buildPath,
-						expand: true
-					},
-					{
-						src: "LICENSE.txt",
-						dest: buildPath+"/LICENSE.txt"
+						dest: buildPath
 					}
 				]
 			}
@@ -133,7 +98,7 @@ module.exports = function(grunt)
 					cwd: "themes/default/scss",
 					src: ["*.scss"],
 					dest: buildPath+"/themes/default/css",
-					ext: '.css'
+					ext: ".css"
 				}]
 			}
 		},
@@ -168,14 +133,21 @@ module.exports = function(grunt)
 				preserveComments: "some"
 			},
 			all: {
-				files: minFilesMap
+				files: [
+					{
+						expand: true,
+						cwd: buildPath+"/js",
+						src: ["*.js", "components/*.js"],
+						dest: buildPath+"/js/min"
+					}
+				]
 			}
 		}
 	});
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-copy");
-	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-sass");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-string-replace");

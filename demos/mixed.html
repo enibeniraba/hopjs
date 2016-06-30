@@ -295,9 +295,10 @@ $(function()
 			}
 		]
 	});
-	
-	b1 = new hop.button({
+
+	b1 = new hop.textButton({
 		parentNode: $("#dp1-button-container")[0],
+		style: "default",
 		icon: "../themes/default/images/datepickertoday.png"
 	});
 
@@ -324,7 +325,7 @@ $(function()
 			}
 		}
 	});
-	
+
 	var menu2 = {
 		items: [
 			{
@@ -440,9 +441,10 @@ $(function()
 			}
 		]
 	};
-	
-	b2 = new hop.button({
+
+	b2 = new hop.textButton({
 		parentNode: $("#dp1-options-button-container")[0],
+		style: "default",
 		text: "Datepicker options",
 		allowToggle: true,
 		menu: menu2,
@@ -464,7 +466,7 @@ $(function()
 			animationShow: "def"
 		}
 	});
-	
+
 	cm1 = new hop.contextMenu({
 		node: $("#cm1")[0],
 		menu: {
