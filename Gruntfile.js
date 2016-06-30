@@ -13,7 +13,7 @@ module.exports = function(grunt)
 			"js/components/dropdownmenu.js",
 			"js/components/layer.js",
 			"js/components/menu.js",
-			"js/components/menubutton.js",
+			"js/components/menutrigger.js",
 			"js/components/resizable.js",
 			"js/components/splitbutton.js",
 			"js/components/tabs.js",

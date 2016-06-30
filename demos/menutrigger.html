@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<title>Menu button</title>
+<title>Menu trigger</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="css/common.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/dropdownmenu.css" />
@@ -9,16 +9,16 @@
 <script type="text/javascript" src="../js/base.js"></script>
 <script type="text/javascript" src="../js/components/layer.js"></script>
 <script type="text/javascript" src="../js/components/dropdownmenu.js"></script>
-<script type="text/javascript" src="../js/components/menubutton.js"></script>
+<script type="text/javascript" src="../js/components/menutrigger.js"></script>
 <style type="text/css">
-.hopjs-menu-button-open
+.hopjs-menu-trigger-open
 {
 	font-weight: bold;
 }
 </style>
 </head>
 <body>
-<h1>Menu button</h1>
+<h1>Menu trigger</h1>
 <p><span id="mb1">Click</span></p>
 <p><span id="mb2">Mousedown</span></p>
 <p><span id="mb3">Mouseenter, mouseleave</span></p>
@@ -49,12 +49,12 @@ $(function()
 		]
 	};
 
-	mb1 = new hop.menuButton({
+	mb1 = new hop.menuTrigger({
 		node: $("#mb1")[0],
 		menu: menu
 	});
 
-	mb2 = new hop.menuButton({
+	mb2 = new hop.menuTrigger({
 		node: $("#mb2")[0],
 		menu: menu,
 		showOnMousedown: true,
@@ -63,7 +63,7 @@ $(function()
 		hideOnClick: false
 	});
 
-	mb3 = new hop.menuButton({
+	mb3 = new hop.menuTrigger({
 		node: $("#mb3")[0],
 		menu: menu,
 		menuParams: {
@@ -75,7 +75,7 @@ $(function()
 		hideOnMouseleave: true
 	});
 
-	mb4 = new hop.menuButton({
+	mb4 = new hop.menuTrigger({
 		node: $("#mb4")[0],
 		menu: menu,
 		menuParams: {

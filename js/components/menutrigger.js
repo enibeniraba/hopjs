@@ -12,12 +12,12 @@
 (function(document, $, hop)
 {
 
-hop.menuButton = function(params)
+hop.menuTrigger = function(params)
 {
 	hop.component.apply(this, arguments);
 };
 
-hop.inherit(hop.menuButton, hop.component, {
+hop.inherit(hop.menuTrigger, hop.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -27,7 +27,7 @@ hop.inherit(hop.menuButton, hop.component, {
 			menu: null,
 			menuParams: null,
 			useOpenClass: true,
-			openClass: "hopjs-menu-button-open",
+			openClass: "hopjs-menu-trigger-open",
 			showOnMousedown: false,
 			hideOnMousedown: false,
 			showOnClick: true,
@@ -70,7 +70,7 @@ hop.inherit(hop.menuButton, hop.component, {
 
 		if (self.node)
 		{
-			self.node.removeAttribute("hopMenuButton");
+			self.node.removeAttribute("hopMenuTrigger");
 			$(self.node).off("mousedown", self.nodeMousedown);
 			$(self.node).off("click", self.nodeClick);
 			$(self.node).off("mouseenter", self.nodeMouseenter);
@@ -87,7 +87,7 @@ hop.inherit(hop.menuButton, hop.component, {
 		if (!node)
 			return;
 
-		node.hopMenuButton = self;
+		node.hopMenuTrigger = self;
 		if (self.menu)
 		{
 			self.menu.layer.configure({
@@ -248,7 +248,7 @@ hop.inherit(hop.menuButton, hop.component, {
 
 	destroy: function()
 	{
-		this.setButton(null);
+		this.setNode(null);
 		if (this.menu)
 			this.menu.destroy();
 		this.onDestroy();
