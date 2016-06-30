@@ -59,8 +59,12 @@
 	{
 		content: "";
 		display: block;
-		height: 16px;
-		width: 16px;
+		top: 50%;
+		left: 50%;
+		height: 4px;
+		width: 7px;
+		margin-top: -2px;
+		margin-left: -3px;
 		position: absolute;
 		background: url(../images/menusub.png) center center no-repeat;
 	}
@@ -95,7 +99,7 @@
 	{
 		> span
 		{
-			padding-left: 18px;
+			padding-left: 16px;
 		}
 
 		> span > span
@@ -108,15 +112,8 @@
 			top: 0;
 			left: 0;
 			height: 100%;
-			width: 19px;
+			width: 17px;
 			border-radius: 2px 0 0 2px;
-		}
-
-		> span > div:after
-		{
-			top: 50%;
-			margin-top: -8px;
-			left: 1px;
 		}
 	}
 
@@ -124,7 +121,7 @@
 	{
 		> span
 		{
-			padding-right: 18px;
+			padding-right: 16px;
 		}
 
 		> span > span
@@ -137,15 +134,8 @@
 			top: 0;
 			right: 0;
 			height: 100%;
-			width: 19px;
+			width: 17px;
 			border-radius: 0 2px 2px 0;
-		}
-
-		> span > div:after
-		{
-			top: 50%;
-			margin-top: -8px;
-			right: 0;
 		}
 	}
 
@@ -169,13 +159,6 @@
 			width: 100%;
 			border-radius: 2px 2px 0 0;
 		}
-
-		> span > div:after
-		{
-			left: 50%;
-			margin-left: -8px;
-			top: -1px;
-		}
 	}
 
 	&.hopjs-button-arrow-bottom
@@ -197,13 +180,6 @@
 			height: 16px;
 			width: 100%;
 			border-radius: 0 0 2px 2px;
-		}
-
-		> span > div:after
-		{
-			left: 50%;
-			margin-left: -8px;
-			bottom: -1px;
 		}
 	}
 

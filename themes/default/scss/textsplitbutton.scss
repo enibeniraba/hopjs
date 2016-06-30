@@ -366,6 +366,32 @@
 	{
 		font-size: $buttonSmallFontSize;
 
+		&.hopjs-button-arrow-left
+		{
+			> span
+			{
+				padding-left: 14px;
+			}
+
+			> span > div
+			{
+				width: 15px;
+			}
+		}
+
+		&.hopjs-button-arrow-right
+		{
+			> span
+			{
+				padding-right: 14px;
+			}
+
+			> span > div
+			{
+				width: 15px;
+			}
+		}
+
 		> span > span > span
 		{
 			padding: 0;
@@ -400,6 +426,32 @@
 	&.hopjs-button-size-large
 	{
 		font-size: $buttonLargeFontSize;
+
+		&.hopjs-button-arrow-left
+		{
+			> span
+			{
+				padding-left: 18px;
+			}
+
+			> span > div
+			{
+				width: 19px;
+			}
+		}
+
+		&.hopjs-button-arrow-right
+		{
+			> span
+			{
+				padding-right: 18px;
+			}
+
+			> span > div
+			{
+				width: 19px;
+			}
+		}
 
 		> span > span > span
 		{
