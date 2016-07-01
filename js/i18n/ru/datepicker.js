@@ -1,7 +1,7 @@
-(function(hop)
+(function(hopjs)
 {
 
-hop.datepicker.i18n["ru"] = {
+hopjs.datepicker.i18n["ru"] = {
 	dateFormat: "d.m.Y",
 	timeFormat: "G:i:s",
 	timeFormatShort: "G:i",

@@ -1,6 +1,6 @@
-(function(hop)
+(function(hopjs)
 {
 
-hop.datepicker.i18n["en-US"] = {};
+hopjs.datepicker.i18n["en-US"] = {};
 
 })(hopjs);

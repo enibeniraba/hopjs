@@ -1,7 +1,7 @@
-(function(hop)
+(function(hopjs)
 {
 
-hop.datepicker.i18n["en-GB"] = {
+hopjs.datepicker.i18n["en-GB"] = {
 	timeFormat: "H:i:s",
 	timeFormatShort: "H:i",
 	firstWeekDay: 1

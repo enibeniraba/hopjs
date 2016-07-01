@@ -1,7 +1,7 @@
-(function(hop)
+(function(hopjs)
 {
 
-hop.window.i18n["ru"] = {
+hopjs.window.i18n["ru"] = {
 	fullScreen: "Во весь экран",
 	restore: "Востановить",
 	hide: "Закрыть"

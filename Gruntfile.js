@@ -21,8 +21,7 @@ module.exports = function(grunt)
 			"js/components/textsplitbutton.js",
 			"js/components/tooltip.js",
 			"js/components/window.js",
-			"js/components/dialog.js",
-			"js/components/message.js"
+			"js/components/dialog.js"
 		],
 		locales = fs.readdirSync("js/i18n"),
 		i;

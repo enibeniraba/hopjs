@@ -1,6 +1,6 @@
-(function(hop)
+(function(hopjs)
 {
 
-hop.window.i18n["en-US"] = {};
+hopjs.window.i18n["en-US"] = {};
 
 })(hopjs);
