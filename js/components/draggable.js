@@ -9,18 +9,20 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
-var def = hop.def,
+var def = hopjs.def,
 	allLimiterSides = ["top", "bottom", "left", "right"];
 
-hop.draggable = function(params)
+hopjs.types["draggable"] = "hopjs.draggable";
+
+hopjs.draggable = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.draggable, hop.component, {
+hopjs.inherit(hopjs.draggable, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -42,7 +44,7 @@ hop.inherit(hop.draggable, hop.component, {
 			cursor: null
 		};
 	},
-	
+
 	getVirtualParams: function()
 	{
 		return [
@@ -65,10 +67,10 @@ hop.inherit(hop.draggable, hop.component, {
 	create: function(params)
 	{
 		var self = this;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		if (!self.node)
 			throw new Error("Node is not defiend.");
-		
+
 		self.$node = $(self.node);
 		self.dragging = false;
 		self.canceled = false;
@@ -84,7 +86,7 @@ hop.inherit(hop.draggable, hop.component, {
 		self.setHandles(self.handles);
 		self.setCancelHandles(self.cancelHandles);
 	},
-	
+
 	setEnabled: function(enabled)
 	{
 		this.enabled = !!enabled;
@@ -96,7 +98,7 @@ hop.inherit(hop.draggable, hop.component, {
 			this.cancel();
 		}
 	},
-	
+
 	setHandles: function(handles)
 	{
 		var self = this, i;
@@ -112,7 +114,7 @@ hop.inherit(hop.draggable, hop.component, {
 			self.handles.push(handles[i]);
 		self.updateHandles();
 	},
-	
+
 	setCancelHandles: function(handles)
 	{
 		var self = this, i;
@@ -128,16 +130,16 @@ hop.inherit(hop.draggable, hop.component, {
 			self.cancelHandles.push(handles[i]);
 		self.updateHandles();
 	},
-	
+
 	updateHandles: function()
 	{
 		var self = this, i, $element;
 		if (!def(self.$node))
 			return;
-		
+
 		for (i in self.handleItems)
 			$(self.handleItems[i].node).off("mousedown", self.handleMousedown);
-		
+
 		self.handleItems = [];
 		for (i in self.handles)
 		{
@@ -180,13 +182,13 @@ hop.inherit(hop.draggable, hop.component, {
 		for (i in self.handleItems)
 			$(self.handleItems[i].node).on("mousedown", {index: i}, self.handleMousedown);
 	},
-	
+
 	onHandleMousedown: function(event)
 	{
 		var self = this;
 		if (event.which !== 1 || !self.enabled || self.dragging || self.canceled)
 			return;
-		
+
 		if (self.handleItems[event.data.index].cancel)
 			self.canceled = true;
 		else
@@ -195,19 +197,19 @@ hop.inherit(hop.draggable, hop.component, {
 			self.start(event);
 		}
 	},
-	
+
 	setIncrement: function(increment)
 	{
 		this.heightIncrement = increment;
 		this.widthIncrement = increment;
 	},
-	
+
 	setLimiter: function(value)
 	{
 		this.limiter = (value === null || value === "" ? null : value);
 		this.limiterCache = null;
 	},
-	
+
 	setLimiterSides: function(sides)
 	{
 		var self = this, i;
@@ -225,17 +227,17 @@ hop.inherit(hop.draggable, hop.component, {
 				self.limiterSides.push(sides[i]);
 		}
 	},
-	
+
 	validateLimiterSide: function(side)
 	{
 		if (typeof side !== "string")
 		{
-			console.warn("hop.draggable: Invalid limiter side variable type. Expected string.");
+			console.warn("hopjs.draggable: Invalid limiter side variable type. Expected string.");
 			return false;
 		}
 		if ($.inArray(side, allLimiterSides) === -1)
 		{
-			console.warn("hop.draggable: Unknown limiter side "+side+".");
+			console.warn("hopjs.draggable: Unknown limiter side "+side+".");
 			return false;
 		}
 		return true;
@@ -248,50 +250,50 @@ hop.inherit(hop.draggable, hop.component, {
 		self.$node.addClass("hopjs-draggable");
 		if (self.extraClass !== "")
 			self.$node.addClass(self.extraClass);
-		
+
 		self.windowBlur = function(event)
 		{
 			self.onWindowBlur(event);
 		};
 		$(window).on("blur", self.windowBlur);
-		
+
 		self.documentMousedown = function(event)
 		{
 			self.onDocumentMousedown(event);
 		};
 		$(document).on("mousedown", self.documentMousedown);
-		
+
 		self.documentMousemove = function(event)
 		{
 			self.onDocumentMousemove(event);
 		};
 		$(document).on("mousemove", self.documentMousemove);
-		
+
 		self.documentMouseup = function(event)
 		{
 			self.onDocumentMouseup(event);
 		};
 		$(document).on("mouseup", self.documentMouseup);
-		
+
 		self.documentKeydown = function(event)
 		{
 			self.onDocumentKeydown(event);
 		};
 		$(document).on("keydown", self.documentKeydown);
 	},
-	
+
 	onDocumentMousedown: function(event)
 	{
 		if (event.which === 1)
 			this.canceled = false;
 	},
-	
+
 	onWindowBlur: function(event)
 	{
 		if (this.dragging)
 			this.cancel();
 	},
-	
+
 	onDocumentMousemove: function(event)
 	{
 		if (this.dragging)
@@ -303,13 +305,13 @@ hop.inherit(hop.draggable, hop.component, {
 		if (this.dragging)
 			this.stop();
 	},
-	
+
 	onDocumentKeydown: function(event)
 	{
 		if (this.dragging && event.which === 27)
 			this.cancel();
 	},
-	
+
 	start: function(event)
 	{
 		var self = this, is, cursor,
@@ -321,7 +323,7 @@ hop.inherit(hop.draggable, hop.component, {
 			$offsetParent = $(self.node.offsetParent),
 			parentBorderTop = parseFloat($offsetParent.css("border-top-width")) || 0,
 			parentBorderLeft = parseFloat($offsetParent.css("border-left-width")) || 0;
-		
+
 		self.handleItemIndex = event.data.index;
 		is = {
 			height: self.$node.outerHeight(),
@@ -372,12 +374,12 @@ hop.inherit(hop.draggable, hop.component, {
 		}
 		self.onStart();
 	},
-	
+
 	onStart: function()
 	{
 		this.trigger("start");
 	},
-	
+
 	drag: function(event)
 	{
 		var self = this, is = self.initialState, value,
@@ -387,7 +389,7 @@ hop.inherit(hop.draggable, hop.component, {
 			limiter = self.calcLimiterRegion();
 		if (!self.dragging)
 			return;
-		
+
 		if (self.axis !== "x")
 		{
 			top += dy;
@@ -436,12 +438,12 @@ hop.inherit(hop.draggable, hop.component, {
 		};
 		self.realDrag();
 	},
-	
+
 	calcLimiterRegion: function()
 	{
 		if (this.limiter === null)
 			return;
-		
+
 		var self = this, limiter = self.limiter,
 			$document = $(document),
 			$window = $(window),
@@ -472,7 +474,7 @@ hop.inherit(hop.draggable, hop.component, {
 			}
 			else
 			{
-				console.log("hop.draggable: Invalid limiter ("+limiter+").");
+				console.log("hopjs.draggable: Invalid limiter ("+limiter+").");
 				return;
 			}
 		}
@@ -494,7 +496,7 @@ hop.inherit(hop.draggable, hop.component, {
 			$element = $(element);
 			if ($element.length !== 1)
 			{
-				console.log("hop.draggable: Element not found.");
+				console.log("hopjs.draggable: Element not found.");
 				console.log(element);
 				return;
 			}
@@ -581,7 +583,7 @@ hop.inherit(hop.draggable, hop.component, {
 			width: width
 		};
 	},
-	
+
 	realDrag: function()
 	{
 		var self = this, css = {},
@@ -592,7 +594,7 @@ hop.inherit(hop.draggable, hop.component, {
 			$window = $(window);
 		if (!self.state)
 			return;
-		
+
 		self.onDragBefore({
 			originalState: $.extend({}, self.state)
 		});
@@ -630,27 +632,27 @@ hop.inherit(hop.draggable, hop.component, {
 		self.$node.css(css);
 		self.onDrag();
 	},
-	
+
 	onDragBefore: function(data)
 	{
 		this.trigger("dragBefore", data);
 	},
-	
+
 	onDrag: function()
 	{
 		this.trigger("drag");
 	},
-	
+
 	stop: function()
 	{
 		var self = this;
 		if (!self.dragging)
 			return;
-		
+
 		self.reset();
 		self.onStop();
 	},
-	
+
 	reset: function()
 	{
 		var self = this;
@@ -663,18 +665,18 @@ hop.inherit(hop.draggable, hop.component, {
 			$("body")[0].style.cursor = self.bodyCursor;
 		}
 	},
-	
+
 	onStop: function()
 	{
 		this.trigger("stop");
 	},
-	
+
 	cancel: function()
 	{
 		var self = this, is = self.initialState;
 		if (!self.dragging)
 			return;
-		
+
 		self.reset();
 		self.node.style.position = is.stylePosition;
 		self.node.style.top = is.styleTop;
@@ -682,7 +684,7 @@ hop.inherit(hop.draggable, hop.component, {
 		self.onDrag();
 		self.onCancel();
 	},
-	
+
 	onCancel: function()
 	{
 		this.trigger("cancel");

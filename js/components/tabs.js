@@ -9,18 +9,20 @@
  * Date: @DATE
  */
 
-(function(document, $, hop)
+(function(document, $, hopjs)
 {
-	
+
 var cp = "hopjs-tabs-",
 	_cp = "."+cp;
 
-hop.tabs = function(params)
+hopjs.types["tabs"] = "hopjs.tabs";
+
+hopjs.tabs = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.tabs, hop.component, {
+hopjs.inherit(hopjs.tabs, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -49,14 +51,14 @@ hop.inherit(hop.tabs, hop.component, {
 		var self = this;
 		self.items = [];
 		self.activeItem = null;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (params.parentNode)
 			params.parentNode.appendChild(self.node);
 		else if (params.beforeNode)
 			params.beforeNode.parentNode.insertBefore(self.node, params.beforeNode);
 		else if (params.afterNode)
-			hop.dom.insertAfter(self.node, params.afterNode);
+			hopjs.dom.insertAfter(self.node, params.afterNode);
 		if (params && params.items)
 			self.addItems(params.items);
 		if (self.items)
@@ -89,7 +91,7 @@ hop.inherit(hop.tabs, hop.component, {
 	addItem: function(item, before)
 	{
 		var self = this, items = [], i;
-		before = hop.ifDef(before);
+		before = hopjs.ifDef(before);
 		if (before !== null)
 		{
 			before = parseInt(before);
@@ -98,8 +100,8 @@ hop.inherit(hop.tabs, hop.component, {
 			else if (before < 0)
 				before = 0;
 		}
-		if (!(item instanceof hop.tabsItem))
-			item = new hop.tabsItem(item);
+		if (!(item instanceof hopjs.tabsItem))
+			item = new hopjs.tabsItem(item);
 		if (item.tabs)
 			item.tabs.removeItem(item);
 		item.tabs = self;
@@ -146,7 +148,7 @@ hop.inherit(hop.tabs, hop.component, {
 	removeItem: function(item)
 	{
 		var self = this, items = [], index = null, i, animate;
-		if (item instanceof hop.tabsItem)
+		if (item instanceof hopjs.tabsItem)
 		{
 			index = self.getItemIndex(item);
 			if (index === null)
@@ -157,7 +159,7 @@ hop.inherit(hop.tabs, hop.component, {
 			index = parseInt(item);
 			if (isNaN(index) || index < 0 || index > self.items.length-1)
 				return;
-			
+
 			item = self.items[index];
 			if (!item)
 				return;
@@ -204,8 +206,8 @@ hop.inherit(hop.tabs, hop.component, {
 	{
 		var self = this, itemIndex, items = self.items,
 			prevItem = self.activeItem, prevItemIndex, data;
-		
-		if (item instanceof hop.tabsItem)
+
+		if (item instanceof hopjs.tabsItem)
 		{
 			itemIndex = self.getItemIndex(item);
 			if (itemIndex === null)
@@ -216,21 +218,21 @@ hop.inherit(hop.tabs, hop.component, {
 			itemIndex = parseInt(item);
 			if (isNaN(itemIndex) || itemIndex < 0 || itemIndex > items.length-1)
 				return;
-			
+
 			item = items[itemIndex];
 		}
 		if (self.activeItem === item)
 			return;
-		
+
 		if (prevItem !== null)
 		{
 			data = {};
 			prevItem.beforeDeactivate(data);
 			if (data.cancel)
 				return;
-			
+
 			data = {
-				item: prevItem, 
+				item: prevItem,
 				itemIndex: prevItemIndex,
 				nextItem: item,
 				nextItemIndex: item
@@ -245,9 +247,9 @@ hop.inherit(hop.tabs, hop.component, {
 			item.beforeActivate(data);
 			if (data.cancel)
 				return;
-		}	
+		}
 		data = {
-			item: item, 
+			item: item,
 			itemIndex: itemIndex,
 			prevItem: prevItem,
 			prevItemIndex: prevItemIndex
@@ -255,7 +257,7 @@ hop.inherit(hop.tabs, hop.component, {
 		self.onItemActivateBefore(data);
 		if (data.cancel)
 			return;
-			
+
 		if (prevItem)
 		{
 			prevItem.bodyNode.style.display = "none";
@@ -279,12 +281,12 @@ hop.inherit(hop.tabs, hop.component, {
 				items[itemIndex+1].$head.addClass(cp+"after-active");
 		}
 		self.activeItem = item;
-		
+
 		if (prevItem)
 		{
 			prevItem.afterDeactivate();
 			self.onItemDeactivate({
-				item: prevItem, 
+				item: prevItem,
 				itemIndex: prevItemIndex,
 				nextItem: item,
 				nextItemIndex: item
@@ -293,7 +295,7 @@ hop.inherit(hop.tabs, hop.component, {
 		if (item !== null)
 			item.afterActivate();
 		self.onItemActivate({
-			item: item, 
+			item: item,
 			itemIndex: itemIndex,
 			prevItem: prevItem,
 			prevItemIndex: prevItemIndex
@@ -345,18 +347,18 @@ hop.inherit(hop.tabs, hop.component, {
 	{
 		this.trigger("itemDeactivate", data);
 	},
-	
+
 	activateItemOnCreate: function(defaultActiveItem)
 	{
 		var self = this, activeItem = null, i;
-		if (hop.def(defaultActiveItem))
+		if (hopjs.def(defaultActiveItem))
 		{
-			if (defaultActiveItem instanceof hop.tabsItem)
+			if (defaultActiveItem instanceof hopjs.tabsItem)
 				activeItem = self.getItemIndex(defaultActiveItem);
 			else
 			{
 				i = parseInt(defaultActiveItem);
-				if (!isNaN(i) && hop.def(self.items[i]))
+				if (!isNaN(i) && hopjs.def(self.items[i]))
 					activeItem = i;
 			}
 			if (activeItem !== null && !self.items[activeItem].enabled)
@@ -375,7 +377,7 @@ hop.inherit(hop.tabs, hop.component, {
 		}
 		self.activateItem(activeItem === null ? 0: activeItem);
 	},
-	
+
 	activateFirstSuitableItem: function()
 	{
 		for (var i = 0; i < this.items.length; i++)
@@ -389,12 +391,12 @@ hop.inherit(hop.tabs, hop.component, {
 	}
 });
 
-hop.tabsItem = function(params)
+hopjs.tabsItem = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.tabsItem, hop.component, {
+hopjs.inherit(hopjs.tabsItem, hopjs.component, {
 	getDefaults: function()
 	{
 		return {
@@ -428,7 +430,7 @@ hop.inherit(hop.tabsItem, hop.component, {
 	create: function(params)
 	{
 		var self = this;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		self.active = false;
 		self.closeAction = false;
 		self.generateHtml();
@@ -437,7 +439,7 @@ hop.inherit(hop.tabsItem, hop.component, {
 		self.setIcon(self.icon);
 		self.setTitle(self.title);
 		self.setClosable(self.closable);
-		if (params && hop.def(params.content))
+		if (params && hopjs.def(params.content))
 		{
 			if (typeof params.content === "string")
 				self.$body.html(params.content);
@@ -466,7 +468,7 @@ hop.inherit(hop.tabsItem, hop.component, {
 			this.$head.toggleClass(cp+"caption", this.caption !== "");
 		}
 	},
-	
+
 	setIcon: function(icon)
 	{
 		this.icon = String(icon);
@@ -476,14 +478,14 @@ hop.inherit(hop.tabsItem, hop.component, {
 			this.$head.toggleClass(cp+"icon", this.icon !== "");
 		}
 	},
-	
+
 	setTitle: function(value)
 	{
 		this.title = String(value);
 		if (this.$caption)
 			this.$caption.attr("title", this.title);
 	},
-	
+
 	setClosable: function(value)
 	{
 		this.closable = !!value;
@@ -509,27 +511,27 @@ hop.inherit(hop.tabsItem, hop.component, {
 		self.$body = $(self.bodyNode);
 		self.headNode.hopTabsItem = self;
 		self.bodyNode.hopTabsItem = self;
-		
+
 		self.$head.on("mouseenter", function(event)
 		{
 			self.onHeadMouseenter(event);
 		});
-		
+
 		self.$head.on("mousedown", function(event)
 		{
 			self.onHeadMousedown(event);
 		});
-		
+
 		self.$head.on("click", function(event)
 		{
 			self.onHeadClick(event);
 		});
-		
+
 		$(_cp+"close", self.headNode).on("mousedown", function(event)
 		{
 			self.onCloseMousedown(event);
 		});
-		
+
 		$(_cp+"close", self.headNode).on("click", function(event)
 		{
 			self.onCloseClick(event);
@@ -563,19 +565,19 @@ hop.inherit(hop.tabsItem, hop.component, {
 		if (this.enabled && event.which === 1 && this.tabs && this.tabs.event === "click")
 			this.activate();
 	},
-	
+
 	onCloseMousedown: function(event)
 	{
 		this.closeAction = true;
 	},
-	
+
 	onCloseClick: function(event)
 	{
 		if (event.which === 1 && this.tabs)
 			this.close();
 		this.closeAction = true;
 	},
-	
+
 	attach: function(tabs, before)
 	{
 		tabs.attach(this, before);
@@ -597,13 +599,13 @@ hop.inherit(hop.tabsItem, hop.component, {
 		this.active = false;
 		this.trigger("detach", data);
 	},
-	
+
 	activate: function()
 	{
 		if (this.tabs)
 			this.tabs.activateItem(this);
 	},
-	
+
 	canBeActivated: function()
 	{
 		return this.enabled;
@@ -632,7 +634,7 @@ hop.inherit(hop.tabsItem, hop.component, {
 		this.active = false;
 		this.trigger("deactivate");
 	},
-	
+
 	close: function()
 	{
 		var data = {};
@@ -643,7 +645,7 @@ hop.inherit(hop.tabsItem, hop.component, {
 		this.detach();
 		this.onClose();
 	},
-	
+
 	onCloseBefore: function(data)
 	{
 		this.trigger("closeBefore", data);
@@ -666,29 +668,29 @@ var itemParamAttributeMap = {
 	extraBodyClass: "extra-body-class"
 };
 
-hop.tabs.fromLayout = function(params, tabsParams)
+hopjs.tabs.fromLayout = function(params, tabsParams)
 {
 	var node = null, headSelector = "> span", bodySelector = "> div",
 		$head, $body, items = [], i, headNode, item, param, value, result;
 	tabsParams = tabsParams || {};
 	params = params || {};
-	
+
 	if (params.node)
 		node = params.node;
 	else if (params.$node)
 		node = params.$node[0];
 	else if (typeof params.nodeSelector === "string")
 		node = $(params.nodeSelector)[0];
-	
+
 	if (typeof params.headSelector === "string")
 		headSelector = params.headSelector;
-	
+
 	if (typeof params.bodySelector === "string")
 		bodySelector = params.bodySelector;
-	
+
 	$head = $(headSelector, node);
 	$body = $(bodySelector, node);
-	
+
 	for (i = 0; i < $head.length; i++)
 	{
 		headNode = $head[i];
@@ -710,7 +712,7 @@ hop.tabs.fromLayout = function(params, tabsParams)
 		items.push(item);
 	}
 	tabsParams.items = items;
-	result = new hop.tabs(tabsParams);
+	result = new hopjs.tabs(tabsParams);
 	node.parentNode.removeChild(node);
 	return result;
 };

@@ -1,5 +1,5 @@
 /*!
- * hop.menu
+ * hopjs.menu
  *
  * This file is a part of hopjs v@VERSION
  *
@@ -9,9 +9,9 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
-	
+
 var cp = "hopjs-menu-";
 
 var pointRectangleSector = function(x0, y0, x1, y1, x2, y2, x3, y3, x4, y4)
@@ -53,12 +53,14 @@ var pointInsideTriangle = function(x0, y0, x1, y1, x2, y2, x3, y3)
 	return (a >= 0 && b >= 0 && c >= 0 || a <= 0 && b <= 0 && c <= 0);
 };
 
-hop.menu = function(params)
+hopjs.types["menu"] = "hopjs.menu";
+
+hopjs.menu = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.menu, hop.component, {
+hopjs.inherit(hopjs.menu, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -96,7 +98,7 @@ hop.inherit(hop.menu, hop.component, {
 			}
 		};
 	},
-	
+
 	getDefaultExtraMenuParams: function()
 	{
 		return {
@@ -112,7 +114,7 @@ hop.inherit(hop.menu, hop.component, {
 			}
 		};
 	},
-	
+
 	getDefaultExtraMenuDropdownMenuParams: function()
 	{
 		return {
@@ -138,7 +140,7 @@ hop.inherit(hop.menu, hop.component, {
 		self.openedMenu = null;
 		self.smartMouseTrack = [];
 		self.extraMenuButtonSmartMouseTimeout = null;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		self.setUseExtraMenu(self.useExtraMenu);
 		if (params && params.items)
@@ -153,7 +155,7 @@ hop.inherit(hop.menu, hop.component, {
 		this.type = value;
 		this.updateDropdownMenuParams();
 	},
-	
+
 	setParentMarks: function(value)
 	{
 		this.parentMarks = !!value;
@@ -169,7 +171,7 @@ hop.inherit(hop.menu, hop.component, {
 			this.dropdownMenuParams = params;
 		this.updateDropdownMenuParams();
 	},
-	
+
 	setUseExtraMenu: function(value)
 	{
 		this.useExtraMenu = !!value;
@@ -180,7 +182,7 @@ hop.inherit(hop.menu, hop.component, {
 			this.updateSize();
 		}
 	},
-	
+
 	setExtraMenuParams: function(params, update)
 	{
 		var self = this;
@@ -191,14 +193,14 @@ hop.inherit(hop.menu, hop.component, {
 		if (self.extraMenu)
 			self.extraMenu.configure(self.calcExtraMenuParams());
 	},
-	
+
 	calcExtraMenuParams: function()
 	{
 		var result = {};
 		$.extend(true, result, this.defaultDropdownMenuParams, this.dropdownMenuParams, this.defaultExtraMenuParams, this.extraMenuParams);
 		return result;
 	},
-	
+
 	setExtraMenuDropdownMenuParams: function(params, update)
 	{
 		if (params && update && this.extraMenuDropdownMenuParams)
@@ -233,19 +235,19 @@ hop.inherit(hop.menu, hop.component, {
 		self.extraMenuButtonNode.style.display = "none";
 		self.node.appendChild(self.extraMenuButtonNode);
 		self.$extraMenuButton = $(self.extraMenuButtonNode);
-		
+
 		self.$node.on("mousemove", function(event)
 		{
 			self.onMousemove(event);
 		});
-		
+
 		$.extend(true, params, {
 			layerParams: {
 				element: self.extraMenuButtonNode
 			}
 		});
-		self.extraMenu = new hop.dropdownMenu(params);
-		
+		self.extraMenu = new hopjs.dropdownMenu(params);
+
 		self.$extraMenuButton.on("mouseenter", function(event)
 		{
 			self.onExtraMenuButtonMouseenter(event);
@@ -260,12 +262,12 @@ hop.inherit(hop.menu, hop.component, {
 		{
 			self.onExtraMenuButtonMouseleave(event);
 		});
-		
+
 		self.$extraMenuButton.on("mousedown", function(event)
 		{
 			self.onExtraMenuButtonMousedown(event);
 		});
-		
+
 		self.extraMenu.layer.$node.on("mouseenter", function(event)
 		{
 			self.onExtraMenuMouseenter(event);
@@ -296,7 +298,7 @@ hop.inherit(hop.menu, hop.component, {
 			self.onDocumentMousedown(event);
 		});
 	},
-	
+
 	onMousemove: function(event)
 	{
 		this.smartMouseTrack.push({
@@ -306,7 +308,7 @@ hop.inherit(hop.menu, hop.component, {
 		if (this.smartMouseTrack.length > this.smartMouseTrackSize)
 			this.smartMouseTrack.shift();
 	},
-	
+
 	onExtraMenuButtonMouseenter: function(event)
 	{
 		var self = this, i;
@@ -332,7 +334,7 @@ hop.inherit(hop.menu, hop.component, {
 			}
 		}
 	},
-	
+
 	extraMenuButtonSmartMouseTimeoutHandler: function()
 	{
 		var self = this, i;
@@ -346,7 +348,7 @@ hop.inherit(hop.menu, hop.component, {
 		clearTimeout(self.extraMenuButtonSmartMouseTimeout);
 		self.extraMenuButtonSmartMouseTimeout = null;
 	},
-	
+
 	onExtraMenuButtonMousemove: function(event)
 	{
 		var self = this, $node, offset, height, width, x, y, s;
@@ -364,7 +366,7 @@ hop.inherit(hop.menu, hop.component, {
 				self.extraMenuButtonSmartMouseTimeoutHandler();
 		}
 	},
-	
+
 	onExtraMenuButtonMouseleave: function(event)
 	{
 		var self = this;
@@ -376,7 +378,7 @@ hop.inherit(hop.menu, hop.component, {
 			clearTimeout(self.extraMenuButtonSmartMouseTimeout);
 		self.extraMenuButtonSmartMouseTimeout = null;
 	},
-	
+
 	onExtraMenuButtonMousedown: function(event)
 	{
 		if (event.which === 1)
@@ -386,12 +388,12 @@ hop.inherit(hop.menu, hop.component, {
 			this.showingMenu = true;
 		}
 	},
-	
+
 	onExtraMenuMouseenter: function(event)
 	{
 		this.setExtraMenuButtonHighlighted(true);
 	},
-	
+
 	onExtraMenuMousedown: function(event)
 	{
 		this.mousedown = true;
@@ -424,19 +426,19 @@ hop.inherit(hop.menu, hop.component, {
 		if (this.openedMenu === this.extraMenu)
 			this.openedMenu = null;
 	},
-	
+
 	onWindowResize: function(event)
 	{
 		if (this.useExtraMenu)
 			this.updateSize();
 	},
-	
+
 	updateSize: function()
 	{
 		var self = this, i, item, top = null, hideFrom = null, hideFrom2 = null;
 		if (!self.items)
 			return;
-		
+
 		self.extraMenuButtonNode.style.display = "none";
 		for (i in self.items)
 		{
@@ -531,7 +533,7 @@ hop.inherit(hop.menu, hop.component, {
 	addItem: function(item, before)
 	{
 		var self = this, items = [], i;
-		before = hop.ifDef(before);
+		before = hopjs.ifDef(before);
 		if (before !== null)
 		{
 			before = parseInt(before);
@@ -549,8 +551,8 @@ hop.inherit(hop.menu, hop.component, {
 		if (item.parentMenu)
 			item.parentMenu.removeItem(item);
 		item.parentMenu = self;
-		if (!(item instanceof hop.menuItem))
-			item = new hop.menuItem(item);
+		if (!(item instanceof hopjs.menuItem))
+			item = new hopjs.menuItem(item);
 		if (self.items.length === 0 || before === null || before >= self.items.length)
 		{
 			self.node.appendChild(item.node);
@@ -690,7 +692,7 @@ hop.inherit(hop.menu, hop.component, {
 			$.extend(true, result, this.extraMenuDropdownMenuParams);
 		return result;
 	},
-	
+
 	onItemMouseenter: function(item, event)
 	{
 		var self = this;
@@ -705,7 +707,7 @@ hop.inherit(hop.menu, hop.component, {
 			});
 		}
 	},
-	
+
 	onItemSmartMouseTimeoutHandler: function(item)
 	{
 		if (this.extraMenu)
@@ -716,7 +718,7 @@ hop.inherit(hop.menu, hop.component, {
 			});
 		}
 	},
-	
+
 	setExtraMenuButtonHighlighted: function(value)
 	{
 		this.$extraMenuButton.toggleClass(cp+"highlighted", value);
@@ -728,14 +730,14 @@ hop.inherit(hop.menu, hop.component, {
 	}
 });
 
-hop.menuItem = function(params)
+hopjs.menuItem = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.menuItem, hop.component);
+hopjs.inherit(hopjs.menuItem, hopjs.component);
 
-$.extend(hop.menuItem.prototype, {
+$.extend(hopjs.menuItem.prototype, {
 	getDefaults: function()
 	{
 		return {
@@ -753,14 +755,14 @@ $.extend(hop.menuItem.prototype, {
 			extraMenuItem: null
 		};
 	},
-	
+
 	create: function(params)
 	{
 		var self = this;
 		self.setHighlightedOnMenuHide = true;
 		self.menu = null;
 		self.smartMouseTimeout = null;
-		hop.component.prototype.create.apply(this, arguments);
+		hopjs.component.prototype.create.apply(this, arguments);
 		self.generateHtml();
 		self.setVisible(self.visible);
 		self.setActive(self.active);
@@ -853,7 +855,7 @@ $.extend(hop.menuItem.prototype, {
 		if (this.menu)
 			this.updateMenuParams();
 	},
-	
+
 	setExtraMenuParams: function(params, update)
 	{
 		if (params && update && this.menuParams)
@@ -867,8 +869,8 @@ $.extend(hop.menuItem.prototype, {
 	setMenu: function(menu)
 	{
 		var self = this;
-		if (menu && !(menu instanceof hop.dropdownMenu))
-			menu = new hop.dropdownMenu(menu);
+		if (menu && !(menu instanceof hopjs.dropdownMenu))
+			menu = new hopjs.dropdownMenu(menu);
 		self.menu = menu;
 		if (menu)
 		{
@@ -925,7 +927,7 @@ $.extend(hop.menuItem.prototype, {
 	{
 		this.setHighlighted(true);
 	},
-	
+
 	onMenuMousedown: function(event)
 	{
 		this.parentMenu.mousedown = true;
@@ -997,7 +999,7 @@ $.extend(hop.menuItem.prototype, {
 			self.node.className += " ".self.extraClass;
 		self.$node = $(self.node);
 		self.node.hopMenuItem = self;
-		
+
 		self.$node.on("mouseenter", function(event)
 		{
 			self.onMouseenter(event);
@@ -1007,7 +1009,7 @@ $.extend(hop.menuItem.prototype, {
 		{
 			self.onMouseleave(event);
 		});
-		
+
 		self.$node.on("mousemove", function(event)
 		{
 			self.onMousemove(event);
@@ -1071,7 +1073,7 @@ $.extend(hop.menuItem.prototype, {
 			}
 		}
 	},
-	
+
 	smartMouseTimeoutHandler: function()
 	{
 		var self = this, i, item;
@@ -1090,7 +1092,7 @@ $.extend(hop.menuItem.prototype, {
 		clearTimeout(self.smartMouseTimeout);
 		self.smartMouseTimeout = null;
 	},
-	
+
 	onOtherItemSmartMouseTimeoutHandler: function(item)
 	{
 		if (this.menu)
@@ -1101,7 +1103,7 @@ $.extend(hop.menuItem.prototype, {
 			});
 		}
 	},
-	
+
 	onMousemove: function(event)
 	{
 		var self = this, parentMenu = self.parentMenu,
@@ -1154,7 +1156,7 @@ $.extend(hop.menuItem.prototype, {
 		if (this.menu)
 			this.menu.hide({animate: false});
 	},
-	
+
 	updateMenuParams: function()
 	{
 		var self = this, params = {}, parentMenu = self.parentMenu;
@@ -1198,7 +1200,7 @@ $.extend(hop.menuItem.prototype, {
 			state = !!(this.parentMenu && this.parentMenu.parentMarks && menu && (menu.items.length > 0 || (menu.loader || menu.ajax) && !menu.loaded));
 		this.$node.toggleClass(cp+"parent", state);
 	},
-	
+
 	setHighlighted: function(value)
 	{
 		this.$node.toggleClass(cp+"highlighted", value);
@@ -1208,12 +1210,12 @@ $.extend(hop.menuItem.prototype, {
 	{
 		this.$node.toggleClass(cp+"opened", value);
 	},
-	
+
 	setLoading: function(loading)
 	{
 		this.$node.toggleClass(cp+"loading", loading);
 	},
-	
+
 	onExtraMenuButtonMouseenter: function(event)
 	{
 		var self = this;
@@ -1231,7 +1233,7 @@ $.extend(hop.menuItem.prototype, {
 			}
 		}
 	},
-	
+
 	onExtraMenuButtonSmartMouseTimeoutHandler: function()
 	{
 		if (this.menu)

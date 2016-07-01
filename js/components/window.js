@@ -9,21 +9,23 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
-var def = hop.def,
+var def = hopjs.def,
 	cp = "hopjs-window-",
 	_cp = "."+cp;
 
-hop.window = function(params)
+hopjs.types["window"] = "hopjs.window";
+
+hopjs.window = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.window.i18n = {};
+hopjs.window.i18n = {};
 
-hop.window.current = function(node)
+hopjs.window.current = function(node)
 {
 	while (node)
 	{
@@ -33,14 +35,14 @@ hop.window.current = function(node)
 	}
 };
 
-hop.window.hide = function(node)
+hopjs.window.hide = function(node)
 {
-	var window = hop.window.current(node);
+	var window = hopjs.window.current(node);
 	if (window)
 		window.hide();
 };
 
-hop.inherit(hop.window, hop.component, {
+hopjs.inherit(hopjs.window, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -163,7 +165,7 @@ hop.inherit(hop.window, hop.component, {
 		self.dragging = false;
 		self.resizing = false;
 		self.mousedown = false;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		if (self.locale === "")
 			self.setLocale();
 		self.generateHtml();
@@ -187,7 +189,7 @@ hop.inherit(hop.window, hop.component, {
 
 	afterCreate: function(params)
 	{
-		hop.component.prototype.afterCreate.apply(this, arguments);
+		hopjs.component.prototype.afterCreate.apply(this, arguments);
 		if (params.show)
 			this.show();
 	},
@@ -211,8 +213,8 @@ hop.inherit(hop.window, hop.component, {
 
 	buildI18n: function()
 	{
-		if (hop.window.i18n[this.locale])
-			$.extend(true, this.i18n, hop.window.i18n[this.locale]);
+		if (hopjs.window.i18n[this.locale])
+			$.extend(true, this.i18n, hopjs.window.i18n[this.locale]);
 	},
 
 	updateLocaleHtml: function()
@@ -357,7 +359,7 @@ hop.inherit(hop.window, hop.component, {
 		height = parseFloat(height);
 		if (isNaN(height))
 			return;
-		
+
 		if (self.maxHeight !== null && height > self.maxHeight)
 			height = self.maxHeight;
 		if (height < self.minHeight)
@@ -382,7 +384,7 @@ hop.inherit(hop.window, hop.component, {
 		width = parseFloat(width);
 		if (isNaN(width))
 			return;
-		
+
 		if (self.maxWidth !== null && width > self.maxWidth)
 			width = self.maxWidth;
 		if (width < self.minWidth)
@@ -413,7 +415,7 @@ hop.inherit(hop.window, hop.component, {
 		height = parseFloat(height);
 		if (isNaN(height))
 			return;
-		
+
 		if (this.maxHeight !== null && height > this.maxHeight)
 			height = this.maxHeight;
 		this.minHeight = height;
@@ -426,7 +428,7 @@ hop.inherit(hop.window, hop.component, {
 		width = parseFloat(width);
 		if (isNaN(width))
 			return;
-		
+
 		if (this.maxWidth !== null && width > this.maxWidth)
 			width = this.maxWidth;
 		this.minWidth = width;
@@ -443,7 +445,7 @@ hop.inherit(hop.window, hop.component, {
 			height = parseFloat(height);
 			if (isNaN(height))
 				return;
-			
+
 			if (height < this.minHeight)
 				height = this.minHeight;
 		}
@@ -461,7 +463,7 @@ hop.inherit(hop.window, hop.component, {
 			width = parseFloat(width);
 			if (isNaN(width))
 				return;
-			
+
 			if (width < this.minWidth)
 				width = this.minWidth;
 		}
@@ -590,7 +592,7 @@ hop.inherit(hop.window, hop.component, {
 					$.extend(true, params, self.defaultDraggableParams);
 				if (self.draggableParams)
 					$.extend(true, params, self.draggableParams);
-				self.hopDraggable = new hop.draggable(params);
+				self.hopDraggable = new hopjs.draggable(params);
 			}
 			if (self.fullScreen)
 				self.hopDraggable.setEnabled(false);
@@ -599,14 +601,14 @@ hop.inherit(hop.window, hop.component, {
 			self.hopDraggable.setEnabled(false);
 		self.$head.toggleClass(cp+"head-draggable", draggable);
 	},
-	
+
 	onDraggableStart: function(draggable)
 	{
 		this.dragging = true;
 		this.layer.$node.addClass(cp+"dragging");
 		this.trigger("draggableStart", {draggable: draggable});
 	},
-	
+
 	onDraggableDragBefore: function(draggable)
 	{
 		var scroll = 0;
@@ -629,7 +631,7 @@ hop.inherit(hop.window, hop.component, {
 		this.saveOffset();
 		this.trigger("draggableStop", {draggable: draggable});
 	},
-	
+
 	saveOffset: function()
 	{
 		this.offset = {
@@ -643,7 +645,7 @@ hop.inherit(hop.window, hop.component, {
 		this.draggableReset();
 		this.trigger("draggableCancel", {draggable: draggable});
 	},
-	
+
 	draggableReset: function()
 	{
 		this.dragging = false;
@@ -688,7 +690,7 @@ hop.inherit(hop.window, hop.component, {
 					$.extend(true, params, self.defaultResizableParams);
 				if (self.resizableParams)
 					$.extend(true, params, self.resizableParams);
-				self.hopResizable = new hop.resizable(params);
+				self.hopResizable = new hopjs.resizable(params);
 			}
 			if (self.fullScreen)
 				self.hopResizable.setEnabled(false);
@@ -710,7 +712,7 @@ hop.inherit(hop.window, hop.component, {
 		self.layer.$node.addClass(cp+"resizing");
 		self.trigger("resizableStart", {resizable: resizable});
 	},
-	
+
 	onStateChange: function(resizable)
 	{
 		var s = resizable.state, is = resizable.initialState,
@@ -725,7 +727,7 @@ hop.inherit(hop.window, hop.component, {
 		}
 		this.trigger("resizableStateChange", {resizable: resizable});
 	},
-	
+
 	onResizableResize: function(resizable)
 	{
 		this.resized = true;
@@ -740,14 +742,14 @@ hop.inherit(hop.window, hop.component, {
 		this.saveOffset();
 		this.setSize(this.layer.$node.outerHeight(), this.layer.$node.outerWidth());
 	},
-	
+
 	onResizableCancel: function(resizable)
 	{
 		this.resizableReset();
 		this.trigger("resizableCancel", {resizable: resizable});
 		this.setSize(this.layer.$node.outerHeight(), this.layer.$node.outerWidth());
 	},
-	
+
 	resizableReset: function()
 	{
 		this.resizing = false;
@@ -764,8 +766,8 @@ hop.inherit(hop.window, hop.component, {
 	<div class="{c}head">\
 		<div class="{c}title"></div>\
 		<div class="{c}head-buttons">\
-			<a class="{c}head-button {c}head-button-full-screen" title="'+hop.html.quoteValue(self.i18n.fullScreen)+'"></a>\
-			<a class="{c}head-button {c}head-button-hide" title="'+hop.html.quoteValue(self.i18n.hide)+'"></a>\
+			<a class="{c}head-button {c}head-button-full-screen" title="'+hopjs.html.quoteValue(self.i18n.fullScreen)+'"></a>\
+			<a class="{c}head-button {c}head-button-hide" title="'+hopjs.html.quoteValue(self.i18n.hide)+'"></a>\
 		</div>\
 	</div>\
 </div>\
@@ -782,7 +784,7 @@ hop.inherit(hop.window, hop.component, {
 	</div>\
 	<div class="{c}bottom"></div>\
 </div>';
-		node.innerHTML = hop.string.replace("{c}", cp, html);
+		node.innerHTML = hopjs.string.replace("{c}", cp, html);
 		node.className = "hopjs-window";
 		if (self.extraClass !== "")
 			node.className += " "+self.extraClass;
@@ -793,7 +795,7 @@ hop.inherit(hop.window, hop.component, {
 		layerParams.node = node;
 		if (self.layerParams)
 			$.extend(true, layerParams, self.layerParams);
-		layer = new hop.layer(layerParams);
+		layer = new hopjs.layer(layerParams);
 		self.layer = layer;
 		layer.hopWindow = self;
 

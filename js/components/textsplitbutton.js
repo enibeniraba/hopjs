@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function($, hopjs)
 {
 
 var cp = "hopjs-button-",
@@ -17,17 +17,19 @@ var cp = "hopjs-button-",
 	verticalAligns = ["top", "middle", "bottom"],
 	positions = ["top", "bottom", "left", "right"];
 
-hop.textSplitButton = function(params)
+hopjs.types["textsplitbutton"] = "hopjs.textSplitButton";
+
+hopjs.textSplitButton = function(params)
 {
-	hop.splitButton.apply(this, arguments);
+	hopjs.splitButton.apply(this, arguments);
 };
 
-hop.inherit(hop.textSplitButton, hop.splitButton, {
+hopjs.inherit(hopjs.textSplitButton, hopjs.splitButton, {
 	version: "@VERSION",
 
 	getDefaults: function()
 	{
-		return $.extend(hop.splitButton.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.splitButton.prototype.getDefaults.apply(this), {
 			text: "",
 			textAlign: "center",
 			wrapText: true,
@@ -45,7 +47,7 @@ hop.inherit(hop.textSplitButton, hop.splitButton, {
 	create: function(params)
 	{
 		var self = this;
-		hop.splitButton.prototype.create.apply(self, arguments);
+		hopjs.splitButton.prototype.create.apply(self, arguments);
 		self.setText(self.text);
 		self.setTextAlign(self.textAlign);
 		self.setWrapText(self.wrapText);
@@ -179,7 +181,7 @@ hop.inherit(hop.textSplitButton, hop.splitButton, {
 
 	createClassName: function()
 	{
-		return hop.splitButton.prototype.createClassName()+" hopjs-textsplitbutton";
+		return hopjs.splitButton.prototype.createClassName()+" hopjs-textsplitbutton";
 	},
 
 	generateInnerHtml: function()

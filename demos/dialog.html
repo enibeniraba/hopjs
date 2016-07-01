@@ -6,13 +6,16 @@
 <link rel="stylesheet" type="text/css" href="css/common.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/layer.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/window.css" />
-<link rel="stylesheet" type="text/css" href="../themes/default/css/button.css" />
 <link rel="stylesheet" type="text/css" href="../themes/default/css/dialog.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/button.css" />
+<link rel="stylesheet" type="text/css" href="../themes/default/css/textbutton.css" />
 <script type="text/javascript" src="../external/jquery.js"></script>
 <script type="text/javascript" src="../js/base.js"></script>
 <script type="text/javascript" src="../js/components/layer.js"></script>
 <script type="text/javascript" src="../js/components/window.js"></script>
 <script type="text/javascript" src="../js/components/dialog.js"></script>
+<script type="text/javascript" src="../js/components/button.js"></script>
+<script type="text/javascript" src="../js/components/textbutton.js"></script>
 <script type="text/javascript" src="../js/i18n/en/window.js"></script>
 <script type="text/javascript" src="../js/i18n/en-GB/window.js"></script>
 <script type="text/javascript" src="../js/i18n/en-US/window.js"></script>
@@ -26,19 +29,10 @@
 <h1>Dialog</h1>
 <p>Default:</p>
 <p><input type="button" id="button1" value="Open" /></p>
-<p>Icon, buttons alignment, cancel, modal, event, animation, locale:</p>
-<p>
-	<input type="button" id="button2" value="Open" />
-	<select id="select2">
-		<option value="">default</option>
-		<option value="en">en</option>
-		<option value="en-GB">en-GB</option>
-		<option value="en-US">en-US</option>
-		<option value="ru">ru</option>
-	</select>
-</p>
+<p>Icon, buttons alignment, modal, animation:</p>
+<p><input type="button" id="button2" value="Open" /></p>
 <div id="content" style="display: none;">
-<div style="padding: 6px;">
+<div style="padding: 10px;">
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.</p>
 <p>Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta tellus. Suspendisse potenti. Donec tristique, dui non molestie ornare, risus nisi pellentesque augue, nec lobortis elit sem fermentum augue. Ut gravida tincidunt pulvinar. Nam id arcu sed lectus facilisis rutrum. Suspendisse pellentesque pellentesque molestie. Integer iaculis suscipit leo, eu facilisis justo cursus eu. Sed varius commodo vestibulum. Suspendisse placerat, justo et elementum vehicula, mi dolor cursus eros, quis dictum purus erat at urna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus justo mi, sagittis vitae odio pellentesque, commodo consectetur quam. Aenean mollis orci at nulla vehicula, nec sollicitudin purus molestie. Pellentesque nec iaculis orci.</p>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat massa eu volutpat ultricies. Proin auctor dui enim, quis blandit mauris fermentum hendrerit. Duis placerat venenatis est. Nullam eu nibh ut libero varius dictum. Duis eget neque laoreet, ornare elit vel, sodales lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce dictum ultrices augue vel sagittis. Cras eros quam, euismod non fermentum vitae, suscipit pretium lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut ut laoreet enim. Ut dictum leo ut eros porta congue. Vestibulum ut malesuada lorem, sit amet ultrices tortor. Vestibulum aliquet nibh scelerisque fermentum hendrerit.</p>
@@ -48,22 +42,41 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
 	$("#button1").on("click", function()
 	{
-		new hop.dialog({
+		var d1 = new hopjs.dialog({
 			title: "Title",
 			content: $("#content").html(),
-			show: true
+			show: true,
+			buttons: {
+				yes: {
+					_t: "textbutton",
+					text: "Yes",
+					style: "primary",
+					onRelease: function()
+					{
+						d1.hide();
+						console.log("Yes");
+					}
+				},
+				no: {
+					_t: "textbutton",
+					text: "No",
+					style: "default",
+					onRelease: function()
+					{
+						d1.hide();
+						console.log("No");
+					}
+				}
+			}
 		});
 	});
 
-	d2 = new hop.dialog({
+	d2 = new hopjs.dialog({
 		icon: "../themes/default/images/datepickercurrenttime.png",
 		title: "Title",
 		content: $("#content").html(),
-		showCancel: true,
 		buttonsAlign: "right",
 		modal: true,
 		height: 240,
@@ -76,28 +89,44 @@ $(function()
 		layerParams: {
 			overlayAnimationShow: "def"
 		},
+		buttons: {
+			yes: {
+				_t: "textbutton",
+				text: "Yes",
+				style: "default",
+				onRelease: function()
+				{
+					d2.hide();
+					console.log("Yes");
+				}
+			},
+			no: {
+				_c: hopjs.textButton,
+				text: "No",
+				style: "default",
+				onRelease: function()
+				{
+					d2.hide();
+					console.log("No");
+				}
+			},
+			cancel: {
+				_cn: "hopjs.textButton",
+				text: "Cancel",
+				style: "default",
+				onRelease: function()
+				{
+					d2.hide();
+					console.log("Cancel");
+				}
+			}
+		},
 		onCreate: function(self)
 		{
 			$("#button2").on("click", function()
 			{
 				self.toggle();
 			});
-			$("#select2").on("change", function(event)
-			{
-				self.setLocale(this.value);
-			});
-		},
-		onYes: function()
-		{
-			alert("Yes");
-		},
-		onNo: function()
-		{
-			alert("No");
-		},
-		onCancel: function()
-		{
-			alert("Cancel");
 		}
 	});
 });

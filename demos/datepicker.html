@@ -56,34 +56,32 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
-	var fadeAnimations = hop.datepickerAnimationPresets.fade({
+	var fadeAnimations = hopjs.datepickerAnimationPresets.fade({
 			animationParams: {
 				duration: 200
 			}
 		}),
-		slideAnimations = hop.datepickerAnimationPresets.slide({
+		slideAnimations = hopjs.datepickerAnimationPresets.slide({
 			animationParams: {
 				duration: 400
 			}
 		}),
-		slideFadeAnimations = hop.datepickerAnimationPresets.slideFade({
+		slideFadeAnimations = hopjs.datepickerAnimationPresets.slideFade({
 			animationParams: {
 				duration: 400
 			}
 		}),
-		slideScaleAnimations = hop.datepickerAnimationPresets.slideScale({
+		slideScaleAnimations = hopjs.datepickerAnimationPresets.slideScale({
 			animationParams: {
 				duration: 400
 			}
 		});
 
-	dp1 = new hop.datepicker({
+	dp1 = new hopjs.datepicker({
 		input: $("#dp1")[0]
 	});
 
-	dp2 = new hop.datepicker({
+	dp2 = new hopjs.datepicker({
 		picked: true,
 		otherMonths: false,
 		todayButton: true,
@@ -92,7 +90,7 @@ $(function()
 		buttonMousedownAction: "toggle"
 	});
 
-	dp3 = new hop.datepicker({
+	dp3 = new hopjs.datepicker({
 		input: $("#dp3")[0],
 		dateFormat: "M j, Y",
 		layerParams: {
@@ -100,7 +98,7 @@ $(function()
 		}
 	});
 
-	dp4 = new hop.datepicker({
+	dp4 = new hopjs.datepicker({
 		date: "2000-01-01 12:00:00",
 		picked: false,
 		maxDateScale: 4,
@@ -119,7 +117,7 @@ $(function()
 		buttonOpenClass: false
 	});
 
-	dp5 = new hop.datepicker({
+	dp5 = new hopjs.datepicker({
 		locale: "ru",
 		showWeekNumber: true,
 		maxDateScale: 4,
@@ -141,7 +139,7 @@ $(function()
 		dp5.setLocale(this.value);
 	});
 
-	dp61 = new hop.datepicker({
+	dp61 = new hopjs.datepicker({
 		input: $("#dp61")[0],
 		onDateChange: function(self, eventDate, data)
 		{
@@ -149,7 +147,7 @@ $(function()
 		}
 	});
 
-	dp62 = new hop.datepicker({
+	dp62 = new hopjs.datepicker({
 		input: $("#dp62")[0],
 		onDateChange: function(self, eventDate, data)
 		{
@@ -157,7 +155,7 @@ $(function()
 		}
 	});
 
-	dp7 = new hop.datepicker({
+	dp7 = new hopjs.datepicker({
 		container: $("#dp7")[0],
 		date: "2000-01-01 12:00:00",
 		minDate: "1990-01-01",

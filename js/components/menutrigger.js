@@ -9,15 +9,17 @@
  * Date: @DATE
  */
 
-(function(document, $, hop)
+(function(document, $, hopjs)
 {
 
-hop.menuTrigger = function(params)
+hopjs.types["menutrigger"] = "hopjs.menuTrigger";
+
+hopjs.menuTrigger = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.menuTrigger, hop.component, {
+hopjs.inherit(hopjs.menuTrigger, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -59,7 +61,7 @@ hop.inherit(hop.menuTrigger, hop.component, {
 	{
 		var self = this;
 		self.defaultMenuParams = self.getDefaultMenuParams();
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 	},
 
 	setNode: function(node)
@@ -175,8 +177,8 @@ hop.inherit(hop.menuTrigger, hop.component, {
 	setMenu: function(menu)
 	{
 		var self = this, menuParams = {};
-		if (menu && !(menu instanceof hop.dropdownMenu))
-			menu = new hop.dropdownMenu(menu);
+		if (menu && !(menu instanceof hopjs.dropdownMenu))
+			menu = new hopjs.dropdownMenu(menu);
 		if (menu === self.menu)
 			return;
 

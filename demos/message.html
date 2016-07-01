@@ -35,18 +35,16 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
 	$("#button1").on("click", function()
 	{
-		new hop.message({
+		new hopjs.message({
 			title: "Title",
 			content: $("#content").html(),
 			show: true
 		});
 	});
 
-	m2 = new hop.message({
+	m2 = new hopjs.message({
 		icon: "../themes/default/images/datepickercurrenttime.png",
 		title: "Title",
 		content: $("#content").html(),

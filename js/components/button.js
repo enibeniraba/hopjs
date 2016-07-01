@@ -9,18 +9,20 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
 var cp = "hopjs-button-",
 	positions = ["top", "bottom", "left", "right"];
 
-hop.button = function(params)
+hopjs.types["button"] = "hopjs.button";
+
+hopjs.button = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.button, hop.component, {
+hopjs.inherit(hopjs.button, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -76,14 +78,14 @@ hop.inherit(hop.button, hop.component, {
 		self.mouseOver = false;
 		self.mousePressed = false;
 		self.keyPressed = false;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (params.parentNode)
 			params.parentNode.appendChild(self.node);
 		else if (params.beforeNode)
 			params.beforeNode.parentNode.insertBefore(self.node, params.beforeNode);
 		else if (params.afterNode)
-			hop.dom.insertAfter(self.node, params.afterNode);
+			hopjs.dom.insertAfter(self.node, params.afterNode);
 		self.setEnabled(self.enabled);
 		self.setPressed(self.pressed);
 		self.setToggled(self.toggled);
@@ -266,8 +268,8 @@ hop.inherit(hop.button, hop.component, {
 	setMenu: function(menu)
 	{
 		var self = this, menuParams = {};
-		if (menu && !(menu instanceof hop.dropdownMenu))
-			menu = new hop.dropdownMenu(menu);
+		if (menu && !(menu instanceof hopjs.dropdownMenu))
+			menu = new hopjs.dropdownMenu(menu);
 		self.updateArrowClass();
 		if (menu === self.menu)
 			return;
@@ -431,7 +433,7 @@ hop.inherit(hop.button, hop.component, {
 
 	toggle: function(value)
 	{
-		if (!hop.def(value))
+		if (!hopjs.def(value))
 			value = !this.toggled;
 		this.setToggled(value);
 	},

@@ -9,20 +9,22 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function($, hopjs)
 {
-	
+
 var cp = "hopjs-message-";
 
-hop.message = function(params)
+hopjs.types["message"] = "hopjs.message";
+
+hopjs.message = function(params)
 {
-	hop.window.apply(this, arguments);
+	hopjs.window.apply(this, arguments);
 };
 
-hop.inherit(hop.message, hop.window, {
+hopjs.inherit(hopjs.message, hopjs.window, {
 	getDefaults: function()
 	{
-		return $.extend(hop.window.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.window.prototype.getDefaults.apply(this), {
 			showBottom: true,
 			buttonText: "OK",
 			buttonsAlign: "center",
@@ -33,7 +35,7 @@ hop.inherit(hop.message, hop.window, {
 	create: function(params)
 	{
 		var self = this;
-		hop.window.prototype.create.apply(self, arguments);
+		hopjs.window.prototype.create.apply(self, arguments);
 		self.layer.$node.addClass("hopjs-message");
 		self.setButtonText(self.buttonText);
 		self.setButtonsAlign(self.buttonsAlign);
@@ -64,7 +66,7 @@ hop.inherit(hop.message, hop.window, {
 	generateHtml: function()
 	{
 		var self = this;
-		hop.window.prototype.generateHtml.apply(self);
+		hopjs.window.prototype.generateHtml.apply(self);
 		self.$bottom.html('<div class="'+cp+'buttons"><button></button></div>');
 		self.$buttons = $("div", self.$bottom);
 		self.$button = $("button", self.$buttons);
@@ -82,7 +84,7 @@ hop.inherit(hop.message, hop.window, {
 
 	onHide: function()
 	{
-		hop.window.prototype.onHide.apply(this);
+		hopjs.window.prototype.onHide.apply(this);
 		if (this.destroyOnHide)
 			this.destroy();
 	}

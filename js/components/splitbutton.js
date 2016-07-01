@@ -9,18 +9,20 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
 var cp = "hopjs-button-",
 	positions = ["top", "bottom", "left", "right"];
 
-hop.splitButton = function(params)
+hopjs.types["splitbutton"] = "hopjs.splitButton";
+
+hopjs.splitButton = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.splitButton, hop.component, {
+hopjs.inherit(hopjs.splitButton, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -87,14 +89,14 @@ hop.inherit(hop.splitButton, hop.component, {
 		self.arrowMouseOver = false;
 		self.arrowMousePressed = false;
 		self.arrowKeyPressed = false;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		if (params.parentNode)
 			params.parentNode.appendChild(self.node);
 		else if (params.beforeNode)
 			params.beforeNode.parentNode.insertBefore(self.node, params.beforeNode);
 		else if (params.afterNode)
-			hop.dom.insertAfter(self.node, params.afterNode);
+			hopjs.dom.insertAfter(self.node, params.afterNode);
 		self.setEnabled(self.enabled);
 		self.setPressed(self.pressed);
 		self.setToggled(self.toggled);
@@ -336,8 +338,8 @@ hop.inherit(hop.splitButton, hop.component, {
 	setMenu: function(menu)
 	{
 		var self = this, menuParams = {};
-		if (menu && !(menu instanceof hop.dropdownMenu))
-			menu = new hop.dropdownMenu(menu);
+		if (menu && !(menu instanceof hopjs.dropdownMenu))
+			menu = new hopjs.dropdownMenu(menu);
 		if (menu === self.menu)
 			return;
 
@@ -499,7 +501,7 @@ hop.inherit(hop.splitButton, hop.component, {
 
 	toggle: function(value)
 	{
-		if (!hop.def(value))
+		if (!hopjs.def(value))
 			value = !this.toggled;
 		this.setToggled(value);
 	},
@@ -526,7 +528,7 @@ hop.inherit(hop.splitButton, hop.component, {
 
 	arrowToggle: function(value)
 	{
-		if (!hop.def(value))
+		if (!hopjs.def(value))
 			value = !this.arrowToggled;
 		this.setArrowToggled(value);
 	},

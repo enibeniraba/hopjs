@@ -95,8 +95,6 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
 	var items = [
 		{
 			text: "Menu",
@@ -289,7 +287,7 @@ $(function()
 		}
 	];
 
-	m1 = new hop.menu({
+	m1 = new hopjs.menu({
 		parentNode: $("#menu1")[0],
 		dropdownMenuParams: {
 			layerParams: {
@@ -302,7 +300,7 @@ $(function()
 		items: items
 	});
 
-	m2 = new hop.menu({
+	m2 = new hopjs.menu({
 		parentNode: $("#menu2")[0],
 		type: "hover",
 		parentMarks: false,
@@ -316,8 +314,8 @@ $(function()
 		},
 		items: items
 	});
-	
-	m3 = new hop.menu({
+
+	m3 = new hopjs.menu({
 		parentNode: $("#menu3")[0],
 		dropdownMenuParams: {
 			extraClass: "extra-class",
@@ -329,14 +327,14 @@ $(function()
 		},
 		items: items
 	});
-	
-	rs3 = new hop.resizable({
+
+	rs3 = new hopjs.resizable({
 		node: $("#menu3")[0],
 		handles: "e",
 		minWidth: 32,
 		limiter: "parent"
 	});
-	
+
 	$("#menu-type").on("change", function()
 	{
 		m3.setType(this.value);

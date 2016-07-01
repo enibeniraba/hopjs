@@ -72,8 +72,6 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
 	var items = [
 		{
 			text: "Menu",
@@ -265,14 +263,14 @@ $(function()
 			}
 		}
 	];
-	
-	cm1 = new hop.contextMenu({
+
+	cm1 = new hopjs.contextMenu({
 		node: $("#cm1")[0],
 		menu: {
 			items: items
 		}
 	});
-	
+
 	$("#switch-key").on("change", function()
 	{
 		cm1.switchKey = this.checked;

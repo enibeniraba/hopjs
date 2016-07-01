@@ -26,8 +26,6 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
 	var menu = {
 		items: [
 			{text: "One"},
@@ -49,12 +47,12 @@ $(function()
 		]
 	};
 
-	mb1 = new hop.menuTrigger({
+	mb1 = new hopjs.menuTrigger({
 		node: $("#mb1")[0],
 		menu: menu
 	});
 
-	mb2 = new hop.menuTrigger({
+	mb2 = new hopjs.menuTrigger({
 		node: $("#mb2")[0],
 		menu: menu,
 		showOnMousedown: true,
@@ -63,7 +61,7 @@ $(function()
 		hideOnClick: false
 	});
 
-	mb3 = new hop.menuTrigger({
+	mb3 = new hopjs.menuTrigger({
 		node: $("#mb3")[0],
 		menu: menu,
 		menuParams: {
@@ -75,7 +73,7 @@ $(function()
 		hideOnMouseleave: true
 	});
 
-	mb4 = new hop.menuTrigger({
+	mb4 = new hopjs.menuTrigger({
 		node: $("#mb4")[0],
 		menu: menu,
 		menuParams: {

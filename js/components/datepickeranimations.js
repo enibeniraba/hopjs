@@ -1,28 +1,28 @@
-(function($, hop)
+(function($, hopjs)
 {
 
-var def = hop.def,
+var def = hopjs.def,
 	cp = "hopjs-datepicker-",
 	_cp = "."+cp;
 
-if (!def(hop.datepickerTitleAnimations))
-	hop.datepickerTitleAnimations = {};
+if (!def(hopjs.datepickerTitleAnimations))
+	hopjs.datepickerTitleAnimations = {};
 
-if (!def(hop.datepickerPickerAnimations))
-	hop.datepickerPickerAnimations = {};
+if (!def(hopjs.datepickerPickerAnimations))
+	hopjs.datepickerPickerAnimations = {};
 
-if (!def(hop.datepickerAnimationPresets))
-	hop.datepickerAnimationPresets = {};
+if (!def(hopjs.datepickerAnimationPresets))
+	hopjs.datepickerAnimationPresets = {};
 
-hop.datepickerTitleAnimations.slide = function(params)
+hopjs.datepickerTitleAnimations.slide = function(params)
 {
-	hop.datepickerAnimation.apply(this, arguments);
+	hopjs.datepickerAnimation.apply(this, arguments);
 };
 
-hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
+hopjs.inherit(hopjs.datepickerTitleAnimations.slide, hopjs.datepickerAnimation, {
 	getDefaults: function()
 	{
-		return $.extend(hop.datepickerAnimation.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.datepickerAnimation.prototype.getDefaults.apply(this), {
 			hideAnimation: true,
 			direction: 0,
 			showDuration: 200,
@@ -34,27 +34,27 @@ hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
 			sync: true
 		});
 	},
-	
+
 	getVirtualParams: function()
 	{
-		return $.merge(hop.datepickerAnimation.prototype.getVirtualParams.apply(this), [
+		return $.merge(hopjs.datepickerAnimation.prototype.getVirtualParams.apply(this), [
 			"duration",
 			"easing"
 		]);
 	},
-	
+
 	setDuration: function(duration)
 	{
 		this.showDuration = duration;
 		this.hideDuration = duration;
 	},
-	
+
 	setEasing: function(easing)
 	{
 		this.showEasing = easing;
 		this.hideEasing = easing;
 	},
-	
+
 	start: function()
 	{
 		this.realStart(this.datepicker.$title, "titleAnimation");
@@ -64,7 +64,7 @@ hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
 	{
 		this.realFinish(this.datepicker.$title, "titleAnimation");
 	},
-	
+
 	realStart: function($container, animationProperty)
 	{
 		var self = this,
@@ -75,8 +75,8 @@ hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
 			completeCount = 0, complete, intervalOrig = $.fx.interval, horizontalOffset,
 			hideOptions = {}, showOptions = {},
 			animationInfo;
-		
-		if (hop.browser.isOldOpera())
+
+		if (hopjs.browser.isOldOpera())
 			transition = false;
 
 		complete = function()
@@ -93,7 +93,7 @@ hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
 
 		if (transition)
 		{
-			animationInfo = hop.browser.animationInfo();
+			animationInfo = hopjs.browser.animationInfo();
 			if (!animationInfo.transitionProperty)
 				transition = false;
 		}
@@ -244,7 +244,7 @@ hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
 		var result = {},
 			translateSuffix = (horizontal ? "X" : "Y"),
 			property = (horizontal ? "left" : "top");
-		easing = hop.css.getTransitionEasing(easing);
+		easing = hopjs.css.getTransitionEasing(easing);
 		if (easing !== null)
 			easing = " "+easing;
 		if (animationInfo.transformProperty)
@@ -261,12 +261,12 @@ hop.inherit(hop.datepickerTitleAnimations.slide, hop.datepickerAnimation, {
 	}
 });
 
-hop.datepickerPickerAnimations.slide = function(params)
+hopjs.datepickerPickerAnimations.slide = function(params)
 {
-	hop.datepickerTitleAnimations.slide.apply(this, arguments);
+	hopjs.datepickerTitleAnimations.slide.apply(this, arguments);
 };
 
-hop.inherit(hop.datepickerPickerAnimations.slide, hop.datepickerTitleAnimations.slide, {
+hopjs.inherit(hopjs.datepickerPickerAnimations.slide, hopjs.datepickerTitleAnimations.slide, {
 	start: function()
 	{
 		this.realStart(this.datepicker.$body, "pickerAnimation");
@@ -278,15 +278,15 @@ hop.inherit(hop.datepickerPickerAnimations.slide, hop.datepickerTitleAnimations.
 	}
 });
 
-hop.datepickerPickerAnimations.scale = function(params)
+hopjs.datepickerPickerAnimations.scale = function(params)
 {
-	hop.datepickerAnimation.apply(this, arguments);
+	hopjs.datepickerAnimation.apply(this, arguments);
 };
 
-hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
+hopjs.inherit(hopjs.datepickerPickerAnimations.scale, hopjs.datepickerAnimation, {
 	getDefaults: function()
 	{
-		return $.extend(hop.datepickerAnimation.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.datepickerAnimation.prototype.getDefaults.apply(this), {
 			hideAnimation: true,
 			showDuration: 200,
 			hideDuration: 200,
@@ -296,21 +296,21 @@ hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
 			transition: true
 		});
 	},
-	
+
 	getVirtualParams: function()
 	{
-		return $.merge(hop.datepickerAnimation.prototype.getVirtualParams.apply(this), [
+		return $.merge(hopjs.datepickerAnimation.prototype.getVirtualParams.apply(this), [
 			"duration",
 			"easing"
 		]);
 	},
-	
+
 	setDuration: function(duration)
 	{
 		this.showDuration = duration;
 		this.hideDuration = duration;
 	},
-	
+
 	setEasing: function(easing)
 	{
 		this.showEasing = easing;
@@ -327,7 +327,7 @@ hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
 			transition = self.transition,
 			completeCount = 0, complete, intervalOrig = $.fx.interval,
 			hideOptions = {}, showOptions = {},
-			animationInfo = hop.browser.animationInfo(),
+			animationInfo = hopjs.browser.animationInfo(),
 			transformProperty = animationInfo.transformProperty,
 			i, $element, t, l, h, w, position, offset, elementOffset,
 			hidePosition, showPosition, showScaleY, showScaleX, hideScaleY, hideScaleX, out = false;
@@ -338,8 +338,8 @@ hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
 			datepicker.pickerAnimation = null;
 			return;
 		}
-		
-		if (hop.browser.isOldOpera() || !animationInfo.transitionProperty)
+
+		if (hopjs.browser.isOldOpera() || !animationInfo.transitionProperty)
 			transition = false;
 
 		complete = function()
@@ -557,7 +557,7 @@ hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
 	transitionProperties: function(offsetY, offsetX, scaleY, scaleX, opacity, duration, easing, animationInfo)
 	{
 		var result = {};
-		easing = hop.css.getTransitionEasing(easing);
+		easing = hopjs.css.getTransitionEasing(easing);
 		if (easing !== null)
 			easing = " "+easing;
 		result = {
@@ -569,7 +569,7 @@ hop.inherit(hop.datepickerPickerAnimations.scale, hop.datepickerAnimation, {
 	}
 });
 
-hop.datepickerAnimationPresets.slide = function(params)
+hopjs.datepickerAnimationPresets.slide = function(params)
 {
 	var directions = {
 			dayPrev: 0,
@@ -604,7 +604,7 @@ hop.datepickerAnimationPresets.slide = function(params)
 	return result;
 };
 
-hop.datepickerAnimationPresets.slideFade = function(params)
+hopjs.datepickerAnimationPresets.slideFade = function(params)
 {
 	var directions = {
 			dayPrev: 0,
@@ -649,7 +649,7 @@ hop.datepickerAnimationPresets.slideFade = function(params)
 	return result;
 };
 
-hop.datepickerAnimationPresets.slideScale = function(params)
+hopjs.datepickerAnimationPresets.slideScale = function(params)
 {
 	var directions = {
 			dayPrev: 0,

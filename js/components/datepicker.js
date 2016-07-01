@@ -9,21 +9,23 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
-var def = hop.def,
+var def = hopjs.def,
 	cp = "hopjs-datepicker-",
 	_cp = "."+cp;
 
-hop.datepicker = function(params)
+hopjs.types["datepicker"] = "hopjs.datepicker";
+
+hopjs.datepicker = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.datepicker.i18n = {};
+hopjs.datepicker.i18n = {};
 
-hop.inherit(hop.datepicker, hop.component, {
+hopjs.inherit(hopjs.datepicker, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -196,7 +198,7 @@ hop.inherit(hop.datepicker, hop.component, {
 		self.time12HourFormatCache = null;
 		self.time12HourFormatCacheFormat = "";
 		self.dontUpdateDateHtml = false;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		if (self.locale === "")
 			self.setLocale();
 		if (self.input)
@@ -268,8 +270,8 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	buildI18n: function()
 	{
-		if (hop.datepicker.i18n[this.locale])
-			$.extend(true, this.i18n, hop.datepicker.i18n[this.locale]);
+		if (hopjs.datepicker.i18n[this.locale])
+			$.extend(true, this.i18n, hopjs.datepicker.i18n[this.locale]);
 	},
 
 	updateLocaleHtml: function()
@@ -321,7 +323,7 @@ hop.inherit(hop.datepicker, hop.component, {
 			formats = ["", " H", " H:i", " H:i:s"];
 			for (i in formats)
 			{
-				parsedDate = hop.time.parse(date, "Y-m-d"+formats[i]);
+				parsedDate = hopjs.time.parse(date, "Y-m-d"+formats[i]);
 				if (parsedDate)
 					break;
 			}
@@ -726,7 +728,7 @@ hop.inherit(hop.datepicker, hop.component, {
 			}
 			if (self.layerParams)
 				$.extend(true, layerParams, self.layerParams);
-			layer = new hop.layer(layerParams);
+			layer = new hopjs.layer(layerParams);
 			layer.hopDatepicker = self;
 			node = layer.node;
 		}
@@ -754,7 +756,7 @@ hop.inherit(hop.datepicker, hop.component, {
 	</div>\
 	<div class="{c}time-wrapper">\
 		<div class="{c}time">\
-			<div class="{c}button {c}button-current-time" title="'+hop.html.quoteValue(self.i18n.currentTime)+'"></div>\
+			<div class="{c}button {c}button-current-time" title="'+hopjs.html.quoteValue(self.i18n.currentTime)+'"></div>\
 			<div class="{c}time-title">\
 				<span class="{c}time-hours"></span><span class="{c}time-sep {c}time-sep-minutes">:</span><span class="{c}time-minutes"></span><span class="{c}time-sep {c}time-sep-seconds">:</span><span class="{c}time-seconds"></span><span class="{c}time-ampm"></span>\
 			</div>\
@@ -764,16 +766,16 @@ hop.inherit(hop.datepicker, hop.component, {
 	<div class="{c}buttons-wrapper">\
 		<div class="{c}buttons">\
 			<div class="{c}buttons-left">\
-				<div class="{c}button {c}button-today" title="'+hop.html.quoteValue(self.i18n.today)+'"></div>\
+				<div class="{c}button {c}button-today" title="'+hopjs.html.quoteValue(self.i18n.today)+'"></div>\
 			</div>\
 			<div class="{c}buttons-right">\
-				<div class="{c}button {c}button-clean" title="'+hop.html.quoteValue(self.i18n.clean)+'"></div>\
-				<div class="{c}button {c}button-done" title="'+hop.html.quoteValue(self.i18n.done)+'"></div>\
+				<div class="{c}button {c}button-clean" title="'+hopjs.html.quoteValue(self.i18n.clean)+'"></div>\
+				<div class="{c}button {c}button-done" title="'+hopjs.html.quoteValue(self.i18n.done)+'"></div>\
 			</div>\
 		</div>\
 	</div>\
 </div>';
-		self.node.innerHTML = hop.string.replace("{c}", cp, html);
+		self.node.innerHTML = hopjs.string.replace("{c}", cp, html);
 		self.$title = $(_cp+"title", self.node);
 		self.$body = $(_cp+"body", self.node);
 		self.bodyNode = self.$body[0];
@@ -1158,17 +1160,17 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	formatDate: function()
 	{
-		return hop.time.format(this.date, this.getFormat());
+		return hopjs.time.format(this.date, this.getFormat());
 	},
 
 	parseDate: function(date, format)
 	{
-		return hop.time.parse(date, format);
+		return hopjs.time.parse(date, format);
 	},
 
 	formatIs12Hour: function(format)
 	{
-		return hop.time.formatIs12Hour(format);
+		return hopjs.time.formatIs12Hour(format);
 	},
 
 	getFormat: function()
@@ -1179,8 +1181,8 @@ hop.inherit(hop.datepicker, hop.component, {
 	buildDateTimeFormat: function()
 	{
 		var result = this.getDateTimeFormat();
-		result = hop.string.replace("{d}", this.getDateFormat(), result);
-		return hop.string.replace("{t}", this.getCurrentTimeFormat(), result);
+		result = hopjs.string.replace("{d}", this.getDateFormat(), result);
+		return hopjs.string.replace("{t}", this.getCurrentTimeFormat(), result);
 	},
 
 	getDateTimeFormat: function()
@@ -1274,10 +1276,10 @@ hop.inherit(hop.datepicker, hop.component, {
 			updatePicker = true;
 		$(_cp+"time-sep-seconds, "+_cp+"time-seconds", self.node).css("display", self.shortTimeFormat ? "none" : "inline");
 		$(_cp+"time-ampm", self.node).css("display", self.getTime12HourFormat() ? "inline" : "none");
-		$(_cp+"time-hours", self.node).html(self.getTime12HourFormat() ? hop.time.hours12(hours) : hours);
-		$(_cp+"time-minutes", self.node).html(hop.string.padLeft(self.date.getMinutes(), 2, "0"));
-		$(_cp+"time-seconds", self.node).html(hop.string.padLeft(self.date.getSeconds(), 2, "0"));
-		$(_cp+"time-ampm", self.node).html(hop.time.am(hours) ? "am" : "pm");
+		$(_cp+"time-hours", self.node).html(self.getTime12HourFormat() ? hopjs.time.hours12(hours) : hours);
+		$(_cp+"time-minutes", self.node).html(hopjs.string.padLeft(self.date.getMinutes(), 2, "0"));
+		$(_cp+"time-seconds", self.node).html(hopjs.string.padLeft(self.date.getSeconds(), 2, "0"));
+		$(_cp+"time-ampm", self.node).html(hopjs.time.am(hours) ? "am" : "pm");
 		if (updatePicker && self.picker === "time")
 			self.updateTimePicker();
 	},
@@ -1338,8 +1340,8 @@ hop.inherit(hop.datepicker, hop.component, {
 	setDayPickerTitleDate: function(node, year, month)
 	{
 		var self = this, html = self.titleFormat;
-		html = hop.string.replace("{y}", year, html);
-		html = hop.string.replace("{m}", self.i18n.monthNames[month], html);
+		html = hopjs.string.replace("{y}", year, html);
+		html = hopjs.string.replace("{m}", self.i18n.monthNames[month], html);
 		node.innerHTML = html;
 	},
 
@@ -1349,14 +1351,14 @@ hop.inherit(hop.datepicker, hop.component, {
 			html, head = "", i, j;
 		node.className = cp+"days";
 		if (self.showWeekNumber)
-			head += '<div class="{c}week-header" title="'+hop.html.quoteValue(self.i18n.week)+'"><div>'+self.i18n.weekShort+'</div></div>';
+			head += '<div class="{c}week-header" title="'+hopjs.html.quoteValue(self.i18n.week)+'"><div>'+self.i18n.weekShort+'</div></div>';
 		for (i = 0; i < 7; i++)
 		{
 			j = (i+self.getFirstWeekDay())%7;
-			head += '<div class="{c}day-header" title="'+hop.html.quoteValue(self.i18n.dayNames[j])+'"><div>'+self.i18n.dayNamesShort[j]+'</div></div>';
+			head += '<div class="{c}day-header" title="'+hopjs.html.quoteValue(self.i18n.dayNames[j])+'"><div>'+self.i18n.dayNamesShort[j]+'</div></div>';
 		}
 		html = '<div class="{c}head">'+head+'</div><div class="{c}body"></div>';
-		node.innerHTML = hop.string.replace("{c}", cp+"days-", html);
+		node.innerHTML = hopjs.string.replace("{c}", cp+"days-", html);
 		self.$body.append(node);
 		return node;
 	},
@@ -1441,7 +1443,7 @@ hop.inherit(hop.datepicker, hop.component, {
 					date = new Date(dayYear, dayMonth, day);
 					weekNumberNode = document.createElement("div");
 					weekNumberNode.className = cp+"days-week-number";
-					weekNumberNode.innerHTML = hop.time.weekNumber(date).week;
+					weekNumberNode.innerHTML = hopjs.time.weekNumber(date).week;
 					weekNode.appendChild(weekNumberNode);
 				}
 				if (day === todayDay && dayMonth === todayMonth && dayYear === todayYear)
@@ -1990,7 +1992,7 @@ hop.inherit(hop.datepicker, hop.component, {
 			html += '<div class="{c}ampm"><div class="{c}button"></div></div>';
 		html += '</div><div class="{c}buttons"><div class="'+cp+'button {c}close"></div>';
 		html += '<div class="'+cp+'button {c}done"></div></div>';
-		node.innerHTML = hop.string.replace("{c}", cp+"time-picker-", html);
+		node.innerHTML = hopjs.string.replace("{c}", cp+"time-picker-", html);
 		self.$body.append(node);
 
 		$elem = $(_cp+"time-picker-hours "+_cp+"time-picker-plus", node).on("mousedown", function(event)
@@ -2072,12 +2074,12 @@ hop.inherit(hop.datepicker, hop.component, {
 				self.onTimePickerAmPmClick(event);
 			});
 		}
-		
+
 		$(_cp+"time-picker-close", node).on("click", function(event)
 		{
 			self.onTimePickerCloseClick(event);
 		});
-		
+
 		$(_cp+"time-picker-done", node).on("click", function(event)
 		{
 			self.onTimePickerDoneClick(event);
@@ -2089,17 +2091,17 @@ hop.inherit(hop.datepicker, hop.component, {
 	setTimePickerDate: function(node, date)
 	{
 		var self = this, value;
-		value = (self.getTime12HourFormat() ? hop.time.hours12(date.getHours()) : date.getHours());
+		value = (self.getTime12HourFormat() ? hopjs.time.hours12(date.getHours()) : date.getHours());
 		$(_cp+"time-picker-hours "+_cp+"time-picker-value input", node).val(value);
-		value = hop.string.padLeft(date.getMinutes(), 2, "0");
+		value = hopjs.string.padLeft(date.getMinutes(), 2, "0");
 		$(_cp+"time-picker-minutes "+_cp+"time-picker-value input", node).val(value);
 		if (!self.timeShort)
 		{
-			value = hop.string.padLeft(date.getSeconds(), 2, "0");
+			value = hopjs.string.padLeft(date.getSeconds(), 2, "0");
 			$(_cp+"time-picker-seconds "+_cp+"time-picker-value input", node).val(value);
 		}
 		if (self.getTime12HourFormat())
-			$(_cp+"time-picker-ampm div", node).html(hop.time.am(date.getHours()) ? "am" : "pm");
+			$(_cp+"time-picker-ampm div", node).html(hopjs.time.am(date.getHours()) ? "am" : "pm");
 	},
 
 	recreateTimePicker: function()
@@ -2184,7 +2186,7 @@ hop.inherit(hop.datepicker, hop.component, {
 	{
 		var self = this, hours = self.timePickerDate.getHours();
 		if (self.getTime12HourFormat())
-			hours = hop.time.hours12(hours);
+			hours = hopjs.time.hours12(hours);
 		$(_cp+"time-picker-hours input", self.pickerNode).val(hours);
 	},
 
@@ -2205,12 +2207,12 @@ hop.inherit(hop.datepicker, hop.component, {
 			else
 			{
 				if (self.getTime12HourFormat())
-					value = hop.time.hours24(value, hop.time.pm(self.timePickerDate.getHours()));
+					value = hopjs.time.hours24(value, hopjs.time.pm(self.timePickerDate.getHours()));
 				self.timePickerDate.setHours(value);
 			}
 		}
 		if (error)
-			$elem.val(self.getTime12HourFormat() ? hop.time.hours12(self.timePickerDate.getHours()) : self.timePickerDate.getHours());
+			$elem.val(self.getTime12HourFormat() ? hopjs.time.hours12(self.timePickerDate.getHours()) : self.timePickerDate.getHours());
 	},
 
 	onTimePickerMinutesPlusMousedown: function(event)
@@ -2272,7 +2274,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	onTimePickerMinutesBlur: function(event)
 	{
-		$(_cp+"time-picker-minutes input", this.pickerNode).val(hop.string.padLeft(this.timePickerDate.getMinutes(), 2, "0"));
+		$(_cp+"time-picker-minutes input", this.pickerNode).val(hopjs.string.padLeft(this.timePickerDate.getMinutes(), 2, "0"));
 	},
 
 	onTimePickerMinutesKeyup: function(event)
@@ -2359,7 +2361,7 @@ hop.inherit(hop.datepicker, hop.component, {
 
 	onTimePickerSecondsBlur: function(event)
 	{
-		$(_cp+"time-picker-seconds input", this.pickerNode).val(hop.string.padLeft(this.timePickerDate.getSeconds(), 2, "0"));
+		$(_cp+"time-picker-seconds input", this.pickerNode).val(hopjs.string.padLeft(this.timePickerDate.getSeconds(), 2, "0"));
 	},
 
 	onTimePickerSecondsKeyup: function(event)
@@ -2386,14 +2388,14 @@ hop.inherit(hop.datepicker, hop.component, {
 	onTimePickerAmPmClick: function(event)
 	{
 		var hours = this.timePickerDate.getHours();
-		this.setTimePickerHours(hours+(hop.time.am(hours) ? 12 : -12));
+		this.setTimePickerHours(hours+(hopjs.time.am(hours) ? 12 : -12));
 	},
-	
+
 	onTimePickerCloseClick: function(event)
 	{
 		this.showDayPicker();
 	},
-	
+
 	onTimePickerDoneClick: function(event)
 	{
 		var self = this, date = self.timePickerDate;
@@ -2426,7 +2428,7 @@ hop.inherit(hop.datepicker, hop.component, {
 				if (animation.params)
 					$.extend(true, params, animation.params);
 			}
-			if (hop.datepickerTitleAnimations[type])
+			if (hopjs.datepickerTitleAnimations[type])
 			{
 				$.extend(true, params, {
 					id: animationId,
@@ -2434,7 +2436,7 @@ hop.inherit(hop.datepicker, hop.component, {
 					prevNode: prevTitleNode,
 					nextNode: self.titleNode
 				});
-				self.titleAnimation = new hop.datepickerTitleAnimations[type](params);
+				self.titleAnimation = new hopjs.datepickerTitleAnimations[type](params);
 				self.titleAnimation.start();
 			}
 		}
@@ -2453,7 +2455,7 @@ hop.inherit(hop.datepicker, hop.component, {
 				if (animation.params)
 					$.extend(true, params, animation.params);
 			}
-			if (hop.datepickerPickerAnimations[type])
+			if (hopjs.datepickerPickerAnimations[type])
 			{
 				$.extend(true, params, {
 					id: animationId,
@@ -2461,7 +2463,7 @@ hop.inherit(hop.datepicker, hop.component, {
 					prevNode: prevPickerNode,
 					nextNode: self.pickerNode
 				});
-				self.pickerAnimation = new hop.datepickerPickerAnimations[type](params);
+				self.pickerAnimation = new hopjs.datepickerPickerAnimations[type](params);
 				self.pickerAnimation.start();
 			}
 		}
@@ -2532,12 +2534,12 @@ hop.inherit(hop.datepicker, hop.component, {
 	}
 });
 
-hop.datepickerAnimation = function(params)
+hopjs.datepickerAnimation = function(params)
 {
-	hop.configurable.apply(this, arguments);
+	hopjs.configurable.apply(this, arguments);
 };
 
-hop.inherit(hop.datepickerAnimation, hop.configurable, {
+hopjs.inherit(hopjs.datepickerAnimation, hopjs.configurable, {
 	getDefaults: function()
 	{
 		return {
@@ -2547,7 +2549,7 @@ hop.inherit(hop.datepickerAnimation, hop.configurable, {
 			nextNode: null
 		};
 	},
-	
+
 	start: function()
 	{
 	},
@@ -2557,24 +2559,24 @@ hop.inherit(hop.datepickerAnimation, hop.configurable, {
 	}
 });
 
-if (!def(hop.datepickerTitleAnimations))
-	hop.datepickerTitleAnimations = {};
+if (!def(hopjs.datepickerTitleAnimations))
+	hopjs.datepickerTitleAnimations = {};
 
-if (!def(hop.datepickerPickerAnimations))
-	hop.datepickerPickerAnimations = {};
+if (!def(hopjs.datepickerPickerAnimations))
+	hopjs.datepickerPickerAnimations = {};
 
-if (!def(hop.datepickerAnimationPresets))
-	hop.datepickerAnimationPresets = {};
+if (!def(hopjs.datepickerAnimationPresets))
+	hopjs.datepickerAnimationPresets = {};
 
-hop.datepickerTitleAnimations.fade = function(params)
+hopjs.datepickerTitleAnimations.fade = function(params)
 {
-	hop.datepickerAnimation.apply(this, arguments);
+	hopjs.datepickerAnimation.apply(this, arguments);
 };
 
-hop.inherit(hop.datepickerTitleAnimations.fade, hop.datepickerAnimation, {
+hopjs.inherit(hopjs.datepickerTitleAnimations.fade, hopjs.datepickerAnimation, {
 	getDefaults: function()
 	{
-		return $.extend(hop.datepickerAnimation.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.datepickerAnimation.prototype.getDefaults.apply(this), {
 			hideAnimation: false,
 			showDuration: 200,
 			hideDuration: 200,
@@ -2583,27 +2585,27 @@ hop.inherit(hop.datepickerTitleAnimations.fade, hop.datepickerAnimation, {
 			interval: 5
 		});
 	},
-	
+
 	getVirtualParams: function()
 	{
-		return $.merge(hop.datepickerAnimation.prototype.getVirtualParams.apply(this), [
+		return $.merge(hopjs.datepickerAnimation.prototype.getVirtualParams.apply(this), [
 			"duration",
 			"easing"
 		]);
 	},
-	
+
 	setDuration: function(duration)
 	{
 		this.showDuration = duration;
 		this.hideDuration = duration;
 	},
-	
+
 	setEasing: function(easing)
 	{
 		this.showEasing = easing;
 		this.hideEasing = easing;
 	},
-	
+
 	start: function()
 	{
 		this.realStart(this.datepicker.$title, "titleAnimation");
@@ -2685,12 +2687,12 @@ hop.inherit(hop.datepickerTitleAnimations.fade, hop.datepickerAnimation, {
 	}
 });
 
-hop.datepickerPickerAnimations.fade = function(params)
+hopjs.datepickerPickerAnimations.fade = function(params)
 {
-	hop.datepickerTitleAnimations.fade.apply(this, arguments);
+	hopjs.datepickerTitleAnimations.fade.apply(this, arguments);
 };
 
-hop.inherit(hop.datepickerPickerAnimations.fade, hop.datepickerTitleAnimations.fade, {
+hopjs.inherit(hopjs.datepickerPickerAnimations.fade, hopjs.datepickerTitleAnimations.fade, {
 	start: function()
 	{
 		this.realStart(this.datepicker.$body, "pickerAnimation");
@@ -2702,7 +2704,7 @@ hop.inherit(hop.datepickerPickerAnimations.fade, hop.datepickerTitleAnimations.f
 	}
 });
 
-hop.datepickerAnimationPresets.fade = function(params)
+hopjs.datepickerAnimationPresets.fade = function(params)
 {
 	var animations = [
 			"dayPrev",

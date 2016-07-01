@@ -9,7 +9,7 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function($, hopjs)
 {
 
 var cp = "hopjs-button-",
@@ -17,17 +17,19 @@ var cp = "hopjs-button-",
 	verticalAligns = ["top", "middle", "bottom"],
 	positions = ["top", "bottom", "left", "right"];
 
-hop.textButton = function(params)
+hopjs.types["textbutton"] = "hopjs.textButton";
+
+hopjs.textButton = function(params)
 {
-	hop.button.apply(this, arguments);
+	hopjs.button.apply(this, arguments);
 };
 
-hop.inherit(hop.textButton, hop.button, {
+hopjs.inherit(hopjs.textButton, hopjs.button, {
 	version: "@VERSION",
 
 	getDefaults: function()
 	{
-		return $.extend(hop.button.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.button.prototype.getDefaults.apply(this), {
 			text: "",
 			textAlign: "center",
 			wrapText: true,
@@ -45,7 +47,7 @@ hop.inherit(hop.textButton, hop.button, {
 	create: function(params)
 	{
 		var self = this;
-		hop.button.prototype.create.apply(self, arguments);
+		hopjs.button.prototype.create.apply(self, arguments);
 		self.setText(self.text);
 		self.setTextAlign(self.textAlign);
 		self.setWrapText(self.wrapText);
@@ -179,7 +181,7 @@ hop.inherit(hop.textButton, hop.button, {
 
 	createClassName: function()
 	{
-		return hop.button.prototype.createClassName()+" hopjs-textbutton";
+		return hopjs.button.prototype.createClassName()+" hopjs-textbutton";
 	},
 
 	generateInnerHtml: function()

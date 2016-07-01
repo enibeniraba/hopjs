@@ -16,15 +16,12 @@
 	text-align: right;
 }
 
-.hopjs-dialog-buttons 
+.hopjs-dialog-button
 {
-	.hopjs-dialog-button-no
-	{
-		margin-left: 4px;
-	}
+	margin-left: 0;
+}
 
-	.hopjs-dialog-button-cancel
-	{
-		margin-left: 4px;
-	}
+.hopjs-dialog-button + .hopjs-dialog-button
+{
+	margin-left: 8px;
 }

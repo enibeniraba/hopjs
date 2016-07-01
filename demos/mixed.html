@@ -44,20 +44,18 @@ Sed in nisi ante. Nunc velit neque, vulputate sit amet dolor non, rutrum porta t
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
-	var slideFadeAnimations = hop.datepickerAnimationPresets.slideFade({
+	var slideFadeAnimations = hopjs.datepickerAnimationPresets.slideFade({
 			animationParams: {
 				duration: 400
 			}
 		}),
-		slideScaleAnimations = hop.datepickerAnimationPresets.slideScale({
+		slideScaleAnimations = hopjs.datepickerAnimationPresets.slideScale({
 			animationParams: {
 				duration: 400
 			}
 		});
 
-	w1 = new hop.window({
+	w1 = new hopjs.window({
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
 		content: $("#content").html(),
@@ -95,7 +93,7 @@ $(function()
 		}
 	});
 
-	menu1 = new hop.menu({
+	menu1 = new hopjs.menu({
 		parentNode: w1.topNode,
 		showDropdownMenuOnMousedown: false,
 		dropdownMenuParams: {
@@ -296,13 +294,13 @@ $(function()
 		]
 	});
 
-	b1 = new hop.textButton({
+	b1 = new hopjs.textButton({
 		parentNode: $("#dp1-button-container")[0],
 		style: "default",
 		icon: "../themes/default/images/datepickertoday.png"
 	});
 
-	dp1 = new hop.datepicker({
+	dp1 = new hopjs.datepicker({
 		locale: "ru",
 		maxDatescale: 4,
 		showTime: true,
@@ -401,9 +399,9 @@ $(function()
 				checkable: true,
 				onCheck: function(item)
 				{
-					if (!hop.def(item.w1))
+					if (!hopjs.def(item.w1))
 					{
-						item.w1 = new hop.window({
+						item.w1 = new hopjs.window({
 							title: "Title",
 							content: "Content",
 							height: 240,
@@ -442,7 +440,7 @@ $(function()
 		]
 	};
 
-	b2 = new hop.textButton({
+	b2 = new hopjs.textButton({
 		parentNode: $("#dp1-options-button-container")[0],
 		style: "default",
 		text: "Datepicker options",
@@ -458,7 +456,7 @@ $(function()
 		}
 	});
 
-	tt1 = new hop.tooltip({
+	tt1 = new hopjs.tooltip({
 		content: "Datepicker",
 		target: $("#tt1")[0],
 		followCursor: true,
@@ -467,7 +465,7 @@ $(function()
 		}
 	});
 
-	cm1 = new hop.contextMenu({
+	cm1 = new hopjs.contextMenu({
 		node: $("#cm1")[0],
 		menu: {
 			items: [
@@ -489,7 +487,7 @@ $(function()
 		}
 	});
 
-	tabs1 = hop.tabs.fromLayout({
+	tabs1 = hopjs.tabs.fromLayout({
 			nodeSelector: "#tabs1"
 		}, {
 			beforeNode: $("#tabs1")[0]

@@ -9,17 +9,19 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
-var def = hop.def;
+var def = hopjs.def;
 
-hop.layer = function(params)
+hopjs.types["layer"] = "hopjs.layer";
+
+hopjs.layer = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.layer.current = function(node)
+hopjs.layer.current = function(node)
 {
 	while (node)
 	{
@@ -30,14 +32,14 @@ hop.layer.current = function(node)
 	}
 };
 
-hop.layer.hide = function(node)
+hopjs.layer.hide = function(node)
 {
-	var layer = hop.layer.current(node);
+	var layer = hopjs.layer.current(node);
 	if (layer)
 		layer.hide();
 };
 
-hop.inherit(hop.layer, hop.component, {
+hopjs.inherit(hopjs.layer, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -158,7 +160,7 @@ hop.inherit(hop.layer, hop.component, {
 		self.resetState();
 		self.queue = false;
 		self.queueParams = {};
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		if (self.parentNode === null)
 			self.parentNode = document.body;
 		if (!params)
@@ -182,7 +184,7 @@ hop.inherit(hop.layer, hop.component, {
 
 	afterCreate: function(params)
 	{
-		hop.component.prototype.afterCreate.apply(this, arguments);
+		hopjs.component.prototype.afterCreate.apply(this, arguments);
 		if (params.show)
 			this.show();
 	},
@@ -193,7 +195,7 @@ hop.inherit(hop.layer, hop.component, {
 			return;
 
 		var self = this, key;
-		hop.component.prototype.configure.apply(self, arguments);
+		hopjs.component.prototype.configure.apply(self, arguments);
 		if (self.shown)
 		{
 			for (key in self.updatePositionParams)
@@ -411,10 +413,10 @@ hop.inherit(hop.layer, hop.component, {
 	animateShowing: function()
 	{
 		var self = this, params, animationClass = null, overlayAnimationClass = null;
-		if (self.animationShow !== null && hop.layerShowAnimations[self.animationShow])
-			animationClass = hop.layerShowAnimations[self.animationShow];
-		if (self.overlay && self.overlayAnimationShow !== null && hop.layerShowAnimations[self.overlayAnimationShow])
-			overlayAnimationClass = hop.layerShowAnimations[self.overlayAnimationShow];
+		if (self.animationShow !== null && hopjs.layerShowAnimations[self.animationShow])
+			animationClass = hopjs.layerShowAnimations[self.animationShow];
+		if (self.overlay && self.overlayAnimationShow !== null && hopjs.layerShowAnimations[self.overlayAnimationShow])
+			overlayAnimationClass = hopjs.layerShowAnimations[self.overlayAnimationShow];
 		if (!animationClass && !overlayAnimationClass)
 			return false;
 
@@ -518,14 +520,14 @@ hop.inherit(hop.layer, hop.component, {
 	{
 		this.trigger("hideBefore", params);
 	},
-	
+
 	animateHiding: function()
 	{
 		var self = this, params, animationClass = null, overlayAnimationClass = null;
-		if (self.animationHide !== null && hop.layerHideAnimations[self.animationHide])
-			animationClass = hop.layerHideAnimations[self.animationHide];
-		if (self.overlay && self.overlayAnimationHide !== null && hop.layerHideAnimations[self.overlayAnimationHide])
-			overlayAnimationClass = hop.layerHideAnimations[self.overlayAnimationHide];
+		if (self.animationHide !== null && hopjs.layerHideAnimations[self.animationHide])
+			animationClass = hopjs.layerHideAnimations[self.animationHide];
+		if (self.overlay && self.overlayAnimationHide !== null && hopjs.layerHideAnimations[self.overlayAnimationHide])
+			overlayAnimationClass = hopjs.layerHideAnimations[self.overlayAnimationHide];
 		if (!animationClass && !overlayAnimationClass)
 			return false;
 
@@ -756,7 +758,7 @@ hop.inherit(hop.layer, hop.component, {
 		self.state.height = height;
 		self.state.width = width;
 	},
-	
+
 	calcRegion: function(element, box, region)
 	{
 		var $document = $(document),
@@ -791,7 +793,7 @@ hop.inherit(hop.layer, hop.component, {
 			}
 			else
 			{
-				console.log("hop.layer: Invalid element ("+element+").");
+				console.log("hopjs.layer: Invalid element ("+element+").");
 				return;
 			}
 		}
@@ -811,7 +813,7 @@ hop.inherit(hop.layer, hop.component, {
 			$element = $(element);
 			if ($element.length !== 1)
 			{
-				console.log("hop.layer: Element not found.");
+				console.log("hopjs.layer: Element not found.");
 				console.log(element);
 				return;
 			}
@@ -865,7 +867,7 @@ hop.inherit(hop.layer, hop.component, {
 
 	moveOnTop: function()
 	{
-		var self = this, maxZIndex = hop.dom.maxZIndex(self.node);
+		var self = this, maxZIndex = hopjs.dom.maxZIndex(self.node);
 		if (maxZIndex.node !== self.node)
 		{
 			self.node.style.zIndex = maxZIndex.zIndex+1;
@@ -897,12 +899,12 @@ hop.inherit(hop.layer, hop.component, {
 	}
 });
 
-hop.layerAnimation = function(params)
+hopjs.layerAnimation = function(params)
 {
-	hop.configurable.apply(this, arguments);
+	hopjs.configurable.apply(this, arguments);
 };
 
-hop.inherit(hop.layerAnimation, hop.configurable, {
+hopjs.inherit(hopjs.layerAnimation, hopjs.configurable, {
 	getDefaults: function()
 	{
 		return {
@@ -914,7 +916,7 @@ hop.inherit(hop.layerAnimation, hop.configurable, {
 			interval: $.fx.interval
 		};
 	},
-	
+
 	start: function()
 	{
 	},
@@ -934,18 +936,18 @@ hop.inherit(hop.layerAnimation, hop.configurable, {
 	}
 });
 
-if (!def(hop.layerShowAnimations))
-	hop.layerShowAnimations = {};
+if (!def(hopjs.layerShowAnimations))
+	hopjs.layerShowAnimations = {};
 
-hop.layerShowAnimations.def = function(params)
+hopjs.layerShowAnimations.def = function(params)
 {
-	hop.layerAnimation.apply(this, arguments);
+	hopjs.layerAnimation.apply(this, arguments);
 };
 
-hop.inherit(hop.layerShowAnimations.def, hop.layerAnimation, {
+hopjs.inherit(hopjs.layerShowAnimations.def, hopjs.layerAnimation, {
 	getDefaults: function()
 	{
-		return $.extend(hop.layerAnimation.prototype.getDefaults.apply(this), {
+		return $.extend(hopjs.layerAnimation.prototype.getDefaults.apply(this), {
 			transfer: "",
 			distance: 20,
 			angle: 90,
@@ -962,7 +964,7 @@ hop.inherit(hop.layerShowAnimations.def, hop.layerAnimation, {
 			options, properties = {}, fakeProperty = true,
 			position = $node.position(), startPosition,
 			element, $element, scaleY, scaleX,
-			animationInfo = hop.browser.animationInfo(),
+			animationInfo = hopjs.browser.animationInfo(),
 			transformProperty = animationInfo.transformProperty;
 		if (self.transfer === "" && self.scale === 1 && !self.opacity)
 			return;
@@ -995,19 +997,19 @@ hop.inherit(hop.layerShowAnimations.def, hop.layerAnimation, {
 			{
 				if (!self.element)
 					throw new Error("Element is not defined");
-				
+
 				element = self.element;
 				if (typeof self.element === "function")
 					element = self.element(self);
 				$element = $(element);
 				if ($element.length === 0)
 					throw new Error("Element is not found");
-				
+
 				startPosition = self.calcPositionElement($node, $element);
 			}
 			else
 				throw new Error("Invalid transfer");
-			
+
 			if (startPosition.top !== null)
 			{
 				node.style.top = startPosition.top+"px";
@@ -1158,15 +1160,15 @@ hop.inherit(hop.layerShowAnimations.def, hop.layerAnimation, {
 	}
 });
 
-if (!def(hop.layerHideAnimations))
-	hop.layerHideAnimations = {};
+if (!def(hopjs.layerHideAnimations))
+	hopjs.layerHideAnimations = {};
 
-hop.layerHideAnimations.def = function(params)
+hopjs.layerHideAnimations.def = function(params)
 {
-	hop.layerShowAnimations.def.apply(this, arguments);
+	hopjs.layerShowAnimations.def.apply(this, arguments);
 };
 
-hop.inherit(hop.layerHideAnimations.def, hop.layerShowAnimations.def, {
+hopjs.inherit(hopjs.layerHideAnimations.def, hopjs.layerShowAnimations.def, {
 	start: function()
 	{
 		var self = this, node = self.getNode(), $node = self.get$node(),
@@ -1174,7 +1176,7 @@ hop.inherit(hop.layerHideAnimations.def, hop.layerShowAnimations.def, {
 			opacityOrig = $node.css("opacity"),
 			options, properties = {}, fakeProperty = true,
 			position, finishPosition, element, $element, scaleY, scaleX,
-			animationInfo = hop.browser.animationInfo(),
+			animationInfo = hopjs.browser.animationInfo(),
 			transformProperty = animationInfo.transformProperty;
 		if (self.transfer === "" && self.scale === 1 && !self.opacity)
 			return;
@@ -1213,19 +1215,19 @@ hop.inherit(hop.layerHideAnimations.def, hop.layerShowAnimations.def, {
 			{
 				if (!self.element)
 					throw new Error("Element is not defined");
-				
+
 				element = self.element;
 				if (typeof self.element === "function")
 					element = self.element(self);
 				$element = $(element);
 				if ($element.length === 0)
 					throw new Error("Element is not found");
-				
+
 				finishPosition = self.calcPositionElement($node, $element);
 			}
 			else
 				throw new Error("Invalid transfer");
-			
+
 			if (finishPosition.top !== null)
 			{
 				properties.top = finishPosition.top;

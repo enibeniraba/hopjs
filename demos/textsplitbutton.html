@@ -298,9 +298,7 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
-	m1 = new hop.dropdownMenu({
+	m1 = new hopjs.dropdownMenu({
 		items: [
 			{text: "One"},
 			{text: "Two"},
@@ -322,7 +320,7 @@ $(function()
 	});
 
 	var text = "Button";
-	b1 = new hop.textSplitButton({
+	b1 = new hopjs.textSplitButton({
 		parentNode: $("#container")[0],
 		style: "default",
 		text: text,

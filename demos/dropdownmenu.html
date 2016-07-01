@@ -17,9 +17,7 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
-	menu2 = new hop.dropdownMenu({
+	menu2 = new hopjs.dropdownMenu({
 		items: [
 			{text: "One"},
 			{text: "Two"},
@@ -28,7 +26,7 @@ $(function()
 			{text: "Five"}
 		]
 	});
-	item1 = new hop.dropdownMenuItems.button({
+	item1 = new hopjs.dropdownMenuItems.button({
 		text: "Item by reference",
 		menu: {
 			items: [
@@ -51,7 +49,7 @@ $(function()
 			]
 		}
 	});
-	menu1 = new hop.dropdownMenu({
+	menu1 = new hopjs.dropdownMenu({
 		layerParams: {
 			element: $("#button1")[0],
 			elementAlignY: "bottom",

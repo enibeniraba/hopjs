@@ -9,15 +9,17 @@
  * Date: @DATE
  */
 
-(function($, hop)
+(function($, hopjs)
 {
 
-hop.tooltip = function(params)
+hopjs.types["tooltip"] = "hopjs.tooltip";
+
+hopjs.tooltip = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.tooltip, hop.component, {
+hopjs.inherit(hopjs.tooltip, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -86,7 +88,7 @@ hop.inherit(hop.tooltip, hop.component, {
 		self.hiding = false;
 		self.timeout = null;
 		self.queue = false;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		self.generateHtml();
 		self.setContent(self.content);
 		self.setWidth(self.width);
@@ -102,7 +104,7 @@ hop.inherit(hop.tooltip, hop.component, {
 			self.showWithDelay();
 		}
 	},
-	
+
 	setLayerElementRegion: function(top, left)
 	{
 		var self = this;
@@ -233,7 +235,7 @@ hop.inherit(hop.tooltip, hop.component, {
 			layerParams.element = self.target;
 		if (self.layerParams)
 			$.extend(true, layerParams, self.layerParams);
-		self.layer = new hop.layer(layerParams);
+		self.layer = new hopjs.layer(layerParams);
 		self.layer.hopTooltip = self;
 		self.layer.$node.addClass("hopjs-tooltip");
 		if (self.extraClass !== "")

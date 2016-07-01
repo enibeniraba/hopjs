@@ -9,19 +9,21 @@
  * Date: @DATE
  */
 
-(function(window, document, $, hop)
+(function(window, document, $, hopjs)
 {
 
 var allHandles = ["n", "s", "w", "e", "nw", "ne", "sw", "se"],
 	allLimiterSides = ["top", "bottom", "left", "right"],
 	cp = "hopjs-resizable-";
 
-hop.resizable = function(params)
+hopjs.types["resizable"] = "hopjs.resizable";
+
+hopjs.resizable = function(params)
 {
-	hop.component.apply(this, arguments);
+	hopjs.component.apply(this, arguments);
 };
 
-hop.inherit(hop.resizable, hop.component, {
+hopjs.inherit(hopjs.resizable, hopjs.component, {
 	version: "@VERSION",
 
 	getDefaults: function()
@@ -46,7 +48,7 @@ hop.inherit(hop.resizable, hop.component, {
 			limiterSides: allLimiterSides
 		};
 	},
-	
+
 	getVirtualParams: function()
 	{
 		return [
@@ -70,10 +72,10 @@ hop.inherit(hop.resizable, hop.component, {
 	create: function(params)
 	{
 		var self = this;
-		hop.component.prototype.create.apply(self, arguments);
+		hopjs.component.prototype.create.apply(self, arguments);
 		if (!self.node)
 			throw new Error("Node is not defiend.");
-		
+
 		self.$node = $(self.node);
 		self.activeHandle = null;
 		self.resizing = false;
@@ -84,7 +86,7 @@ hop.inherit(hop.resizable, hop.component, {
 		self.setEnabled(self.enabled);
 		self.setHandles(self.handles);
 	},
-	
+
 	setEnabled: function(enabled)
 	{
 		this.enabled = !!enabled;
@@ -96,7 +98,7 @@ hop.inherit(hop.resizable, hop.component, {
 			this.cancel();
 		}
 	},
-	
+
 	setHandles: function(handles)
 	{
 		var self = this, i;
@@ -113,7 +115,7 @@ hop.inherit(hop.resizable, hop.component, {
 			if (self.validateHandle(handles[i]))
 				self.handles.push(handles[i]);
 		}
-		if (hop.def(self.$handles))
+		if (hopjs.def(self.$handles))
 		{
 			for (i in allHandles)
 				self.$handles[allHandles[i]].detach();
@@ -121,54 +123,54 @@ hop.inherit(hop.resizable, hop.component, {
 				self.$node.append(self.handleNodes[self.handles[i]]);
 		}
 	},
-	
+
 	validateHandle: function(handle)
 	{
 		if (typeof handle !== "string")
 		{
-			console.warn("hop.resizable: Invalid handle variable type. Expected string.");
+			console.warn("hopjs.resizable: Invalid handle variable type. Expected string.");
 			return false;
 		}
 		if ($.inArray(handle, allHandles) === -1)
 		{
-			console.warn("hop.resizable: Unknown handle "+handle+".");
+			console.warn("hopjs.resizable: Unknown handle "+handle+".");
 			return false;
 		}
 		return true;
 	},
-	
+
 	setMinHeight: function(value)
 	{
 		this.minHeight = parseFloat(value);
 	},
-	
+
 	setMaxHeight: function(value)
 	{
 		this.maxHeight = (value === null || value === "" ? null : parseFloat(value));
 	},
-	
+
 	setMinWidth: function(value)
 	{
 		this.minWidth = parseFloat(value);
 	},
-	
+
 	setMaxWidth: function(value)
 	{
 		this.maxWidth = (value === null || value === "" ? null : parseFloat(value));
 	},
-	
+
 	setIncrement: function(increment)
 	{
 		this.heightIncrement = increment;
 		this.widthIncrement = increment;
 	},
-	
+
 	setLimiter: function(value)
 	{
 		this.limiter = (value === null || value === "" ? null : value);
 		this.limiterCache = null;
 	},
-	
+
 	setLimiterSides: function(sides)
 	{
 		var self = this, i;
@@ -186,17 +188,17 @@ hop.inherit(hop.resizable, hop.component, {
 				self.limiterSides.push(sides[i]);
 		}
 	},
-	
+
 	validateLimiterSide: function(side)
 	{
 		if (typeof side !== "string")
 		{
-			console.warn("hop.resizable: Invalid limiter side variable type. Expected string.");
+			console.warn("hopjs.resizable: Invalid limiter side variable type. Expected string.");
 			return false;
 		}
 		if ($.inArray(side, allLimiterSides) === -1)
 		{
-			console.warn("hop.resizable: Unknown limiter side "+side+".");
+			console.warn("hopjs.resizable: Unknown limiter side "+side+".");
 			return false;
 		}
 		return true;
@@ -214,32 +216,32 @@ hop.inherit(hop.resizable, hop.component, {
 		self.$handles = {};
 		for (i in allHandles)
 			self.createHandle(allHandles[i]);
-		
+
 		self.windowBlur = function(event)
 		{
 			self.onWindowBlur(event);
 		};
 		$(window).on("blur", self.windowBlur);
-		
+
 		self.documentMousemove = function(event)
 		{
 			self.onDocumentMousemove(event);
 		};
 		$(document).on("mousemove", self.documentMousemove);
-		
+
 		self.documentMouseup = function(event)
 		{
 			self.onDocumentMouseup(event);
 		};
 		$(document).on("mouseup", self.documentMouseup);
-		
+
 		self.documentKeydown = function(event)
 		{
 			self.onDocumentKeydown(event);
 		};
 		$(document).on("keydown", self.documentKeydown);
 	},
-	
+
 	createHandle: function(handle)
 	{
 		var self = this,
@@ -253,7 +255,7 @@ hop.inherit(hop.resizable, hop.component, {
 			self.onHandleMousedown(handle, event);
 		});
 	},
-	
+
 	onHandleMousedown: function(handle, event)
 	{
 		if (event.which === 1)
@@ -262,13 +264,13 @@ hop.inherit(hop.resizable, hop.component, {
 			event.preventDefault();
 		}
 	},
-	
+
 	onWindowBlur: function(event)
 	{
 		if (this.activeHandle)
 			this.cancel();
 	},
-	
+
 	onDocumentMousemove: function(event)
 	{
 		if (this.activeHandle !== null)
@@ -280,13 +282,13 @@ hop.inherit(hop.resizable, hop.component, {
 		if (this.activeHandle)
 			this.stop();
 	},
-	
+
 	onDocumentKeydown: function(event)
 	{
 		if (this.activeHandle && event.which === 27)
 			this.cancel();
 	},
-	
+
 	start: function(handle, event)
 	{
 		var self = this, is,
@@ -303,17 +305,17 @@ hop.inherit(hop.resizable, hop.component, {
 			parentBorderTop = parseFloat($offsetParent.css("border-top-width")) || 0,
 			parentBorderLeft = parseFloat($offsetParent.css("border-left-width")) || 0,
 			rightAlign = false, node = self.node, $node, position;
-		
+
 		if (self.activeHandle !== null)
 			self.stop();
-		
+
 		while (node && node.tagName !== "BODY")
 		{
 			$node = $(node);
 			position = $node.css("position");
 			if (position === "absolute" || position === "fixed")
 				break;
-			
+
 			if ($node.css("float") === "right")
 			{
 				rightAlign = true;
@@ -321,7 +323,7 @@ hop.inherit(hop.resizable, hop.component, {
 			}
 			node = node.parentNode;
 		}
-		
+
 		self.activeHandle = handle;
 		is = {
 			height: height,
@@ -387,7 +389,7 @@ hop.inherit(hop.resizable, hop.component, {
 		$("body").css("cursor", handle+"-resize");
 		self.onStart();
 	},
-	
+
 	updateHelper: function()
 	{
 		var is = this.initialState, s = this.state,
@@ -412,21 +414,21 @@ hop.inherit(hop.resizable, hop.component, {
 			width: width-is.helperWidthDiff
 		});
 	},
-	
+
 	onStart: function()
 	{
 		this.trigger("start");
 	},
-	
+
 	resize: function(event)
 	{
 		var self = this, is = self.initialState,
-			height = is.height, width = is.width, 
+			height = is.height, width = is.width,
 			vertical, horizontal, upwards, leftwards, value,
 			limiter = self.calcLimiterRegion();
 		if (self.activeHandle === null)
 			return;
-		
+
 		vertical = (self.activeHandle !== "w" && self.activeHandle !== "e");
 		horizontal = (self.activeHandle !== "n" && self.activeHandle !== "s");
 		upwards = (vertical && (self.activeHandle === "n" || self.activeHandle === "nw" || self.activeHandle === "ne"));
@@ -449,7 +451,7 @@ hop.inherit(hop.resizable, hop.component, {
 				height = width*is.ratio;
 			if (height/width > is.ratio || !horizontal)
 				width = height/is.ratio;
-			
+
 			if (self.widthIncrement > 1 && horizontal)
 			{
 				width = self.widthIncrement*Math.round(width/self.widthIncrement);
@@ -609,12 +611,12 @@ hop.inherit(hop.resizable, hop.component, {
 		else
 			self.realResize();
 	},
-	
+
 	calcLimiterRegion: function()
 	{
 		if (this.limiter === null)
 			return;
-		
+
 		var self = this, limiter = self.limiter,
 			$document = $(document),
 			$window = $(window),
@@ -645,7 +647,7 @@ hop.inherit(hop.resizable, hop.component, {
 			}
 			else
 			{
-				console.log("hop.resizable: Invalid limiter ("+limiter+").");
+				console.log("hopjs.resizable: Invalid limiter ("+limiter+").");
 				return;
 			}
 		}
@@ -667,7 +669,7 @@ hop.inherit(hop.resizable, hop.component, {
 			$element = $(element);
 			if ($element.length !== 1)
 			{
-				console.log("hop.resizable: Element not found.");
+				console.log("hopjs.resizable: Element not found.");
 				console.log(element);
 				return;
 			}
@@ -705,7 +707,7 @@ hop.inherit(hop.resizable, hop.component, {
 				};
 			}
 			cache = self.limiterCache;
-			if (cache.parent && cache.position === "static" 
+			if (cache.parent && cache.position === "static"
 				&& (cache.overflowY === "auto" || cache.overflowY === "scroll"))
 			{
 				top += cache.borderTop-element.scrollTop;
@@ -726,7 +728,7 @@ hop.inherit(hop.resizable, hop.component, {
 					height -= cache.paddingTop+cache.paddingBottom;
 				}
 			}
-			if (cache.parent && cache.position === "static" 
+			if (cache.parent && cache.position === "static"
 				&& (cache.overflowX === "auto" || cache.overflowX === "scroll"))
 			{
 				left += cache.borderLeft-element.scrollLeft;
@@ -757,12 +759,12 @@ hop.inherit(hop.resizable, hop.component, {
 			width: width
 		};
 	},
-	
+
 	onStateChange: function(data)
 	{
 		this.trigger("stateChange", data);
 	},
-	
+
 	realResize: function()
 	{
 		var self = this, css = {}, value,
@@ -772,7 +774,7 @@ hop.inherit(hop.resizable, hop.component, {
 			$window = $(window);
 		if (!self.state)
 			return;
-		
+
 		self.onResizeBefore({
 			originalState: $.extend({}, self.state)
 		});
@@ -806,30 +808,30 @@ hop.inherit(hop.resizable, hop.component, {
 		self.$node.css(css);
 		self.onResize();
 	},
-	
+
 	onResizeBefore: function(data)
 	{
 		this.trigger("resizeBefore", data);
 	},
-	
+
 	onResize: function()
 	{
 		$(window).trigger("resize");
 		this.trigger("resize");
 	},
-	
+
 	stop: function()
 	{
 		var self = this;
 		if (self.activeHandle === null)
 			return;
-		
+
 		self.reset();
 		if (self.helper && (self.heightChanged || self.widthChanged))
 			self.realResize();
 		self.onStop();
 	},
-	
+
 	reset: function()
 	{
 		var self = this;
@@ -846,18 +848,18 @@ hop.inherit(hop.resizable, hop.component, {
 			self.$helper = null;
 		}
 	},
-	
+
 	onStop: function()
 	{
 		this.trigger("stop");
 	},
-	
+
 	cancel: function()
 	{
 		var self = this, is = self.initialState;
 		if (self.activeHandle === null)
 			return;
-		
+
 		self.reset();
 		self.heightChanged = is.heightChanged;
 		self.widthChanged = is.widthChanged;
@@ -871,7 +873,7 @@ hop.inherit(hop.resizable, hop.component, {
 		}
 		self.onCancel();
 	},
-	
+
 	onCancel: function()
 	{
 		this.trigger("cancel");

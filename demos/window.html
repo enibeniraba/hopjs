@@ -51,9 +51,7 @@
 <script type="text/javascript">
 $(function()
 {
-	var hop = hopjs;
-
-	w1 = new hop.window({
+	w1 = new hopjs.window({
 		title: "Title",
 		content: $("#content").html(),
 		onCreate: function(self)
@@ -65,7 +63,7 @@ $(function()
 		}
 	});
 
-	w2 = new hop.window({
+	w2 = new hopjs.window({
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
 		content: $("#content").html(),
@@ -104,7 +102,7 @@ $(function()
 		}
 	});
 
-	w3 = new hop.window({
+	w3 = new hopjs.window({
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
 		content: '<div style="padding: 10px;"><input type="button" value="Close" onclick="hopjs.window.hide(this);" /></div>',
@@ -150,7 +148,7 @@ $(function()
 		}
 	});
 
-	w4 = new hop.window({
+	w4 = new hopjs.window({
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
 		content: $("#content").html(),
@@ -187,7 +185,7 @@ $(function()
 		}
 	});
 
-	w5 = new hop.window({
+	w5 = new hopjs.window({
 		locale: "ru",
 		title: "Title",
 		icon: "../themes/default/images/datepickercurrenttime.png",
