@@ -38,7 +38,7 @@ hopjs.inherit(hopjs.dialog, hopjs.window, {
 		hopjs.window.prototype.create.apply(self, arguments);
 		self.layer.$node.addClass("hopjs-dialog");
 		self.setButtonsAlign(self.buttonsAlign);
-		if (params.buttons)
+		if (params && params.buttons)
 			self.setButtons(params.buttons);
 	},
 

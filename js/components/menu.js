@@ -197,7 +197,9 @@ hopjs.inherit(hopjs.menu, hopjs.component, {
 	calcExtraMenuParams: function()
 	{
 		var result = {};
-		$.extend(true, result, this.defaultDropdownMenuParams, this.dropdownMenuParams, this.defaultExtraMenuParams, this.extraMenuParams);
+		$.extend(true, result, this.defaultDropdownMenuParams, this.dropdownMenuParams, this.defaultExtraMenuParams, this.extraMenuParams, {
+			hideOnMouseleave: (this.type === "hover")
+		});
 		return result;
 	},
 
@@ -212,11 +214,20 @@ hopjs.inherit(hopjs.menu, hopjs.component, {
 
 	updateDropdownMenuParams: function()
 	{
+		if (this.extraMenu)
+			this.updateExtraMenuParams();
 		for (var i in this.items)
 		{
 			if (this.items[i].menu)
 				this.items[i].updateMenuParams();
 		}
+	},
+
+	updateExtraMenuParams: function()
+	{
+		var params = {};
+		$.extend(true, params, this.calcExtraMenuParams());
+		this.extraMenu.configure(params);
 	},
 
 	generateHtml: function()
