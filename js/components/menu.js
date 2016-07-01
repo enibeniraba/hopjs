@@ -421,7 +421,7 @@ hopjs.inherit(hopjs.menu, hopjs.component, {
 		if (this.setExtraMenuButtonHighlightedOnMenuHide)
 			this.setExtraMenuButtonHighlighted(false);
 		this.setExtraMenuButtonOpened(false);
-		if (params.setShowMenu)
+		if (params.setShowMenu !== false)
 			this.showMenu = false;
 		if (this.openedMenu === this.extraMenu)
 			this.openedMenu = null;
@@ -964,7 +964,7 @@ $.extend(hopjs.menuItem.prototype, {
 		if (self.setHighlightedOnMenuHide)
 			self.setHighlighted(false);
 		self.setOpened(false);
-		if (params.setParentMenuShowMenu && !self.extraMenuItem)
+		if (params.setParentMenuShowMenu !== false && !self.extraMenuItem)
 			self.parentMenu.showMenu = false;
 		if (self.parentMenu.openedMenu === self.menu)
 			self.parentMenu.openedMenu = null;
