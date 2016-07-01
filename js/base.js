@@ -118,34 +118,22 @@ hopjs.string = {
 
 	trim: function(str, chars)
 	{
-		if (def(chars))
-			hopjs.string.regexQuote(chars);
-		else
-			chars = " \\s";
-		var re = new RegExp("^["+chars+"]*(.*?)["+chars+"]*$"),
-			matches = re.exec(str);
+		chars = (def(chars) ? hopjs.string.regexQuote(chars) : " \\s");
+		var matches = str.match(new RegExp("^["+chars+"]*(.*?)["+chars+"]*$"));
 		return matches[1];
 	},
 
 	ltrim: function(str, chars)
 	{
-		if (def(chars))
-			hopjs.string.regexQuote(chars);
-		else
-			chars = " \\s";
-		var re = new RegExp("^["+chars+"]*(.*?)$"),
-			matches = re.exec(str);
+		chars = (def(chars) ? hopjs.string.regexQuote(chars) : " \\s");
+		var matches = str.match(new RegExp("^["+chars+"]*(.*?)$"));
 		return matches[1];
 	},
 
 	rtrim: function(str, chars)
 	{
-		if (def(chars))
-			hopjs.string.regexQuote(chars);
-		else
-			chars = " \\s";
-		var re = new RegExp("^(.*?)["+chars+"]*$"),
-			matches = re.exec(str);
+		chars = (def(chars) ? hopjs.string.regexQuote(chars) : " \\s");
+		var matches = str.match(new RegExp("^(.*?)["+chars+"]*$"));
 		return matches[1];
 	},
 
