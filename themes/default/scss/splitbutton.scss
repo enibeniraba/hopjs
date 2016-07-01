@@ -62,9 +62,9 @@
 		top: 50%;
 		left: 50%;
 		height: 4px;
-		width: 7px;
+		width: 8px;
 		margin-top: -2px;
-		margin-left: -3px;
+		margin-left: -4px;
 		position: absolute;
 		background: url(../images/menusub.png) center center no-repeat;
 	}
@@ -80,7 +80,6 @@
 	{
 		> span > span
 		{
-			box-shadow: none;
 			z-index: 2;
 		}
 	}
@@ -90,7 +89,6 @@
 	{
 		> span > div
 		{
-			box-shadow: none;
 			z-index: 2;
 		}
 	}
@@ -225,6 +223,7 @@
 			{
 				background-color: $buttonDefaultBackgroundColorPressed;
 				border-color: $buttonDefaultBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 
@@ -238,6 +237,7 @@
 			{
 				background-color: $buttonDefaultBackgroundColorPressed;
 				border-color: $buttonDefaultBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 	}
@@ -284,6 +284,7 @@
 			{
 				background-color: $buttonPrimaryBackgroundColorPressed;
 				border-color: $buttonPrimaryBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 
@@ -297,6 +298,7 @@
 			{
 				background-color: $buttonPrimaryBackgroundColorPressed;
 				border-color: $buttonPrimaryBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 	}
@@ -343,6 +345,7 @@
 			{
 				background-color: $buttonSuccessBackgroundColorPressed;
 				border-color: $buttonSuccessBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 
@@ -356,6 +359,7 @@
 			{
 				background-color: $buttonSuccessBackgroundColorPressed;
 				border-color: $buttonSuccessBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 	}
@@ -402,6 +406,7 @@
 			{
 				background-color: $buttonDangerBackgroundColorPressed;
 				border-color: $buttonDangerBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 
@@ -415,6 +420,7 @@
 			{
 				background-color: $buttonDangerBackgroundColorPressed;
 				border-color: $buttonDangerBorderColorPressed;
+				box-shadow: none;
 			}
 		}
 	}

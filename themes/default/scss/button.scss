@@ -21,12 +21,6 @@
 		}
 	}
 
-	&.hopjs-button-pressed,
-	&.hopjs-button-toggled
-	{
-		box-shadow: none;
-	}
-
 	&.hopjs-button-disabled
 	{
 		opacity: $buttonDisabledOpacity;
@@ -139,6 +133,8 @@
 		&.hopjs-button-pressed,
 		&.hopjs-button-toggled
 		{
+			box-shadow: none;
+
 			&,
 			&:hover,
 			&:focus
@@ -166,6 +162,8 @@
 		&.hopjs-button-pressed,
 		&.hopjs-button-toggled
 		{
+			box-shadow: none;
+
 			&,
 			&:hover,
 			&:focus
@@ -193,6 +191,8 @@
 		&.hopjs-button-pressed,
 		&.hopjs-button-toggled
 		{
+			box-shadow: none;
+
 			&,
 			&:hover,
 			&:focus
@@ -220,6 +220,8 @@
 		&.hopjs-button-pressed,
 		&.hopjs-button-toggled
 		{
+			box-shadow: none;
+			
 			&,
 			&:hover,
 			&:focus
